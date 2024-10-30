@@ -1,4 +1,12 @@
-function [r_ECI, v_ECI] = kep2car(a,e,i,OM,om,th, mu)
+[X,Y] = kep2cars(8350, 0.1976,60,270,45,230,398600)
+
+
+function [r_ECI, v_ECI] = kep2cars(a,e,i,OM,om,th, mu)
+    
+
+OM = deg2rad(OM);
+OM = deg2rad(OM);
+OM = deg2rad(OM);
 
 p = a*(1-e^2);
 h = sqrt(p*mu);
