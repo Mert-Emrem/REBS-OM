@@ -4,7 +4,6 @@ r = y(1:3);
 v = y(4:6);
 rnorm = norm(r);
 
-
 % dy = f ( t, y(t) )
 dy = [ v;
        (-mu/rnorm.^3)*r];
