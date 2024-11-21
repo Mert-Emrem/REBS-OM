@@ -156,7 +156,8 @@ if nargin == 5
     p_m_arrival.Color(4) = 0.2;
 end
 
-% Transfer Epoch Positions
+% Transfer Positions
+plot3(0, 0, 0, 'yo', 'MarkerEdgeColor',[0.8    0.8    0.2863], 'MarkerFaceColor', 'y', 'MarkerSize',25);
 plot3(r_d_dep(1) * km_to_au, r_d_dep(2) * km_to_au, r_d_dep(3) * km_to_au, ...
     'bo', 'MarkerFaceColor', 'b', 'MarkerSize',15);
 plot3(r_a_arr(1) * km_to_au, r_a_arr(2) * km_to_au, r_a_arr(3) * km_to_au, ...

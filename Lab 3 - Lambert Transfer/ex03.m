@@ -203,7 +203,8 @@ plot3(Y_e_full(:, 1) * km_to_au, Y_e_full(:, 2) * km_to_au, Y_e_full(:, 3) * km_
 plot3(Y_m_full(:, 1) * km_to_au, Y_m_full(:, 2) * km_to_au, Y_m_full(:, 3) * km_to_au, ...
     'r--', 'LineWidth', 3, 'Color', [0.8784    0.2196    0.3294]);
 
-% Transfer Epoch Positions
+% Transfer Positions
+plot3(0, 0, 0, 'yo', 'MarkerEdgeColor',[0.8    0.8    0.2863], 'MarkerFaceColor', 'y', 'MarkerSize',25);
 plot3(r_e_dep_opt(1) * km_to_au, r_e_dep_opt(2) * km_to_au, r_e_dep_opt(3) * km_to_au, ...
     'bo', 'MarkerFaceColor', 'b', 'MarkerSize',15);
 plot3(r_m_arr_opt(1) * km_to_au, r_m_arr_opt(2) * km_to_au, r_m_arr_opt(3) * km_to_au, ...
