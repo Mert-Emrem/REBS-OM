@@ -129,7 +129,7 @@ hold on;
 
 % Departure planet's Full Orbit
 plot3(Y_d_full(:, 1) * km_to_au, Y_d_full(:, 2) * km_to_au, Y_d_full(:, 3) * km_to_au, ...
-    'r--', 'LineWidth', 3, 'Color', [0.8784    0.2196    0.3294]);
+    'r--', 'LineWidth', 3, 'Color', [0.3490    0.4667    0.8510]);
 
 % Departure planet motion over transfer time plot
 plot3(Y_d(:, 1) * km_to_au, Y_d(:, 2) * km_to_au, Y_d(:, 3) * km_to_au, ...
@@ -137,7 +137,7 @@ plot3(Y_d(:, 1) * km_to_au, Y_d(:, 2) * km_to_au, Y_d(:, 3) * km_to_au, ...
 
 % Arrival planet's Full Orbit
 plot3(Y_a_full(:, 1) * km_to_au, Y_a_full(:, 2) * km_to_au, Y_a_full(:, 3) * km_to_au, ...
-    'b--', 'LineWidth', 3, 'Color', [0.3490    0.4667    0.8510]);
+    'b--', 'LineWidth', 3, 'Color', [0.8784    0.2196    0.3294]);
 
 % Arrival planet motion over transfer time plot
 plot3(Y_a(:, 1) * km_to_au, Y_a(:, 2) * km_to_au, Y_a(:, 3) * km_to_au, ...

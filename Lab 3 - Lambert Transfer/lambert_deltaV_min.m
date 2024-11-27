@@ -80,12 +80,12 @@ for i = 1:resolution
     arrivalPlanet_state(i, :) = [r_a', v_a'];
 end
 
-% Initialize the Delta-V matrix (as a grid 100 [res x res]),
+% Initialize the Delta-V matrix (as a grid 101 [res x res]),
 % such that fminunc can solve for the minimum without being tripped up
 
 % TODO: find another way such that fmincon constraints solve this problem
 
-deltaV_totals = ones(resolution, resolution)*100;
+deltaV_totals = ones(resolution, resolution)*101;
 
 % Time of Flight and Lambert's solution (grid of deltaV)
 for i = 1:resolution
@@ -104,9 +104,7 @@ for i = 1:resolution
             deltaV_1 = vecnorm(VI - departurePlanet_state(i, 4:6)); % Departure Delta-V
             deltaV_2 = vecnorm(VF - arrivalPlanet_state(j, 4:6)); % Arrival Delta-V
             deltaV_totals(i, j) = deltaV_1+deltaV_2;
-            if deltaV_totals(i, j) >= 100
-                deltaV_totals(i, j) = 100;
-            end
+
         end
     end
 end
