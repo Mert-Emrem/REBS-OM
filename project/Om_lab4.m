@@ -8,7 +8,7 @@ mu_Sun = astroConstants(4);
 mu_Earth = astroConstants(13);
 AU = astroConstants(2);
 
-v_inf_minus = [15.1; 0; 0];
+v_inf_minus = [15.1; 0; 0]; % VF Merc-Mars
 v_inf = norm(v_inf_minus);
 Delta = 9200;
 r = [1; 0; 0]*AU;

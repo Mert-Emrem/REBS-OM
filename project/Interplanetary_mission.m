@@ -13,6 +13,7 @@ mu_sun = astroConstants(4);
 mu_merc = astroConstants(11);
 mu_mars = astroConstants(14);
 
+R_mars = 3390; % mars radius [km]
 
 %% Departure planet: Mercury
 
@@ -70,6 +71,7 @@ om =  kep(5).*ones(1, length(f));
 %%
 
 deltaV_Merc_Mars = ones(length(dep_window), length(flyby_window))*101;
+Vinf_minus = ones(3, length(flyby_window));
 
 for i = 1:length(dep_window)
     for j = 1:length(flyby_window)
@@ -83,6 +85,8 @@ for i = 1:length(dep_window)
             [~, ~, ~, ~, VI, VF, ~, ~] = ...
                 lambertMR(r_dep(:, i) , r_mars(:,j) , ...
                 ToF, mu_sun, 0, 0, 0);
+
+            Vinf_minus(:,j) = VF' - v_mars(:,j);
 
             % Compute Delta-V
             deltaV_1 = vecnorm(VI' - v_dep(:, i)); % Departure Delta-V
@@ -128,7 +132,7 @@ porkchopPlotter(deltaV_Merc_Mars, flyby_window, dep_window)
 
 
 deltaV_Mars_Harm = ones(length(flyby_window), length(arr_window))*101;
-
+Vinf_plus = ones(3, length(flyby_window));
 
 for i = 1:length(flyby_window)
     for j = 1:length(arr_window)
@@ -143,14 +147,52 @@ for i = 1:length(flyby_window)
                 lambertMR(r_mars(:, i) , r_harm(:,j) , ...
                 ToF, mu_sun, 0, 0, 0);
 
+            Vinf_plus(:,j) = VI' - v_mars(:,j);
+
             % Compute Delta-V
-            deltaV_1 = vecnorm(VI' - v_mars(:, i)); % Departure Delta-V
+            deltaV_1 = vecnorm(VI' - v_mars(:,i)); % Departure Delta-V
             deltaV_2 = vecnorm(VF' - v_harm(:,j)); % Arrival Delta-V
             deltaV_Mars_Harm(i, j) = deltaV_1+deltaV_2;
 
         end
     end
 end
+
+%% 
+
+Vinf_minus_val = vecnorm(Vinf_minus,2,1);
+Vinf_plus_val = vecnorm(Vinf_plus,2,1);
+
+delta_val = acos(dot(Vinf_minus, Vinf_plus)./(Vinf_minus_val.*Vinf_plus_val));
+
+e = @(r_p, v_inf) 1+ (r_p.*(v_inf).^2)/mu_mars;
+
+delta = @(r_p, v_inf) 2*asin(1./e(r_p, v_inf));
+
+f_delta = @(r_p)...
+            delta_val - (delta(r_p, Vinf_minus_val)/2 + delta(r_p, Vinf_plus_val)/2);
+
+h_atm = 100000;
+
+r_min = (R_mars + h_atm).*ones(1,length(flyby_window));
+tol = 1e-14;
+options = optimoptions('fsolve', 'TolFun', tol, 'TolX', tol);
+r_p = fsolve(f_delta, r_min, options);
+
+e_minus = e(r_p, Vinf_minus_val);
+a_minus = r_p/(1-e_minus);
+
+e_plus = e(r_p, Vinf_plus_val);
+a_plus = r_p/(1-e_plus);
+
+delta_v_flyby = Vinf_minus_val- Vinf_plus_val;
+
+h_GA = r_p - R_mars;
+
+v_p_minus = sqrt(Vinf_minus_val.^2 + 2*mu_mars./r_p);
+v_p_plus = sqrt(Vinf_plus_val.^2 + 2*mu_mars./r_p);
+
+delta_V_poweredFB = abs(v_p_plus - v_p_minus);
 
 Mars_Harm_3d = repmat(deltaV_Mars_Harm, [1, 1, length(dep_window)]);
 
