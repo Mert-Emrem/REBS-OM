@@ -18,7 +18,7 @@ function out = astroConstants(in)
 %           3   Sun mean radius (from DITAN) [km]
 %           4   Sun planetary constant (mu = mass * G) (from DE405)
 %               [km^3/s^2]
-%           31  Energy flux density of the Sun (from Wertz,SMAD)
+%           81  Energy flux density of the Sun (from Wertz,SMAD)
 %               [W/m2 at 1 AU]
 %       Other:
 %           5   Speed of light in the vacuum (definition in the SI and Horizon) [km/s]
@@ -30,7 +30,7 @@ function out = astroConstants(in)
 %           9   Gravitatonal field constant of the Earth (from Wertz,SMAD,
 %               taken from JGM-2). This should be used in conjunction to
 %               Earth radius = 6378.1363 km
-%           32  Days in a Julian year y = 365.25 d  (from Horizon)
+%           82  Earth days in a Julian year y = 365.25 d  (from Horizon)
 %       Planetary constants of the planets (mu = mass * G) [km^3/s^2]:
 %           11  Me      (from DE405)
 %           12  V       (from DE405)
@@ -53,6 +53,62 @@ function out = astroConstants(in)
 %           28  N       (from Horizon)
 %           29  P       (from Horizon)
 %           30  Moon    (from Horizon)
+%       J2 Gravitational Harmonic coefficent [-]:
+%           31  Me      (from Nasa Fact Sheet)
+%           32  V       (from Nasa Fact Sheet)
+%           33  E       (from Nasa Fact Sheet)
+%           34  Ma      (from Nasa Fact Sheet)
+%           35  J       (from Nasa Fact Sheet)
+%           36  S       (from Nasa Fact Sheet)
+%           37  U       (from Nasa Fact Sheet)
+%           38  N       (from Nasa Fact Sheet)
+%           39  P       (from Nasa Fact Sheet)
+%           40  Moon    (from Nasa Fact Sheet)
+%       Planetary oblateness [-]:
+%           41  Me      (from Nasa Fact Sheet)
+%           42  V       (from Nasa Fact Sheet)
+%           43  E       (from Nasa Fact Sheet)
+%           44  Ma      (from Nasa Fact Sheet)
+%           45  J       (from Nasa Fact Sheet)
+%           46  S       (from Nasa Fact Sheet)
+%           47  U       (from Nasa Fact Sheet)
+%           48  N       (from Nasa Fact Sheet)
+%           49  P       (from Nasa Fact Sheet)
+%           50  Moon    (from Nasa Fact Sheet)
+%       Sidereal rotation period [hours]:
+%           51  Me      (from Nasa Fact Sheet)
+%           52  V       (from Nasa Fact Sheet)
+%           53  E       (from Nasa Fact Sheet)
+%           54  Ma      (from Nasa Fact Sheet)
+%           55  J       (from Nasa Fact Sheet)
+%           56  S       (from Nasa Fact Sheet)
+%           57  U       (from Nasa Fact Sheet)
+%           58  N       (from Nasa Fact Sheet)
+%           59  P       (from Nasa Fact Sheet)
+%           60  Moon    (from Nasa Fact Sheet)
+%       Axial tilt (inclination of the equator with respect to the
+%       ecliptic) [deg]
+%           61  Me      (from Nasa Fact Sheet)
+%           62  V       (from Nasa Fact Sheet)
+%           63  E       (from Nasa Fact Sheet)
+%           64  Ma      (from Nasa Fact Sheet)
+%           65  J       (from Nasa Fact Sheet)
+%           66  S       (from Nasa Fact Sheet)
+%           67  U       (from Nasa Fact Sheet)
+%           68  N       (from Nasa Fact Sheet)
+%           69  P       (from Nasa Fact Sheet)
+%           70  Moon    (from Nasa Fact Sheet)
+%       Solar irradiance [W/m^2]
+%           71  Me      (from Nasa Fact Sheet)
+%           72  V       (from Nasa Fact Sheet)
+%           73  E       (from Nasa Fact Sheet)
+%           74  Ma      (from Nasa Fact Sheet)
+%           75  J       (from Nasa Fact Sheet)
+%           76  S       (from Nasa Fact Sheet)
+%           77  U       (from Nasa Fact Sheet)
+%           78  N       (from Nasa Fact Sheet)
+%           79  P       (from Nasa Fact Sheet)
+%           80  Moon    (from Nasa Fact Sheet)
 %
 %   Notes for upgrading this function:
 %       It is possible to add new constants.
@@ -127,6 +183,26 @@ function out = astroConstants(in)
 %         DE405/LE405.
 %   [M3]  Lunar Constants and Models Document, Ralph B. Roncoli, 23 Sept 2005,
 %         JPL Technical Document D-32296 
+%   [P1]  Mercury Fact sheet: last retrieved 21/11/2024
+%         https://nssdc.gsfc.nasa.gov/planetary/factsheet/mercuryfact.html
+%   [P2]  Venus Fact sheet: last retrieved 21/11/2024
+%         https://nssdc.gsfc.nasa.gov/planetary/factsheet/venusfact.html
+%   [P3]  Earth Fact sheet: last retrieved 21/11/2024
+%         https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html
+%   [P4]  Mars Fact sheet: last retrieved 21/11/2024
+%         https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html
+%   [P5]  Jupiter Fact sheet: last retrieved 21/11/2024
+%         https://nssdc.gsfc.nasa.gov/planetary/factsheet/jupiterfact.html
+%   [P6]  Saturn Fact sheet: last retrieved 21/11/2024
+%         https://nssdc.gsfc.nasa.gov/planetary/factsheet/saturnfact.html
+%   [P7]  Uranus Fact sheet: last retrieved 21/11/2024
+%         https://nssdc.gsfc.nasa.gov/planetary/factsheet/uranusfact.html
+%   [P8]  Neptune Fact sheet: last retrieved 21/11/2024
+%         https://nssdc.gsfc.nasa.gov/planetary/factsheet/neptunefact.html
+%   [P9]  Pluto Fact sheet: last retrieved 21/11/2024
+%         https://nssdc.gsfc.nasa.gov/planetary/factsheet/plutofact.html
+%   [P10] Moon Fact sheet: last retrieved 21/11/2024
+%         https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html
 %
 %
 % CALLED FUNCTIONS:
@@ -153,11 +229,12 @@ function out = astroConstants(in)
 %       References added.
 %   20/03/2013, REVISION, Francesca Letizia.
 %   22/03/2013, Francesca Letizia: all GM from DE405.
+%   21/11/2024, Mathilda Bolis: added constants related to other planets.
 %
 % -------------------------------------------------------------------------
 
 % 9: J2
-% 32: 365.25
+% 82: 365.25
 
 out = zeros(1,length(in));
 for i=1:length(in)
@@ -259,10 +336,116 @@ for i=1:length(in)
             % out(i)=0.17380000000000E+04; % From DITAN
             % out(i)=1737.5;  % From Horizon [M1]
             out(i)=1738.0;    % From Horizon  [M3]
+        % J2 Gravitational Harmonic coefficent [-]:
         case 31
+            out(i) = 50.3*1e-6; % [P1]
+        case 32
+            out(i) = 4.458*1e-6; % [P2]
+        case 33
+            out(i) = 0.1082626925638815e-2; % Definition in Wertz, SMAD
+        case 34
+            out(i) = 1960.45*1e-6; % [P4]
+        case 35
+            out(i) = 14696.5735*1e-6; % [P5]
+        case 36
+            out(i) = 16290.573*1e-6; % [P6]
+        case 37
+            out(i) = 3510.68*1e-6; % [P7]
+        case 38
+            out(i) = 3408.43*1e-6; % [P8]
+        case 39
+            out(i) = NaN; % [P9] -> Not present in Nasa fact sheets
+        case 40
+            out(i) = 202.7*1e-6; % [P10]
+        % Planetary oblateness
+        case 41
+            out(i) = 0.0009; % [P1]
+        case 42
+            out(i) = 0.00001; % [P2]
+        case 43
+            out(i) = 0.00335; % [P3]
+        case 44
+            out(i) = 0.00589; % [P4]
+        case 45
+            out(i) = 0.06487; % [P5]
+        case 46
+            out(i) = 0.09796; % [P6]
+        case 47
+            out(i) = 0.02293; % [P7]
+        case 48
+            out(i) = 0.01708; % [P8]
+        case 49
+            out(i) = 0; % [P9]
+        case 50
+            out(i) = 0.0012; % [P10]
+        % Sidereal rotation period [hours]:
+        case 51
+            out(i) = 1407.6; % [P1]
+        case 52
+            out(i) = -5832.6; % [P2]
+        case 53
+            out(i) = 23.9345; % [P3]
+        case 54
+            out(i) = 24.6229; % [P4]
+        case 55
+            out(i) = 9.9250; % [P5]
+        case 56
+            out(i) = 10.656; % [P6]
+        case 57
+            out(i) = -17.24; % [P7]
+        case 58
+            out(i) = 16.11; % [P8]
+        case 59
+            out(i) = -153.2928; % [P9]
+        case 60
+            out(i) = 655.720; % [P10]
+        % Axial tilt [deg]:
+        case 61
+            out(i) = 0.034; % [P1]
+        case 62
+            out(i) = 177.36; % [P2]
+        case 63
+            out(i) = 23.44; % [P3]
+        case 64
+            out(i) = 25.19; % [P4]
+        case 65
+            out(i) = 3.13; % [P5]
+        case 66
+            out(i) = 26.73; % [P6]
+        case 67
+            out(i) = 97.77; % [P7]
+        case 68
+            out(i) = 28.32; % [P8]
+        case 69
+            out(i) = 119.51; % [P9]
+        case 70
+            out(i) = 6.68; % [P10]
+        % Solar irradiance [W/m^2];
+        case 71
+            out(i) = 9082.7; % [P1]
+        case 72
+            out(i) = 2601.3; % [P2]
+        case 73
+            out(i) = 1361.0; % [P3]
+        case 74
+            out(i) = 586.2; % [P4]
+        case 75
+            out(i) = 50.26; % [P5]
+        case 76
+            out(i) = 14.82; % [P6]
+        case 77
+            out(i) = 3.69; % [P7]
+        case 78
+            out(i) = 1.508; % [P8]
+        case 79
+            out(i) = 0.873; % [P9]
+        case 80
+            out(i) = 1361.0; % [P10]
+        % Other constants
+        case 81
             out(i)=1367; % From Wertz, SMAD
             % out(i)=1367.6;  % From Horizon  [W3]
-        case 32
+        case 82
             out(i)=365.25; % From Horizon
         % Add an identifier and constant here. Prototype:
         % case $identifier$

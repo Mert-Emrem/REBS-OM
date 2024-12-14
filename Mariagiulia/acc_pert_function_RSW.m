@@ -4,7 +4,14 @@ function acc_pert_vect = acc_pert_function_RSW(~, kep_el, J2, mu_E, Re)
 
 rnorm = norm(r);
 
-a_J2_SRW = -3/2 * J2 * mu_E * Re / rnorm^4 * [1-3*(sin(kep_el(3)))^2*(sin(kep_el(6)-kep_el(5)))^2; (sin(kep_el(3)))^2*(sin(2*(kep_el(6)-kep_el(5)))); (sin(kep_el(3)))^2*(sin(2*(kep_el(6)-kep_el(5))))];
+i = kep_el(3);
+th = kep_el(6);
+om = kep_el(5);
+
+
+a_J2_SRW = -3/2 * J2 * mu_E * Re^2 / rnorm^4 * [1-3*(sin(i))^2*(sin(th+om))^2; 
+                                                (sin(i))^2*(sin(2*(th+om))); 
+                                                sin(2*i)*sin(th+om)];
 
 acc_pert_vect = a_J2_SRW;
 
