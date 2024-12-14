@@ -2,8 +2,7 @@ clear
 close all
 clc
 
-addpath ..\LAB
-addpath ..\LAB\timeConversion\time\
+addpath 'MATLAB functions-20241213'\timeConversion\time\
 addpath 'MATLAB functions-20241213'\
 
 
@@ -94,17 +93,9 @@ for i = 1:length(dep_window)
     end
 end
 
-deltaV_MM = repmat(deltaV_Merc_Mars, [1, 1, length(arr_window)]);
-
-[dep, flyby, arr] = ndgrid(dep_window, flyby_window, arr_window);
-
-figure;
-
-slice(dep, flyby, arr, deltaV_MM, [],)
-
+Merc_Mars_3d = repmat(deltaV_Merc_Mars, [1, 1, length(arr_window)]);
 
 M = Merc_Mars_3d;
-
 
 [x, y, z] = meshgrid(1:size(M,1), 1:size(M,2), 1:size(M,3));  % Create the grid of x, y, and z
 
@@ -128,6 +119,7 @@ colormap parula;            % Choose a colormap (e.g., 'jet', 'hot', 'parula')
 xlabel('X-axis');
 ylabel('Y-axis');
 zlabel('Z-axis');
+axis equal;
 title('3D Visualization of BEH with Color Representing 4th Dimension');
 grid on;
 
