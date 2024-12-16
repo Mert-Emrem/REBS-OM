@@ -43,7 +43,7 @@ for i=1:length(dep_window)
     [r, v] = kep2car_vec(kep(1), kep(2), kep(3),...
                  kep(4), kep(5), kep(6), mu_sun);
     r_dep = [r_dep, r];
-    v_dep = [v_dep, v];
+    v
 end
 
 %% Flyby planet: Mars
@@ -262,9 +262,14 @@ t_dep = dep_window(depth);
 
 
 %% plot
+% 
+planet = 'Sun';
+opts.Units = 'km';
+opts.Position = [0, 0, 0];
 
 plotTransfer([t_dep, t_flyby, t_arr],r_dep, r_mars, r_harm)
-
+planet3D(planet, opts);
+view([54, 32])
 % hold on
 % grid on
 % 
