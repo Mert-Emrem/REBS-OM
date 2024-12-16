@@ -1,13 +1,7 @@
-function a = a_groundTrack(k, m)
+function a = a_groundTrack(k, m, mu_planet, OMEGA_planet)
 
-% k = satellite revolution
-% m = earth revolution
-
-mu = astroConstants(13);
-omegaE = 15.04/180 * pi/60/60;
-
-n = omegaE*k/m;
-a = (mu/n^2)^(1/3);
+n = OMEGA_planet*k/m;
+a = (mu_planet/n^2)^(1/3);
 
 end
 
