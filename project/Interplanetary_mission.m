@@ -19,32 +19,32 @@ R_mars = 3390; % mars radius [km]
 
 T_syn_1 = 100.8882;
 
-dep_date_min = date2mjd2000([2035, 1, 1, 0, 0, 0]);
-dep_date_max = date2mjd2000([2037, 1, 1, 0, 0, 0]);
+dep_date_min = date2mjd2000([2030, 1, 1, 0, 0, 0]);
+dep_date_max = date2mjd2000([2060, 1, 1, 0, 0, 0]);
 % dep_date_max = dep_date_min + 10*T_syn_1; % ToF_max
 
-dt = 10;
+dt = 50;
 
 dep_window = dep_date_min: dt :dep_date_max;
 
 
-% 
-% [kep, ~] = uplanet_vec(dep_window, 1);
-% 
-% a_merc = kep(1,1);
-% 
-% [r_dep, v_dep] = kep2car_vec(a_merc, kep(2,1), kep(3,1),...
-%              kep(4,1), kep(5,1), kep(6,:), mu_sun);
 
-r_dep = [];
-v_dep = [];
-for i=1:length(dep_window)
-    [kep, ~] = uplanet(dep_window(i), 1);
-    [r, v] = kep2car_vec(kep(1), kep(2), kep(3),...
-                 kep(4), kep(5), kep(6), mu_sun);
-    r_dep = [r_dep, r];
-    v_dep = [v_dep, v];
-end
+[kep, ~] = uplanet_vec(dep_window, 1);
+
+a_merc = kep(1,1);
+
+[r_dep, v_dep] = kep2car_vec(a_merc, kep(2,1), kep(3,1),...
+             kep(4,1), kep(5,1), kep(6,:), mu_sun);
+
+% r_dep = [];
+% v_dep = [];
+% for i=1:length(dep_window)
+%     [kep, ~] = uplanet(dep_window(i), 1);
+%     [r, v] = kep2car_vec(kep(1), kep(2), kep(3),...
+%                  kep(4), kep(5), kep(6), mu_sun);
+%     r_dep = [r_dep, r];
+%     v_dep = [v_dep, v];
+% end
 
 %% Flyby planet: Mars
 
@@ -62,10 +62,10 @@ a_mars = kep(1,1);
 
 T_syn_2 = 4.1902;
 
-arr_time_min = date2mjd2000([2035, 1, 1, 0, 0, 0]);
-arr_time_max = date2mjd2000([2040, 1, 1, 0, 0, 0]);
+arr_time_min = date2mjd2000([2030, 1, 1, 0, 0, 0]);
+arr_time_max = date2mjd2000([2060, 1, 1, 0, 0, 0]);
 
-arr_dt = 20;
+arr_dt = 50;
 
 arr_window = arr_time_min: arr_dt: arr_time_max;
 
@@ -101,7 +101,8 @@ for i = 1:length(dep_window)
 
             % Compute Delta-V
             deltaV_1 = norm(VI' - v_dep(:, i)); % Departure Delta-V
-            deltaV_2 = norm(VF' - v_mars(:,j)); % Arrival Delta-V
+            % deltaV_2 = norm(VF' - v_mars(:,j)); % Arrival Delta-V
+            deltaV_2 = 0;
 
             if err_1 == 0
             deltaV_Merc_Mars(i, j) = deltaV_1+deltaV_2;
@@ -142,8 +143,9 @@ for i = 1:length(flyby_window)
                 ToF, mu_sun, 0, 0, 0);
 
             % Compute Delta-V
-            deltaV_1 = norm(VI' - v_mars(:,i)); % Departure Delta-V
+            % deltaV_1 = norm(VI' - v_mars(:,i)); % Departure Delta-V
             deltaV_2 = norm(VF' - v_harm(:,j)); % Arrival Delta-V
+            deltaV_1 = 0;
 
             if err_2 == 0
                deltaV_Mars_Harm(i, j) = deltaV_1+deltaV_2;
@@ -182,7 +184,7 @@ for i=1:length(flyby_window)
              vinf_m = squeeze(Vinf_minus(k,i,:));
              vinf_p = squeeze(Vinf_plus(i,j,:));
              dvp  = PowerGravityAssist(vinf_m, vinf_p...
-                    ,R_mars, 200, mu_mars);
+                    ,R_mars, 0, mu_mars);
 
              Delta_GA(i, j, k) = dvp;
 
@@ -192,9 +194,9 @@ for i=1:length(flyby_window)
     
                      DeltaVtot(i,j,k) = dvp + M1(i, j, k) + M2(i, j, k);
     
-                 end
-             end
+                  end
 
+             end
 
         end
 
@@ -213,7 +215,44 @@ t_arr = arr_window(col);
 t_dep = dep_window(depth);
 
 
-%% 
+%% plot
+
+plotTransfer([t_dep, t_flyby, t_arr],r_dep, r_mars, r_harm)
+
+%%
+figure;
+% 
+planet = 'Sun';
+opts.Units = 'km';
+opts.Position = [0, 0, 0];
+
+planet3D(planet, opts);
+view([54, 32])
+hold on
+
+x = r_dep(1,1);
+y = r_dep(2,1);
+z = r_dep(3,1);
+
+% line=animatedline(x, y, z,'color', '#ffff00', 'LineWidth',2);
+line = animatedline;
+
+for t = 1:size(r_dep,2)
+
+        x = r_dep(1, t);
+        y = r_dep(2, t);
+        z = r_dep(3, t);
+
+
+        addpoints(line, x, y, z);
+
+        drawnow;
+
+        pause(0.01);
+
+end
+
+%%
 
 % Vinf_minus_val = vecnorm(Vinf_minus,2,1);
 % Vinf_plus_val = vecnorm(Vinf_plus,2,1);
@@ -260,38 +299,3 @@ t_dep = dep_window(depth);
 % 
 % end
 
-
-%% plot
-
-plotTransfer([t_dep, t_flyby, t_arr],r_dep, r_mars, r_harm)
-
-% hold on
-% grid on
-% 
-% x = r_dep(1,1);
-% y = r_dep(2,1);
-% z = r_dep(3,1);
-% 
-% % line=animatedline(x, y, z,'color', '#ffff00', 'LineWidth',2);
-% line = animatedline;
-% 
-% for t = 1:size(r_dep,2)
-% 
-%         x = r_dep(1, t);
-%         y = r_dep(2, t);
-%         z = r_dep(3, t);
-% 
-% 
-%         addpoints(line, x, y, z);
-% 
-%         drawnow;
-% 
-%         pause(0.01);
-% 
-% end
-
-
-
-
-
-%%

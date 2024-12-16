@@ -6,7 +6,7 @@ function porkchopPlotter(deltaV_totals,tspan_arr,tspan_dep)
 
     % Subplot 1: 2D Contour Plot
     subplot(1, 2, 1);
-    deltaV_totals(deltaV_totals > 40) = NaN;
+    deltaV_totals(deltaV_totals > 60) = NaN;
     contourf(X, Y, deltaV_totals', 100, 'LineStyle', 'none'); % Smooth 2D contours
     clim([0 40]);
     colorbar;
