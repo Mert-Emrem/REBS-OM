@@ -1,24 +1,34 @@
-function [alpha, delta, lon, lat] = groundTrack(type, t, omegaE, thetaG0, mu, t0, coord)
-
-% ground track function to calulate latitute and longitude
+function [alpha, delta, lon, lat] = groundTrack(type, t, omega_planet, thetaG0, mu, t0, coord)
+% Functin groundTrack computes latitute and longitude, necessary to run the
+% function plot_groundTrack starting from the IC of a orbit. The calculus can 
+% be perforbed both with cartesian or keplerian data.
+%
+% STRUCTURE:
+%   [alpha, delta, lon, lat] = groundTrack(type, t, omegaE, thetaG0, mu, t0, coord)
 %
 % INPUT:
-% type      [str] cartesian data or keplerian data  - Kep or Car
-% t         [nx1] column vector of time in witch to compute the solution
-% omegaE    [1x1] angular velocity of the Earth
-% thetaG0   [1x1] Greenwich sidderal time at 0 hours UT
-% mu        [1x1] gravitational constant
-% t0        [1x1] initial time
-% coord     
-% - if Kep: [6x1] with a, e, i, OMEGA, omega, theta
-% - if Car: [1x6] with r0 (1,2,3) and v0 (4,5,6)
+%  - type           [str]   cartesian data or keplerian data  - Kep or Car
+%  - t              [nx1]   column vector of time in witch to compute the solution
+%  - omega_planet   [1x1]   angular velocity of the planet
+%  - thetaG0        [1x1]   Greenwich sidderal time at 0 hours UT
+%  - mu             [1x1]   gravitational constant
+%  - t0             [1x1]   initial time
+%  - coord     
+%       --> if Kep: [6x1] with a, e, i, OMEGA, omega, theta
+%       --> if Car: [1x6] with r0 (1,2,3) and v0 (4,5,6)
 %
-% OUTPUT
-% alpha     [nx1] right ascension
-% delta     [nx1] declination
-% lon       [nx1] longitude
-% lat       [nx1] latitude
+% OUTPUT:
+%  - alpha          [nx1]   right ascension
+%  - delta          [nx1]   declination
+%  - lon            [nx1]   longitude
+%  - lat            [nx1]   latitude
+%
+% AUTHORS: Bernasconi Ludovico, Emrem Mert, Richero Giovanni, Serlini
+%          Mariagiulia
+%
+%--------------------------------------------------------------------------
 
+% Select type of coordinates
 if strcmp(type, 'Kep')
     a = coord(1);
     e = coord(2);
@@ -55,7 +65,7 @@ rnorm = vecnorm(r, 2, 2);
 % calculation of alpha delta longitude and latitude
 alpha = atan2(y,x);
 delta = asin(z./rnorm);
-thetaG = thetaG0 + omegaE*(t - t0);
+thetaG = thetaG0 + omega_planet*(t - t0);
 
 lon = alpha - thetaG;
 

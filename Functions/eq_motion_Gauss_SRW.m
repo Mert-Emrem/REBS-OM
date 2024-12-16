@@ -1,4 +1,4 @@
-function ds = eq_motion_Gauss_SRW(t, kep_el, acc_pert_function,  mu_E, J2, Re)
+function ds = eq_motion_Gauss_SRW(t, kep_el, acc_pert_function,  mu_E, J2, Re, date)
 
 a = kep_el(1);
 e = kep_el(2); 
@@ -8,16 +8,16 @@ om = kep_el(5);
 th = kep_el(6);
 
 
-%a_p = acc_pert_function_RSW(t, kep_el, J2, mu_E, Re); % ) 
+%a_p_SRW = acc_pert_function_RSW(t, kep_el); 
 a_p = acc_pert_function(t, kep_el);  
 
-R = iner2RSW(om, i, OM);
+R = iner2RSW(om, th, i, OM);
 a_p_SRW = R*a_p;
 a_r = a_p_SRW(1);
 a_s = a_p_SRW(2);
 a_w = a_p_SRW(3);
 
-p = a*(1-e);
+p = a*(1-e^2);
 h = sqrt(p*mu_E);
 r = p/(1+e*cos(th));
 

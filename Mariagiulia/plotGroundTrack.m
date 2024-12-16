@@ -1,4 +1,22 @@
 function [] = plotGroundTrack(lon, lat, t)
+% Function plotGroundTrack plots the groundtrack of a given orbit. It
+% should be used after function groundTrack, wich give as output the input
+% of this function. 
+% Notice: upload the image of the planet in the same folder of this
+% function.
+%
+% STRUCTURE:
+%   [] = plotGroundTrack(lon, lat, t)
+%
+% INPUT:
+% - lon       [nx1]     longitude
+% - lat       [nx1]     latitude
+% - t         [nx1]     column vector of time in witch to compute the solution
+%
+% AUTHORS: Bernasconi Ludovico, Emrem Mert, Richero Giovanni, Serlini
+%          Mariagiulia
+%
+% -------------------------------------------------------------------------
 
 % Carica l'immagine
 img = imread('EarthTexture.jpg');
