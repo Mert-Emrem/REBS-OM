@@ -19,13 +19,14 @@ R_mars = 3390; % mars radius [km]
 
 T_syn_1 = 100.8882;
 
-dep_date_min = date2mjd2000([2030, 1, 1, 0, 0, 0]);
-dep_date_max = date2mjd2000([2035, 1, 1, 0, 0, 0]);
+dep_date_min = date2mjd2000([2035, 1, 1, 0, 0, 0]);
+dep_date_max = date2mjd2000([2037, 1, 1, 0, 0, 0]);
 % dep_date_max = dep_date_min + 10*T_syn_1; % ToF_max
 
-dt = 20;
+dt = 10;
 
 dep_window = dep_date_min: dt :dep_date_max;
+
 
 
 [kep, ~] = uplanet_vec(dep_window, 1);
@@ -51,14 +52,14 @@ a_mars = kep(1,1);
 
 T_syn_2 = 4.1902;
 
-arr_time_min = date2mjd2000([2030, 1, 1, 0, 0, 0]);
-arr_time_max = date2mjd2000([2035, 1, 1, 0, 0, 0]);
+arr_time_min = date2mjd2000([2035, 1, 1, 0, 0, 0]);
+arr_time_max = date2mjd2000([2040, 1, 1, 0, 0, 0]);
 
-arr_dt = 100;
+arr_dt = 20;
 
 arr_window = arr_time_min: arr_dt: arr_time_max;
 
-[kep, f, M] = ephAsteroids_vec(arr_window, 40);
+[kep, f, ~] = ephAsteroids_vec(arr_window, 40);
 
 a_harmonia = kep(1);
 i = kep(3).*ones(1,length(f));
@@ -70,10 +71,11 @@ om =  kep(5).*ones(1, length(f));
 
 %%
 
-deltaV_Merc_Mars = ones(length(dep_window), length(flyby_window))*101;
-Vinf_minus = ones(3, length(flyby_window));
+deltaV_Merc_Mars = ones(length(dep_window), length(flyby_window))*NaN;
+Vinf_minus = ones(length(dep_window), length(flyby_window),3)*NaN;
 
 for i = 1:length(dep_window)
+
     for j = 1:length(flyby_window)
 
         % Compute the time of flight
@@ -82,59 +84,41 @@ for i = 1:length(dep_window)
         % Ignore temporally impossible solutions (arrival before departure)
         if ToF > 0
             % Solve Lambert's problem
-            [~, ~, ~, ~, VI, VF, ~, ~] = ...
+            [~, ~, ~, err_1, VI, VF, ~, ~] = ...
                 lambertMR(r_dep(:, i) , r_mars(:,j) , ...
                 ToF, mu_sun, 0, 0, 0);
 
-            Vinf_minus(:,j) = VF' - v_mars(:,j);
 
             % Compute Delta-V
-            deltaV_1 = vecnorm(VI' - v_dep(:, i)); % Departure Delta-V
-            deltaV_2 = vecnorm(VF' - v_mars(:,j)); % Arrival Delta-V
+            deltaV_1 = norm(VI' - v_dep(:, i)); % Departure Delta-V
+            deltaV_2 = norm(VF' - v_mars(:,j)); % Arrival Delta-V
+
+            if err_1 == 0
             deltaV_Merc_Mars(i, j) = deltaV_1+deltaV_2;
+            Vinf_minus(i,j,:) = VF' - v_mars(:,j);
+            end
+            % deltaV_Merc_Mars(i, j) = deltaV_1+deltaV_2;
+            % Vinf_minus(i,j,:) = VF' - v_mars(:,j);
 
         end
+
     end
+
 end
 
 Merc_Mars_3d = repmat(deltaV_Merc_Mars, [1, 1, length(arr_window)]);
 
-M = Merc_Mars_3d;
-
-[x, y, z] = meshgrid(1:size(M,1), 1:size(M,2), 1:size(M,3));  % Create the grid of x, y, and z
-
-% Flatten the 3D arrays into 1D vectors for plotting
-x = x(:);
-y = y(:);
-z = z(:);
-values = M(:);   % Flatten BEH into a 1D vector for color mapping
-
-valid_indices = values <= 45;  % Logical array for valid points
-x = x(valid_indices);        % Filtered x values
-y = y(valid_indices);        % Filtered y values
-z = z(valid_indices);        % Filtered z values
-values = values(valid_indices);  % Filtered color values
-
-% 3D Scatter plot
-scatter3(x, y, z, 10, values, 'filled');  % 10 is the marker size, values control color
-colorbar;                % Add a colorbar to interpret the color scale
-clim([0 60])
-colormap parula;            % Choose a colormap (e.g., 'jet', 'hot', 'parula')
-xlabel('X-axis');
-ylabel('Y-axis');
-zlabel('Z-axis');
-axis equal;
-title('3D Visualization of BEH with Color Representing 4th Dimension');
-grid on;
 
 porkchopPlotter(deltaV_Merc_Mars, flyby_window, dep_window)
 
 
+%%
 
-deltaV_Mars_Harm = ones(length(flyby_window), length(arr_window))*101;
-Vinf_plus = ones(3, length(flyby_window));
+deltaV_Mars_Harm = ones(length(flyby_window), length(arr_window))*NaN;
+Vinf_plus = ones(length(flyby_window), length(arr_window),3)*NaN;
 
 for i = 1:length(flyby_window)
+
     for j = 1:length(arr_window)
 
         % Compute the time of flight
@@ -143,62 +127,124 @@ for i = 1:length(flyby_window)
         % Ignore temporally impossible solutions (arrival before departure)
         if ToF > 0
             % Solve Lambert's problem
-            [~, ~, ~, ~, VI, VF, ~, ~] = ...
+            [~, ~, ~, err_2, VI, VF, ~, ~] = ...
                 lambertMR(r_mars(:, i) , r_harm(:,j) , ...
                 ToF, mu_sun, 0, 0, 0);
 
-            Vinf_plus(:,j) = VI' - v_mars(:,j);
-
             % Compute Delta-V
-            deltaV_1 = vecnorm(VI' - v_mars(:,i)); % Departure Delta-V
-            deltaV_2 = vecnorm(VF' - v_harm(:,j)); % Arrival Delta-V
-            deltaV_Mars_Harm(i, j) = deltaV_1+deltaV_2;
+            deltaV_1 = norm(VI' - v_mars(:,i)); % Departure Delta-V
+            deltaV_2 = norm(VF' - v_harm(:,j)); % Arrival Delta-V
+
+            if err_2 == 0
+               deltaV_Mars_Harm(i, j) = deltaV_1+deltaV_2;
+               Vinf_plus(i,j,:) = VI' - v_mars(:,i);
+            end
+               % deltaV_Mars_Harm(i, j) = deltaV_1+deltaV_2;
+               % Vinf_plus(i,j,:) = VI' - v_mars(:,j);
 
         end
     end
+
 end
 
-%% 
-
-Vinf_minus_val = vecnorm(Vinf_minus,2,1);
-Vinf_plus_val = vecnorm(Vinf_plus,2,1);
-
-delta_val = acos(dot(Vinf_minus, Vinf_plus)./(Vinf_minus_val.*Vinf_plus_val));
-
-e = @(r_p, v_inf) 1+ (r_p.*(v_inf).^2)/mu_mars;
-
-delta = @(r_p, v_inf) 2*asin(1./e(r_p, v_inf));
-
-f_delta = @(r_p)...
-            delta_val - (delta(r_p, Vinf_minus_val)/2 + delta(r_p, Vinf_plus_val)/2);
-
-h_atm = 100000;
-
-r_min = (R_mars + h_atm).*ones(1,length(flyby_window));
-tol = 1e-14;
-options = optimoptions('fsolve', 'TolFun', tol, 'TolX', tol);
-r_p = fsolve(f_delta, r_min, options);
-
-e_minus = e(r_p, Vinf_minus_val);
-a_minus = r_p/(1-e_minus);
-
-e_plus = e(r_p, Vinf_plus_val);
-a_plus = r_p/(1-e_plus);
-
-delta_v_flyby = Vinf_minus_val- Vinf_plus_val;
-
-h_GA = r_p - R_mars;
-
-v_p_minus = sqrt(Vinf_minus_val.^2 + 2*mu_mars./r_p);
-v_p_plus = sqrt(Vinf_plus_val.^2 + 2*mu_mars./r_p);
-
-delta_V_poweredFB = abs(v_p_plus - v_p_minus);
-
 Mars_Harm_3d = repmat(deltaV_Mars_Harm, [1, 1, length(dep_window)]);
+M1 = Mars_Harm_3d;
+Merc_Mars_3d = permute(Merc_Mars_3d, [2, 3, 1]);
+M2 = Merc_Mars_3d;
+
 
 porkchopPlotter(deltaV_Mars_Harm, arr_window, dep_window)
 
 
+%%
+
+Delta_GA = ones(length(flyby_window), length(arr_window), length(dep_window))*NaN;
+DeltaVtot = ones(length(flyby_window), length(arr_window), length(dep_window))*NaN;
+
+for i=1:length(flyby_window)
+
+    for j=1:length(arr_window)
+
+        for k=1:length(dep_window)
+
+             if dep_window(k)<flyby_window(i) && flyby_window(i)<arr_window(j)
+
+             vinf_m = squeeze(Vinf_minus(k,i,:));
+             vinf_p = squeeze(Vinf_plus(i,j,:));
+             dvp  = PowerGravityAssist(vinf_m, vinf_p...
+                    ,R_mars, 200, mu_mars);
+
+             Delta_GA(i, j, k) = dvp;
+
+                  if not(isnan(dvp)) &&...
+                     not(isnan(M1(i, j, k))) && ...
+                     not(isnan(M2(i, j, k)))
+    
+                     DeltaVtot(i,j,k) = dvp + M1(i, j, k) + M2(i, j, k);
+    
+                 end
+             end
+
+
+        end
+
+    end
+
+end
+
+
+%%
+
+DeltaV_3dofs_Plotter(DeltaVtot, 200, 180)
+min(DeltaVtot(:))
+
+
+%% 
+
+% Vinf_minus_val = vecnorm(Vinf_minus,2,1);
+% Vinf_plus_val = vecnorm(Vinf_plus,2,1);
+% 
+% delta_val = acos(dot(Vinf_minus, Vinf_plus)./(Vinf_minus_val.*Vinf_plus_val));
+% 
+% e = @(r_p, v_inf) 1+ (r_p.*(v_inf).^2)/mu_mars;
+% 
+% delta = @(r_p, v_inf) 2*asin(1./e(r_p, v_inf));
+% 
+% f_delta = @(r_p)...
+%             delta_val - (delta(r_p, Vinf_minus_val)/2 + delta(r_p, Vinf_plus_val)/2);
+% 
+% h_atm = 100000;
+% 
+% r_min = (R_mars + h_atm).*ones(1,length(flyby_window));
+% 
+% if (f_delta(r_min)<=0)&&(f(1e10)>0)
+% 
+% tol = 1e-14;
+% options = optimoptions('fsolve', 'TolFun', tol, 'TolX', tol);
+% 
+% r_p = fsolve(f_delta, r_min, options);
+% 
+% 
+% e_minus = e(r_p, Vinf_minus_val);
+% a_minus = r_p/(1-e_minus);
+% 
+% e_plus = e(r_p, Vinf_plus_val);
+% a_plus = r_p/(1-e_plus);
+% 
+% delta_v_flyby = Vinf_minus_val- Vinf_plus_val;
+% 
+% h_GA = r_p - R_mars;
+% 
+% v_p_minus = sqrt(Vinf_minus_val.^2 + 2*mu_mars./r_p);
+% v_p_plus = sqrt(Vinf_plus_val.^2 + 2*mu_mars./r_p);
+% 
+% delta_V_poweredFB = abs(v_p_plus - v_p_minus);
+% 
+% else
+%     delta_V_poweredFB = NaN;
+%     r_p = NaN;
+% 
+% end
 
 
 %% plot
