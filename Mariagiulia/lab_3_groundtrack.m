@@ -87,7 +87,7 @@ t0 = 0;
 mu_E = astroConstants(13);
 T = 2*pi*sqrt(a_gt^3/mu_E);
 omegaE = 15.04/180*pi/60/60; 
-t = linspace(t0, 15*T, 10000);
+t = linspace(t0, T, 10000);
 t = t';
 
 
@@ -155,7 +155,7 @@ t0 = 0;
 mu_E = astroConstants(13);
 T = 2*pi*sqrt(a_gt^3/mu_E);
 omegaE = 15.04/180*pi/60/60; 
-t = linspace(t0, 15*T, 10000);
+t = linspace(t0, 100*T, 10000);
 t = t';
 
 

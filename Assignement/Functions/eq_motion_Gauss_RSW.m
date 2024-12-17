@@ -1,4 +1,4 @@
-function ds = eq_motion_Gauss_RSW(t, kep_el, acc_pert_function,  mu_E, J2, Re, day)
+function ds = eq_motion_Gauss_RSW(t, kep_el, acc_pert_function,  mu) %, J2, Re, day)
 
 a = kep_el(1);
 e = kep_el(2); 
@@ -18,7 +18,7 @@ a_s = a_p_RSW(2);
 a_w = a_p_RSW(3);
 
 p = a*(1-e^2);
-h = sqrt(p*mu_E);
+h = sqrt(p*mu);
 r = p/(1+e*cos(th));
 
 da = 2*a^2/h*(e*sin(th)*a_r + p/r * a_s);

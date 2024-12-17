@@ -19,7 +19,7 @@ function [] = plotGroundTrack(lon, lat, t)
 % -------------------------------------------------------------------------
 
 % Carica l'immagine
-img = imread('EarthTexture.jpg');
+img = imread('MercuryTexture.jpg');
 
 % Ottieni le dimensioni dell'immagine
 %[rows, cols, ~] = size(img);
