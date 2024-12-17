@@ -184,7 +184,7 @@ for i=1:length(flyby_window)
              vinf_m = squeeze(Vinf_minus(k,i,:));
              vinf_p = squeeze(Vinf_plus(i,j,:));
              dvp  = PowerGravityAssist(vinf_m, vinf_p...
-                    ,R_mars, 0, mu_mars);
+                    ,R_mars, 100, mu_mars);
 
              Delta_GA(i, j, k) = dvp;
 
@@ -220,39 +220,136 @@ t_dep = dep_window(depth);
 plotTransfer([t_dep, t_flyby, t_arr],r_dep, r_mars, r_harm)
 
 %%
-figure;
+% figure;
+% % 
+% planet = 'Sun';
+% opts.Units = 'km';
+% opts.Position = [0, 0, 0];
 % 
-planet = 'Sun';
-opts.Units = 'km';
-opts.Position = [0, 0, 0];
+% planet3D(planet, opts);
+% view([54, 32])
+% hold on
+% 
+% x = r_dep(1,1);
+% y = r_dep(2,1);
+% z = r_dep(3,1);
+% 
+% % line=animatedline(x, y, z,'color', '#ffff00', 'LineWidth',2);
+% line = animatedline;
+% 
+% for t = 1:size(r_dep,2)
+% 
+%         x = r_dep(1, t);
+%         y = r_dep(2, t);
+%         z = r_dep(3, t);
+% 
+% 
+%         addpoints(line, x, y, z);
+% 
+%         drawnow;
+% 
+%         pause(0.01);
+% 
+% end
 
-planet3D(planet, opts);
-view([54, 32])
-hold on
 
-x = r_dep(1,1);
-y = r_dep(2,1);
-z = r_dep(3,1);
+%%
 
-% line=animatedline(x, y, z,'color', '#ffff00', 'LineWidth',2);
-line = animatedline;
+N_runs = 10; % Number of runs
+% To check algorithm convergence set N_runs > 1.
 
-for t = 1:size(r_dep,2)
+data.R_mars = R_mars;
+data.mu_mars = mu_mars;
 
-        x = r_dep(1, t);
-        y = r_dep(2, t);
-        z = r_dep(3, t);
+% Save results for each run:
+x_runs = [];
+dv_runs = [];
+
+disp(['fmincon search with ',num2str(N_runs),' runs running..']);
+tic
+
+x0 = [t_dep, t_flyby-t_dep, t_arr-t_flyby];
 
 
-        addpoints(line, x, y, z);
+data.h = 100;
 
-        drawnow;
+for i = 1:N_runs
 
-        pause(0.01);
+options=optimoptions("fmincon");
+[x, dv] = fmincon(@(x) dvFun(x, data), x0, [], [], [], [],...
+            [dep_window(1), 10, 10],...
+            [dep_window(end), 1000,10000],...
+            @(x) nonlcon(x, data), options);
+x_ga = cumsum(x_ga);
+
+dv_runs = [dv; dv];
+x_runs = [x_runs; x];
 
 end
 
-%%
+toc
+
+% Convergence check if N_runs > 1:
+if N_runs > 1
+    
+    max_difference = max(dv_runs) - min(dv_runs);
+    
+end
+
+% Select minimum deltaV solution:
+
+[~,index] = min(dv_runs);
+dv = dv_runs(index);
+x = x_runs(index,:);
+
+% N_runs = 10; % Number of runs
+% % To check algorithm convergence set N_runs > 1.
+% 
+% data.R_mars = R_mars;
+% data.mu_mars = mu_mars;
+% 
+% % Save results for each run:
+% x_runs = [];
+% dv_runs = [];
+% 
+% disp(['fmincon search with ',num2str(N_runs),' runs running..']);
+% tic
+% 
+% x0 = [t_dep, t_flyby, t_arr];
+% 
+% 
+% data.h = 100;
+% 
+% for i = 1:N_runs
+% 
+% options=optimoptions("fmincon");
+% [x_ga, dv_ga] = fmincon(@(x) dvFun(x, data), x0, [], [], [], [],...
+%             [dep_window(1), dep_window(1), arr_window(1)-dep_window(1)],...
+%             [dep_window(end)-dep_window(1), dep_window(end)-dep_window(1),...
+%             arr_window(end)-dep_window(1)], @(x) nonlcon(x, data), options);
+% x_ga = cumsum(x_ga);
+% 
+% dv_runs = [dv_runs; dv_ga];
+% x_runs = [x_runs; x_ga];
+% 
+% end
+% 
+% toc
+% 
+% % Convergence check if N_runs > 1:
+% if N_runs > 1
+% 
+%     max_difference = max(dv_runs) - min(dv_runs);
+% 
+% end
+% 
+% % Select minimum deltaV solution:
+% 
+% [~,index] = min(dv_runs);
+% dv_ga = dv_runs(index);
+% x_ga = x_runs(index,:);
+
+
 
 % Vinf_minus_val = vecnorm(Vinf_minus,2,1);
 % Vinf_plus_val = vecnorm(Vinf_plus,2,1);
