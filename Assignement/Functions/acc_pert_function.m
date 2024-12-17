@@ -12,7 +12,7 @@ a_J2_vect = ((3/2* J2 * mu_E * Re^2)/(rnorm^4))*...
         r(3)/rnorm*(5*(r(3)^2)/(rnorm^2)-3)];
 
 
-[kep,mu_3B] = uplanet(date_mjd2000 + t, 3);
+[kep,mu_3B] = uplanet(date_mjd2000*86400 + t, 3);
 [r_CB_3B, ~]  = par2car(kep(1), kep(2), kep(3), kep(4), kep(5), kep(6), mu_3B); % cartesian centered in the sun
 r_CB_3B = -r_CB_3B;
 r_CB_SC = r; % cartesian coordinates centered in the earth
@@ -25,5 +25,5 @@ diff = 1/norm(r_CB_3B)^3 *(d*(3+3*d+d^2)/(1+(1+d)^1.5)*r_SC_3B + c);
 
 a_3B = mu_3B *diff;
 
-acc_pert_vect = a_J2_vect; % + a_3B;
+acc_pert_vect = a_J2_vect + a_3B;
 end
