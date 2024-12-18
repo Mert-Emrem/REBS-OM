@@ -44,6 +44,7 @@ function [kep, mass, M] = ephAsteroids( time, id )%#codegen
 %
 % CHANGELOG:
 %   05/11/2024, Giacomo Borelli: First version
+%   17/12/2024, Giacomo Borelli: bug fix in Newton iteration
 %
 % -------------------------------------------------------------------------
 
@@ -111,7 +112,7 @@ Ek = M + ecc*sin(M)/(1-sin(M+ecc) + sin(M));
 
 for i = 1:5
     F1 = ecc*cos(Ek) - 1;
-    Ek = Ek - (Ek - ecc*sin(Ek) - M)/(F1);
+    Ek = Ek + (Ek - ecc*sin(Ek) - M)/(F1);
 end
 % compute true anomaly from Eccentric anomaly
 f = 2*atan2(sqrt(1+ecc)*tan(Ek*0.5),sqrt(1-ecc));
