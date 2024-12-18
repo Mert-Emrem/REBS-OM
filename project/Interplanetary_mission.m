@@ -255,7 +255,7 @@ plotTransfer([t_dep, t_flyby, t_arr],r_dep, r_mars, r_harm)
 
 %%
 
-N_runs = 10; % Number of runs
+N_runs = 5; % Number of runs
 % To check algorithm convergence set N_runs > 1.
 
 data.R_mars = R_mars;
@@ -280,7 +280,7 @@ options=optimoptions("fmincon");
             [dep_window(1), 10, 10],...
             [dep_window(end), 1000,10000],...
             @(x) nonlcon(x, data), options);
-x_ga = cumsum(x_ga);
+x = cumsum(x);
 
 dv_runs = [dv; dv];
 x_runs = [x_runs; x];
@@ -289,65 +289,62 @@ end
 
 toc
 
-% Convergence check if N_runs > 1:
-if N_runs > 1
-    
-    max_difference = max(dv_runs) - min(dv_runs);
-    
+% Select minimum deltaV solution:
+
+[~,index] = min(dv_runs);
+dv = dv_runs(index)
+x = x_runs(index,:);
+
+plotTransfer([x(1), x(2), x(3)],r_dep, r_mars, r_harm)
+
+%%
+
+N_runs = 5; % Number of runs
+% To check algorithm convergence set N_runs > 1.
+
+data.R_mars = R_mars;
+data.mu_mars = mu_mars;
+
+% Save results for each run:
+x_runs = [];
+dv_runs = [];
+
+disp(['ga search with ',num2str(N_runs),' runs running..']);
+tic
+
+
+data.h = 100;
+A = [1 1 1];
+b = arr_window(end);
+
+for i = 1:N_runs
+
+options=optimoptions("ga");
+[x_ga, dv] = ga(@(x) dvFun(x, data), 3,...
+                A, b, [], [],...
+                [dep_window(1), 10, 10],...
+                [dep_window(end), 1000,10000],...
+                @(x) nonlcon(x, data), options);
+                x = cumsum(x);
+            % [x(1)-500, x(2)-500-x(1), x(3)-1000-x(2)],...
+            % [x(1)+500, x(2)+500-x(1), x(3)+1000-x(2)]);
+            % % @(x) nonlcon(x, data), options);
+
+x_ga = cumsum(x_ga);
+
+dv_runs = [dv; dv];
+x_runs = [x_runs; x_ga];
+
 end
+
+toc
+
 
 % Select minimum deltaV solution:
 
 [~,index] = min(dv_runs);
-dv = dv_runs(index);
+dv = dv_runs(index)
 x = x_runs(index,:);
-
-% N_runs = 10; % Number of runs
-% % To check algorithm convergence set N_runs > 1.
-% 
-% data.R_mars = R_mars;
-% data.mu_mars = mu_mars;
-% 
-% % Save results for each run:
-% x_runs = [];
-% dv_runs = [];
-% 
-% disp(['fmincon search with ',num2str(N_runs),' runs running..']);
-% tic
-% 
-% x0 = [t_dep, t_flyby, t_arr];
-% 
-% 
-% data.h = 100;
-% 
-% for i = 1:N_runs
-% 
-% options=optimoptions("fmincon");
-% [x_ga, dv_ga] = fmincon(@(x) dvFun(x, data), x0, [], [], [], [],...
-%             [dep_window(1), dep_window(1), arr_window(1)-dep_window(1)],...
-%             [dep_window(end)-dep_window(1), dep_window(end)-dep_window(1),...
-%             arr_window(end)-dep_window(1)], @(x) nonlcon(x, data), options);
-% x_ga = cumsum(x_ga);
-% 
-% dv_runs = [dv_runs; dv_ga];
-% x_runs = [x_runs; x_ga];
-% 
-% end
-% 
-% toc
-% 
-% % Convergence check if N_runs > 1:
-% if N_runs > 1
-% 
-%     max_difference = max(dv_runs) - min(dv_runs);
-% 
-% end
-% 
-% % Select minimum deltaV solution:
-% 
-% [~,index] = min(dv_runs);
-% dv_ga = dv_runs(index);
-% x_ga = x_runs(index,:);
 
 
 
