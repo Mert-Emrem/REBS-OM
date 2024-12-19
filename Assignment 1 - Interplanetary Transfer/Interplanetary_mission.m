@@ -70,16 +70,15 @@ arr_dt = 50;
 
 arr_window = arr_time_min: arr_dt: arr_time_max; % [1 x N]
 
-% Obtain ephemerides of Harmonia
+% Obtain keplerian ephemerides of Harmonia
 [kep, f, ~] = ephAsteroids_vec(arr_window, 40);
 
-% Cartesian states of Harmonia for each arrival date [(3,3) x L]
 a_harmonia = kep(1);
 i = kep(3).*ones(1,length(f));
 OM = kep(4).*ones(1, length(f));
 om =  kep(5).*ones(1, length(f));
 
-% State vector
+% Cartesian states of Harmonia for each arrival date [(3,3) x L]
 [r_harm, v_harm] = kep2car_vec(kep(1), kep(2), i,...
             OM, om, f, mu_sun);
 
@@ -219,37 +218,37 @@ t_dep = dep_window(depth);
 
 plotTransfer([t_dep, t_flyby, t_arr],r_dep, r_mars, r_harm)
 
-%%
-% figure;
-% % 
-% planet = 'Sun';
-% opts.Units = 'km';
-% opts.Position = [0, 0, 0];
-% 
-% planet3D(planet, opts);
-% view([54, 32])
-% hold on
-% 
-% x = r_dep(1,1);
-% y = r_dep(2,1);
-% z = r_dep(3,1);
-% 
-% % line=animatedline(x, y, z,'color', '#ffff00', 'LineWidth',2);
-% line = animatedline;
-% 
-% for t = 1:size(r_dep,2)
-% 
-%         x = r_dep(1, t);
-%         y = r_dep(2, t);
-%         z = r_dep(3, t);
 %
-%         addpoints(line, x, y, z);
+figure;
 % 
-%         drawnow;
-% 
-%         pause(0.01);
-% 
-% end
+planet = 'Sun';
+opts.Units = 'km';
+opts.Position = [0, 0, 0];
+
+planet3D(planet, opts);
+view([54, 32])
+hold on
+
+x = r_dep(1,1);
+y = r_dep(2,1);
+z = r_dep(3,1);
+
+% line=animatedline(x, y, z,'color', '#ffff00', 'LineWidth',2);
+line = animatedline;
+
+for t = 1:size(r_dep,2)
+
+        x = r_dep(1, t);
+        y = r_dep(2, t);
+        z = r_dep(3, t);
+
+        addpoints(line, x, y, z);
+
+        drawnow;
+
+        pause(0.01);
+
+end
 
 
 %%
@@ -286,6 +285,16 @@ x_runs = [x_runs; x];
 
 end
 
+depdate = mjd20002date(x(1));
+fprintf( ['Optimized departure date from Mercury: ', repmat('%d ', 1, numel(depdate)), '\n'], depdate);
+
+flybydate = mjd20002date(x(2));
+fprintf( ['Optimized flyby date via Mars: ', repmat('%d ', 1, numel(depdate)), '\n'], flybydate);
+
+arrdate = mjd20002date(x(3));
+fprintf( ['Optimized arrival date to Harmonia: ', repmat('%d ', 1, numel(arrdate)), '\n'], arrdate);
+
+
 toc
 
 % Select minimum deltaV solution:
@@ -308,34 +317,34 @@ data.mu_mars = mu_mars;
 x_runs = [];
 dv_runs = [];
 
-disp(['ga search with ',num2str(N_runs),' runs running..']);
-tic
-
-data.h = 100;
-A = [1 1 1];
-b = arr_window(end);
-
-for i = 1:N_runs
-
-options=optimoptions("ga");
-[x_ga, dv] = ga(@(x) dvFun(x, data), 3,...
-                A, b, [], [],...
-                [dep_window(1), 10, 10],...
-                [dep_window(end), 1000,10000],...
-                @(x) nonlcon(x, data), options);
-                x = cumsum(x);
-            % [x(1)-500, x(2)-500-x(1), x(3)-1000-x(2)],...
-            % [x(1)+500, x(2)+500-x(1), x(3)+1000-x(2)]);
-            % % @(x) nonlcon(x, data), options);
-
-x_ga = cumsum(x_ga);
-
-dv_runs = [dv; dv];
-x_runs = [x_runs; x_ga];
-
-end
-
-toc
+% disp(['ga search with ',num2str(N_runs),' runs running..']);
+% tic
+% 
+% data.h = 100;
+% A = [1 1 1];
+% b = arr_window(end);
+% 
+% for i = 1:N_runs
+% 
+% options=optimoptions("ga");
+% [x_ga, dv] = ga(@(x) dvFun(x, data), 3,...
+%                 A, b, [], [],...
+%                 [dep_window(1), 10, 10],...
+%                 [dep_window(end), 1000,10000],...
+%                 @(x) nonlcon(x, data), options);
+%                 x = cumsum(x);
+%             % [x(1)-500, x(2)-500-x(1), x(3)-1000-x(2)],...
+%             % [x(1)+500, x(2)+500-x(1), x(3)+1000-x(2)]);
+%             % % @(x) nonlcon(x, data), options);
+% 
+% x_ga = cumsum(x_ga);
+% 
+% dv_runs = [dv; dv];
+% x_runs = [x_runs; x_ga];
+% 
+% end
+% 
+% toc
 
 
 % Select minimum deltaV solution:
@@ -343,7 +352,6 @@ toc
 [~,index] = min(dv_runs);
 dv = dv_runs(index)
 x = x_runs(index,:);
-
 
 
 % Vinf_minus_val = vecnorm(Vinf_minus,2,1);

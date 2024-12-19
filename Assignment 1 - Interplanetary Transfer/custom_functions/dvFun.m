@@ -1,4 +1,4 @@
-function dv = dvFun(x, data)
+function [dv, depdate] = dvFun(x, data)
 %
 % dvFun Total deltaV of the mission
 % 
@@ -8,17 +8,17 @@ function dv = dvFun(x, data)
 % manouvre (rp_min = 0).
 %
 % PROTOTYPE:
-%  dv = dvFun(x)
+%  [dv, depdate] = dvFun(x, data)
 % 
 % INPUT:
 %  x [3,1]        Times array:         x(1) = departure time [MJD2000]
 %                                      x(2) = first transfer tof [days]
 %                                      x(3) = second transfer tof [days]
+%  data           Struct containing mission parameters (e.g., R_mars, mu_mars)
 % 
 % OUTPUT:
 %  dv [1]         Total deltaV of the mission [km/s]
-
-
+%  depdate [char] Optimal departure date in a human-readable format
 
 % Initialize times:
 x1 = cumsum(x);
@@ -53,4 +53,7 @@ if (err1==0)&&(err2==0)
     
     dv = norm(vv_d - vt1_i')+norm(vv_a - vt2_f') + dvp;
     
+end
+
+
 end
