@@ -25,7 +25,7 @@ function [alpha, delta, lon, lat] = groundTrack_2(t, omega_planet, thetaG0, t0, 
 
 % Separate velocity and position in the state vector
 rr = Y(:, 1:3);
-vv = Y(:, 4:6);
+%vv = Y(:, 4:6);
 
 % Divide x,y,z components of the position vector
 x = rr(:,1);
