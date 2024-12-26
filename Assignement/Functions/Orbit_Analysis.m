@@ -1,4 +1,32 @@
 function [T_ode, Y] = Orbit_Analysis(r0, v0, mu, tspan, type_pb, varargin)
+% ------------------------------------------------------------------
+% function [T_ode, Y] = Orbit_Analysis(r0, v0, mu, tspan, type_pb, varargin)
+%
+% This function propagates an unperturbed or perturbed orbit (only Earth
+% oblatenes perturbation) calling the ode_2body_pb to create the ODE system
+% and using ode113 to solve it
+%
+% INPUTS
+% r0        [3x1]       initial position vector as column vector
+% v0        [3x1]       initial velocity vector as column vector
+% mu        [1x1]       gravitational constant of the primary planet
+% tsapn     [nx1]       time window in which to solve the problem
+% type_pb   [chart]     specify the unperturbed or pertubed problem
+%                       - 'non_perturbed'
+%                       - 'perturbed'
+%
+% ADDITIONAL INPUTS if 'perturbed'
+% J2        [1x1]       Gravitational Harmonic coefficent of the primary planet
+% R         [1x1]       radius of the primary planet
+%
+% OUTPUTS
+% T_ode     [nx1]       vector of time in which the ODE system have been solved
+% Y         [nx1]       Solution f the ode problem
+%
+% Author: Serlini Mariagiulia
+% Last update: 23/12/2024
+%
+% -------------------------------------------------------------------
 
 % state vector
 y0 = [r0; v0]; 

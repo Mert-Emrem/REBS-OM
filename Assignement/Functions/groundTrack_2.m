@@ -53,4 +53,8 @@ end
 
 lat = delta;
 
+% Convert latitude and longitude from radiants to degrees
+lat = lat./pi .* 180;
+lon = lon./pi .* 180;
+
 end

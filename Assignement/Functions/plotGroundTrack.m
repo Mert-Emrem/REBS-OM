@@ -42,11 +42,13 @@ ylim([-90 90]);
 
 % Tracciare una griglia per i meridiani e paralleli (opzionale)
 plot([0 0], ylim, 'k', 'LineWidth', 1); % Meridiano di Greenwich
-plot(xlim, [0 0], 'k', 'LineWidth', 1); % Equatore
+plot(xlim, [0 0], 'k--', 'LineWidth', 1); % Equatore
 
 scatter(lon, lat, 5, t, 'filled');
 colorbar
 plot(lon(1), lat(1), 'or', LineWidth=2);
 plot(lon(end), lat(end), 'ob', LineWidth=2);
+
+legend('Meridian at longitute = 0 deg', 'Equator', 'GT' , 'first point', 'last point');
 
 end

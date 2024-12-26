@@ -18,18 +18,18 @@ function Mercury_3D(R_Me)
 %   Marco Nugnes, 2020, MATLAB, Terra_3D.m
 % ------------------------------------------------------------------------
 
-%% Default Input
+% Default Input
 
 % Set the default value for the Earth radius in case of no inputs.
 if nargin < 1
     R_Me = astroConstants(21);                                       % [km]
 end
 
-%%  Load the Earth image from a website
-% Earth_image = 'https://www.solarsystemscope.com/textures/download/8k_earth_daymap.jpg';
-Earth_image = 'MercuryTexture.jpg';
+%  Load the Earth image from a website
 
-%% Figure
+Mercury_image = 'MercuryTexture.jpg';
+
+% Figure
 
 % Choose the color of the figure background
 background_plot = 'w';
@@ -50,7 +50,7 @@ zlabel('Z [km]');
 % Set initial view
 view(120,30);
 
-%% Create Earth surface as a wireframe
+% Create Earth surface as a wireframe
 
 % Define the number of panels to be used to model the sphere 
 npanels = 180;  
@@ -61,10 +61,10 @@ npanels = 180;
 % Create the globe with the surf function
 globe = surf(x, y, -z, 'FaceColor', 'none', 'EdgeColor', 'none');
 
-%% Texturemap the globe
+% Texturemap the globe
 
 % Load Earth image for texture map
-cdata = imread(Earth_image);
+cdata = imread(Mercury_image);
 
 % Set the transparency of the globe: 1 = opaque, 0 = invisible
 alpha = 1; 
