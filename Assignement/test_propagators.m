@@ -14,7 +14,7 @@ J2 = astroConstants(9);
 %day = date2mjd2000([2024, 12, 14, 15, 24, 0)
 day = date2mjd2000([2000, 1, 1, 12, 0, 0]);
 
-kep_0 = [7571, 0.01, deg2rad(87.9), deg2rad(180), deg2rad(180), deg2rad(0)];
+kep_0 = [7571, 0.01, deg2rad(63.4), deg2rad(180), deg2rad(180), deg2rad(0)];
 
 [r0, v0] = par2car(kep_0(1), kep_0(2), kep_0(3), kep_0(4), kep_0(5), kep_0(6), mu_E);
 T = 2*pi*sqrt(kep_0(1)^3/mu_E);
@@ -25,10 +25,10 @@ coord_0 = [r0; v0];
 options = odeset('RelTol', 1e-13, 'AbsTol', 1e-14); 
 tilt = astroConstants(63);
 
-[T_ode, S] = ode113(@(t, k_el) eq_motion_Gauss_RSW(t, k_el, @(t, k_el) acc_pert_function(t, k_el, J2, mu_E, R_E, day, tilt), mu_E), tspan, kep_0, options);
-[T_ode2, Y] = ode113(@(t2, coord) eq_motion_cartesian(t2, coord, @(t2, coord) acc_pert_function_cartesian(t2, coord, J2, mu_E, R_E, day, tilt), mu_E), tspan, coord_0, options);
+[T_ode, S] = ode113(@(t, k_el) eq_motion_Gauss_RSW(t, k_el, @(t, k_el) acc_pert_function(t, k_el, J2, mu_E, R_E, day, tilt, 3), mu_E), tspan, kep_0, options);
+%[T_ode2, Y] = ode113(@(t2, coord) eq_motion_cartesian(t2, coord, @(t2, coord) acc_pert_function_cartesian(t2, coord, J2, mu_E, R_E, day, tilt), mu_E), tspan, coord_0, options);
 %[T_ode2,Y]                = orbit_propagator_J2(r0, v0 , mu_E, 2 , options, 655603, 100, J2, R_E);
-%[T_ode2, Y] = Orbit_Analysis(r0, v0, mu_E, tspan, 'perturbed', J2, R_E);
+[T_ode2, Y] = Orbit_Analysis(r0, v0, mu_E, tspan, 'perturbed', J2, R_E);
 
 for i = 1:size(S,1)
     while S(i,6)>2*pi
@@ -162,8 +162,8 @@ hold on
 plot(tspan./T, rad2deg(OM_filtered), 'k');
 
 figure
-om_filtered = movmean(S(:,5), [10000 10000]);
-plot(tspan./T, rad2deg(S(:,5)));
+om_filtered = movmean(PER_AN, [10000 10000]);
+plot(tspan./T, rad2deg(PER_AN));
 hold on
 plot(tspan./T, rad2deg(om_filtered), 'k');
 

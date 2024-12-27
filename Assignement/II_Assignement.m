@@ -37,7 +37,7 @@ J2_Me       = astroConstants(31);                       %[-]            Mercury 
 P_Me        = astroConstants(51);                       %[h]            Mercury sidereal rotation period
 OMEGA_Me    = 2*pi/P_Me/60/60;                          %[rad/s]        Mercury angular velocity
 eps_Me      = deg2rad(astroConstants(61));              %[rad]          Mercury axial tilt
-r_mean_Me   = 0.39 * astroConstants(2);                 %[km]           Mercury's orbit mean ratio
+r_mean_Me   = 5.791e+7; %0.39 * astroConstants(2)                 %[km]           Mercury's orbit mean ratio
 mu_Sun      = astroConstants(4);                        %[km^3/s^2]     Sun planetary costant  
 
 % Orbit Keplerian elements
@@ -63,22 +63,18 @@ k           = 5;                                        %[-]    revolutions of t
 options = odeset( 'RelTol', 1e-13, 'AbsTol', 1e-14 );
 
 % number of orbits and points for the simulations
-n_orbits            = 100;
+n_orbits            = 5;
 n_points            = n_orbits * 500;
-tspan = [0:10:n_orbits*T_orb];
+tspan = [0:60:n_orbits*T_orb];
 
 %% Propagation and ground track of the unperturbed assigned orbit
 
 % Propagate orbit without perturbation acting on it
-%[T_1,Y_1]           = orbit_propagator(rr_0 , vv_0 , mu_Me , 2 , options, n_points , n_orbits*T_orb);
 [T_1,Y_1]            = Orbit_Analysis(rr_0, vv_0, mu_Me, tspan, 'non_perturbed');
-
+delta_lamba = rad2deg(T_orb * OMEGA_Me)
 % Calculate latitude and longitude of the ground track
 [~, ~, lon, lat]    = groundTrack_2(T_1, OMEGA_Me, 0, 0, Y_1);
 
-% % Convert latitude and longitude from radiants to degrees
-% lat                 = lat./pi .* 180;
-% lon                 = lon./pi .* 180;
 
 % Plot ground track
 plotGroundTrack(lon, lat, T_1);
@@ -442,7 +438,6 @@ title('\theta')
 %% 
 
 figure
-
 a_filtered = movmean(Y_pert_gauss(:,1), [T_orb/2 T_orb/2]);
 plot(tspan./T_orb, Y_pert_gauss(:,1));
 hold on
@@ -500,7 +495,8 @@ title('\theta')
 %      - regression of omega 
 %      - procession of i
 
-%%
+%% 7TH REQUEST
+
 clear all
 close all
 clc
