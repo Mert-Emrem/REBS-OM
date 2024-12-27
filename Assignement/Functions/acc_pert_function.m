@@ -19,7 +19,7 @@ function acc_pert_vect = acc_pert_function(t, kep_el, J2, mu, R_planet, date_mjd
 %   R_planet        [1x1]    primary planet radius
 %   date_mjd200     [1x1]    starting date of the orbit evaluated in mjd2000
 %   tilt            [1x1]    tilt angle of the primary planet with respect to the ecliptic plane
-%%%  n_planet        [1x1]    DA AGGIUGNERE number of the primary planet compatible with uplanet function
+%  n_planet         [1x1]    number of the primary planet compatible with uplanet function
 %
 % OUTPUT
 %   acc_pert_vect   [3x1]    vector of the perturbing acceleration, sum of the contribution given 
@@ -27,7 +27,7 @@ function acc_pert_vect = acc_pert_function(t, kep_el, J2, mu, R_planet, date_mjd
 %                            the cartesian reference frame 
 %
 % Author: Serlini Mariagiulia
-% Last update: 23/12/2024
+% Last update: 27/12/2024
 %
 % ------------------------------------------------------------------------------------------------
 
@@ -47,7 +47,6 @@ a_J2_vect = ((3/2* J2 * mu * R_planet^2)/(rnorm^4))*...
 TIME = date_mjd2000+ t/86400;
 [kep, mu_3B] = uplanet(TIME, n_planet);
 [r_3B_CB, ~]  = par2car(kep(1), kep(2), kep(3), kep(4), kep(5), kep(6), mu_3B); % cartesian centered in the sun
-%r_CB_3B = -r_3B_CB; % SBAGLIATO
 
 % position of the Sun wrt the central planet
 rot_frame = [1, 0, 0; 0 cos(tilt) sin(tilt); 0, -sin(tilt) cos(tilt)];
@@ -67,6 +66,6 @@ diff = 1/norm(r_CB_3B)^3 *(d*(3+3*d+d^2)/(1+(1+d)^1.5)*r_SC_3B + c);
 
 a_3B = mu_3B *diff;
 
-acc_pert_vect = a_J2_vect; % + a_3B;
+acc_pert_vect = a_J2_vect + a_3B;
 
 end
