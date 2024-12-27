@@ -5,7 +5,7 @@ function acc_pert_vect = acc_pert_function(t, kep_el, J2, mu, R_planet, date_mjd
 % This function gives as output the vector of the perturbating acceleration
 % due to primary planet oblateness (J2 effect) and Sun perturbation as third body 
 % The function is called inside the function eq_motion_Gauss_RSW that
-% creates the ode for the semi-analytical resolution method of Gauss in the
+% creates the ode for the resolution method of Gauss in the
 % RSW (radial - transversal - out-of-plane) reference frame
 %
 % INPUTS

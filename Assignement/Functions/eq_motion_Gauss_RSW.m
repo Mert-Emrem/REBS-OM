@@ -3,7 +3,7 @@ function ds = eq_motion_Gauss_RSW(t, kep_el, acc_pert_function,  mu) %, J2, Re, 
 % ds = eq_motion_Gauss_RSW(t, kep_el, acc_pert_function,  mu) 
 % 
 % This function gives as output the system of ODE expressed with the 
-% semi-analytical resolution method of Gauss in the
+% resolution method of Gauss in the
 % RSW (radial - transversal - out-of-plane) reference frame, calling the 
 % acc_pert_function to calculate the perturbations given by the primary
 % planet oblateness and Sun gravitational perturbation as third body
@@ -20,7 +20,7 @@ function ds = eq_motion_Gauss_RSW(t, kep_el, acc_pert_function,  mu) %, J2, Re, 
 %
 % OUTPUT
 %   ds              [6x1]    system of 6 ODE in the unknown: a, e, i, OM,
-%                            om, th following the semi-analitical resolution method of Gauss in the
+%                            om, th following the resolution method of Gauss in the
 %                            RSW (radial - transversal - out-of-plane) reference frame
 %
 % Author: Serlini Mariagiulia
