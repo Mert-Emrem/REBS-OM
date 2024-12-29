@@ -46,11 +46,11 @@ function porkchopPlotter(deltaV_totals,tspan_arr,tspan_dep)
     contour(X, Y, ToF_matrix', ToF_lines, 'k', 'ShowText', 'on'); 
     
 
-    yticks = linspace(min(tspan_arr + t_offset), max(tspan_arr + t_offset), 6); % Set tick positions
-    set(gca, 'YTick', yticks); % Apply ticks to x-axis
-    yticklabels = datestr(yticks, 'yyyy-mmm-dd'); % Generate readable date labels
-    set(gca, 'YTickLabel', yticklabels); % Set the date labels explicitly
-    ytickangle(45);
+    xticks = linspace(min(tspan_dep + t_offset), max(tspan_dep + t_offset), 6); % Set tick positions
+    set(gca, 'XTick', xticks); % Apply ticks to x-axis
+    xticklabels = datestr(xticks, 'yyyy-mmm-dd'); % Generate readable date labels
+    set(gca, 'XTickLabel', xticklabels); % Set the date labels explicitly
+    xtickangle(45);
 
     xticks = linspace(min(tspan_dep + t_offset), max(tspan_dep + t_offset), 6); % Set tick positions
     set(gca, 'XTick', xticks); % Apply ticks to x-axis

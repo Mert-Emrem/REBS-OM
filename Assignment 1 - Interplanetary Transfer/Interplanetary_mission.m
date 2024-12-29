@@ -22,11 +22,11 @@ T_syn_1 = 100.8882; % [days]
 
 % Departure window in mjd2000
 dep_date_min = date2mjd2000([2030, 1, 1, 0, 0, 0]);
-dep_date_max = date2mjd2000([2060, 1, 1, 0, 0, 0]);
+dep_date_max = date2mjd2000([2044, 4, 1, 0, 0, 0]);
 % dep_date_max = dep_date_min + 10*T_syn_1; % ToF_max
 
 % Time interval for departure window [days]
-dep_dt = 50; 
+dep_dt = 15; 
 
 % Create vector of L elements where 
 % L = (max. dep. date - min. dep. date)/dt
@@ -63,10 +63,10 @@ T_syn_2 = 4.1902; % [years]
 
 % Arrival window in mjd2000
 arr_time_min = date2mjd2000([2030, 1, 1, 0, 0, 0]);
-arr_time_max = date2mjd2000([2060, 1, 1, 0, 0, 0]);
+arr_time_max = date2mjd2000([2044, 4, 1, 0, 0, 0]);
 
 % Time interval for arrival window [days]
-arr_dt = 50;
+arr_dt = 15;
 
 arr_window = arr_time_min: arr_dt: arr_time_max; % [1 x N]
 
@@ -161,13 +161,21 @@ Mars_Harm_3d = repmat(deltaV_Mars_Harm, [1, 1, length(dep_window)]);
 % Reorient the DeltaV matrix of first leg such that the two are combinable
 Merc_Mars_3d = permute(Merc_Mars_3d, [2, 3, 1]);
 
-% Generate 2D and 3D porkchop plots of both legs of the transfer
-porkchopPlotter(deltaV_Merc_Mars, flyby_window, dep_window)
-porkchopPlotter(deltaV_Mars_Harm, arr_window, dep_window)
-
 % Briefer names for ease of use
 M1 = Mars_Harm_3d;
 M2 = Merc_Mars_3d;
+
+%%
+
+porkchopPlotter(deltaV_Merc_Mars, flyby_window, dep_window)
+porkchopPlotter(deltaV_Mars_Harm, arr_window, dep_window)
+
+%%
+
+% Generate 2D and 3D porkchop plots of both legs of the transfer
+
+DeltaV_3dofs_Plotter(deltaV_Merc_Mars, deltaV_Mars_Harm, dep_window, flyby_window, arr_window)
+
 
 %% Optimization
 
@@ -206,7 +214,7 @@ end
 
 %%
 
-DeltaV_3dofs_Plotter(DeltaVtot, 200, 180)
+DeltaV_3dofs_Plotter(DeltaVtot, 1000, 180)
 [Opt, idx] = min(DeltaVtot(:));
 [row, col, depth] = ind2sub(size(DeltaVtot), idx);
 t_flyby = flyby_window(row);
