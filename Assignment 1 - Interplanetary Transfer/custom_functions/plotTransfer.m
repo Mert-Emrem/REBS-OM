@@ -1,4 +1,4 @@
-function plotTransfer(x, r1, r2, r3)
+function plotTransfer(x)
 % 
 % Function to plot the two transfer arcs given the times of
 % departure, flyby and arrival.
@@ -25,7 +25,7 @@ t_d = x(1); t_f = x(2); t_a = x(3); % Initialize times
 [kep_a,~,~] = ephAsteroids(t_a, 40);
 [rr_a,v_harm] = kep2car(kep_a(1),kep_a(2),kep_a(3),kep_a(4),kep_a(5),kep_a(6),ksun);
 
-[~,~,~,~,vt1_i,vf,~,~] = lambertMR(rr_d,rr_f,(t_f-t_d)*24*3600,ksun,0,0,0,0);
+[~,~,~,~,vt1_i,~,~,~] = lambertMR(rr_d,rr_f,(t_f-t_d)*24*3600,ksun,0,0,0,0);
 
 [~,~,~,~,vt2_i,~,~,~] = lambertMR(rr_f,rr_a,(t_a-t_f)*24*3600,ksun,0,0,0,0);
 
@@ -45,83 +45,48 @@ r1 = r1';
 r2 = r2';
 r3 = r3';
 
+%% Objects information
 
+Mars.Radius = 3390;
+Mars.name = 'Mars';
 
-figure;
+Mercury.Radius = 2439.7;
+Mercury.name = 'Mercury';
 
+Harmonia.Radius = 107.6;
+Harmonia.name = 'Harmonia';
+
+Sun.Radius = 700e+3;
+Sun.name = 'Sun';
+
+%% Interplanetary transfers plot
+
+figure
 hold on
-plot3(y1(:,1),y1(:,2),y1(:,3), 'LineWidth', 2)
-plot3(y2(:,1),y2(:,2),y2(:,3), 'LineWidth', 2)
-plot3(r1(1,:), r1(2, :), r1(3, :), 'LineStyle','- -')
-plot3(r2(1,:), r2(2, :), r2(3, :), 'LineStyle','- -')
-plot3(r3(1,:), r3(2, :), r3(3, :),'LineStyle','- -')
-legend('arc 1', 'arc2','Mercury-Orb', 'Mars-Orb', 'Asteroid N40-Orb')
+plot3(y1(:,1),y1(:,2),y1(:,3), 'LineWidth', 2, 'Color', '#0714fa')
+plot3(y2(:,1),y2(:,2),y2(:,3), 'LineWidth', 2, 'Color', '#e607fa')
+plot3(r1(1,:), r1(2, :), r1(3, :), 'LineStyle','- -', 'Color', '#8fe866')
+plot3(r2(1,:), r2(2, :), r2(3, :), 'LineStyle','- -', 'Color', '#eb8552')
+plot3(r3(1,:), r3(2, :), r3(3, :),'LineStyle','- -', 'Color', '#bfb588')
+
+%Sun
+plotObjects(10, Sun, [0, 0, 0])
+% Mercury
+plotObjects(1800, Mercury, r1(:,1))
+% Mars 
+plotObjects(2000, Mars, r2(:,1))
+% Harmonia
+plotObjects(50000, Harmonia, r3(:,1))
+
+legend('arc 1', 'arc 2','Mercury Orbit', 'Mars Orbit', 'Harmonia Orbit')
 
 
-title('Interplanetary Trajecotry')
+title('Interplanetary Trajectory')
 grid on
 
 axis equal
 hold off
 
-% simulatore(rr_d, vt1_i', vf', (t_f-t_d)*24*3600, ksun, 1)
-
-% x_trail = [];
-% y_trail = [];
-% z_trail = [];
-% 
-% % h_point = plot3(y1(1,1),y2(2,1),y1(3,1),'ro', 'MarkerSize', 8, 'MarkerFaceColor', 'r'); 
-% x = y1(1, 1);
-% y = y1(1, 2);
-% z = y1(1, 3);
-% 
-% for t = 1:size(y1,2)
-% 
-%         line = animatedline(x, y, z,'LineWidth',5);
-% 
-%         x = y1(t, 1);
-%         y = y1(t, 2);
-%         z = y1(t, 3);
-% 
-%         addpoints(line, x, y, z);
-% 
-%         drawnow;
-% 
-%         % hold on
-% 
-%         % x_trail = [x_trail, x];
-%         % y_trail = [y_trail, y];
-%         % z_trail = [z_trail, z];
-% 
-%         % set(h_point, 'XData', x, 'YData', y, 'ZData', z);
-%         % plot3(x_trail, y_trail, z_trail, 'r-'); % Mostra la traccia
-% 
-%         pause(0.01);
-% 
-%         if t == size(y1,2)
-% 
-%             for k = 1:size(y2,2)
-% 
-%                             x = y2(k, 1);
-%                             y = y2(k, 2);
-%                             z = y2(k, 3);
-% 
-%                             line = animatedline(x, y, z,'LineWidth',5);
-%                             addpoints(line, x, y, z);
-% 
-%                             drawnow;
-% 
-%                             pause(0.01);
-%             end
-%         end
-% 
-% end
-% plot3(y1(:,1),y1(:,2),y1(:,3))
-% plot3(y2(:,1),y2(:,2),y2(:,3))
-% plot3(r1(1,:), r1(2, :), r1(3, :), 'LineStyle','-')
-% plot3(r2(1,:), r2(2, :), r2(3, :), 'LineStyle','-')
-% plot3(r3(1,:), r3(2, :), r3(3, :), 'LineStyle','-')
-% legend('Sun','arc 1', 'arc2','Mercury-Orb', 'Mars-Orb', 'Asteroid N40-Orb')
 
 
 end

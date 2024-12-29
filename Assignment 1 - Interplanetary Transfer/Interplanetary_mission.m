@@ -107,7 +107,7 @@ for i = 1:length(dep_window)
             % deltaV_2 = norm(VF' - v_mars(:,j)); % Arrival Delta-V
             deltaV_2 = 0;
 
-            if err_1 == 0
+            if err_1 ~= 1 && err_1 ~= 3 && err_1 ~= 4
             deltaV_Merc_Mars(i, j) = deltaV_1+deltaV_2;
             Vinf_minus(i,j,:) = VF' - v_mars(:,j);
             end
@@ -141,7 +141,7 @@ for i = 1:length(flyby_window)
             deltaV_2 = norm(VF' - v_harm(:,j)); % Arrival Delta-V
             deltaV_1 = 0;
 
-            if err_2 == 0
+            if err_2 ~= 1 && err_2 ~= 3 && err_2 ~= 4
                deltaV_Mars_Harm(i, j) = deltaV_1+deltaV_2;
                Vinf_plus(i,j,:) = VI' - v_mars(:,i);
             end
@@ -214,7 +214,7 @@ end
 
 %%
 
-DeltaV_3dofs_Plotter(DeltaVtot, 1000, 180)
+% DeltaV_3dofs_Plotter(DeltaVtot, 1000, 180)
 [Opt, idx] = min(DeltaVtot(:));
 [row, col, depth] = ind2sub(size(DeltaVtot), idx);
 t_flyby = flyby_window(row);
@@ -224,39 +224,8 @@ t_dep = dep_window(depth);
 
 %% plot
 
-plotTransfer([t_dep, t_flyby, t_arr],r_dep, r_mars, r_harm)
-
-%
-figure;
-% 
-planet = 'Sun';
-opts.Units = 'km';
-opts.Position = [0, 0, 0];
-
-planet3D(planet, opts);
-view([54, 32])
-hold on
-
-x = r_dep(1,1);
-y = r_dep(2,1);
-z = r_dep(3,1);
-
-% line=animatedline(x, y, z,'color', '#ffff00', 'LineWidth',2);
-line = animatedline;
-
-for t = 1:size(r_dep,2)
-
-        x = r_dep(1, t);
-        y = r_dep(2, t);
-        z = r_dep(3, t);
-
-        addpoints(line, x, y, z);
-
-        drawnow;
-
-        pause(0.01);
-
-end
+ plotTransfer([t_dep, t_flyby, t_arr])
+Animated_Transfers_Plot([t_dep, t_flyby, t_arr])
 
 
 %%
@@ -311,7 +280,7 @@ toc
 dv = dv_runs(index)
 x = x_runs(index,:);
 
-plotTransfer([x(1), x(2), x(3)],r_dep, r_mars, r_harm)
+plotTransfer([x(1), x(2), x(3)])
 
 %%
 
