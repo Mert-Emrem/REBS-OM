@@ -1,14 +1,14 @@
-function porkchopPlotter(deltaV_totals,tspan_arr,tspan_dep)
+function porkchopPlotter1(deltaV_totals,tspan_arr,tspan_dep)
     
-    % Function to compute the Powered Gravity Assist.
+    % Function to obtain porkchop plot for the first leg
     % 
     % PROTOTYPE:
-    %  porkchopPlotter(vinfm,vinfp,Rpl,hatm_f,input)
+    %  porkchopPlotter1(deltaV_totals,tspan_arr,tspan_dep)
     %  
     % INPUT:
     %  deltaV_totals [NxM] Matrix of deltaV amounts where N is the size of
-    %                      departure dates and M is arrival dates [km/s]
-    %  tspan_arr [1xM]     Arrival date vector in mjd2000
+    %                      departure dates and M is flyby dates [km/s]
+    %  tspan_arr [1xM]     Flyby date vector in mjd2000
     %  tspan_dep [1xN]     Departure date vector mjd2000
     
     % OUTPUT:
@@ -17,18 +17,18 @@ function porkchopPlotter(deltaV_totals,tspan_arr,tspan_dep)
 
     t_offset = datenum('2000-01-01');
     [X, Y] = meshgrid(tspan_dep + t_offset, tspan_arr + t_offset); 
-    f = figure;
+    f1 = figure;
 
     % Subplot 1: 2D Contour Plot
-    subplot(1, 2, 1);
-    deltaV_totals(deltaV_totals > 100) = NaN;
+    
     contourf(X, Y, deltaV_totals', 100, 'LineStyle', 'none'); % Smooth 2D contours
-    clim([0 100]);
+    clim([0 25]);
     colorbar;
     xlabel('Departure Date');
     ylabel('Arrival Date');
     title('2D Porkchop Plot');
     hold on
+    
     
     % Time-of-Flight lines
     ToF_matrix = zeros(length(tspan_dep), length(tspan_arr));
@@ -46,24 +46,32 @@ function porkchopPlotter(deltaV_totals,tspan_arr,tspan_dep)
     contour(X, Y, ToF_matrix', ToF_lines, 'k', 'ShowText', 'on'); 
     
 
-    yticks = linspace(min(tspan_arr + t_offset), max(tspan_arr + t_offset), 6); % Set tick positions
+    yticks = linspace(min(tspan_arr + t_offset), max(tspan_arr + t_offset), 7); % Set tick positions
     set(gca, 'YTick', yticks); % Apply ticks to x-axis
     yticklabels = datestr(yticks, 'yyyy-mmm-dd'); % Generate readable date labels
     set(gca, 'YTickLabel', yticklabels); % Set the date labels explicitly
     ytickangle(45);
 
-    xticks = linspace(min(tspan_dep + t_offset), max(tspan_dep + t_offset), 6); % Set tick positions
+    xticks = linspace(min(tspan_dep + t_offset), max(tspan_dep + t_offset), 7); % Set tick positions
     set(gca, 'XTick', xticks); % Apply ticks to x-axis
     xticklabels = datestr(xticks, 'yyyy-mmm-dd'); % Generate readable date labels
     set(gca, 'XTickLabel', xticklabels); % Set the date labels explicitly
     xtickangle(45);
+    f1.Position = [500 500 800 800]; % Adjust figure window size
+    saveas(gcf,'porkchop2.png')
+    saveas(gcf,'porkchop2','epsc')
+    hold off;
     
     %%%%%%%%%%%%%%%%% 3D SURFACE PLOT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    subplot(1, 2, 2);
+    f2 = figure;
+    hold on;
+
+    deltaV_totals(deltaV_totals > 35) = NaN;
+
     surfc(X, Y, deltaV_totals', 'EdgeColor', 'none'); % 3D surface plot
     colormap('parula'); 
-    zlim([0, 40]);
-    clim([0 40]);
+    zlim([0 35]);
+    clim([0 35]);
     xlabel('Departure Date');
     ylabel('Arrival Date');
     zlabel('Delta-V (km/s)');
@@ -79,5 +87,7 @@ function porkchopPlotter(deltaV_totals,tspan_arr,tspan_dep)
     ytickangle(45);
     view(3); % Adjust to a 3D perspective
     
-    %f.Position = [500 500 1200 500]; % Adjust figure window size
+    f2.Position = [500 500 800 800]; % Adjust figure window size
+    saveas(gcf,'porkchop2_3d.png')
+    saveas(gcf,'porkchop2_3d','epsc')
 end

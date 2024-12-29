@@ -1,4 +1,4 @@
-function DeltaV_3dofs_Plotter(deltaV_totals_1, deltaV_totals_2, tspan_dep, tspan_flyby, tspan_arr)
+function total_delta_V_intersect = DeltaV_3dofs_Plotter(deltaV_totals_1, deltaV_totals_2, tspan_dep, tspan_flyby, tspan_arr)
     % Function to compute the Powered Gravity Assist.
     % 
     % INPUT:
