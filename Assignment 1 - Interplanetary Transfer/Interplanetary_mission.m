@@ -224,7 +224,7 @@ t_dep = dep_window(depth);
 
 %% plot
 
- plotTransfer([t_dep, t_flyby, t_arr])
+plotTransfer([t_dep, t_flyby, t_arr])
 Animated_Transfers_Plot([t_dep, t_flyby, t_arr])
 
 

@@ -31,15 +31,15 @@ t_d = x(1); t_f = x(2); t_a = x(3); % Initialize times
 
 % Integration of transfer arcs:
 
-[~,y1] = twoBodyInt([0 (t_f-t_d)*24*3600],[rr_d;vt1_i'],ksun);
+[~,y1] = twoBodyInt([0 (t_f-t_d-100)*24*3600],[rr_d;vt1_i'],ksun);
 
 [~,y2] = twoBodyInt([0 (t_a-t_f)*24*3600],[rr_f;vt2_i'],ksun);
 
-[~,r1] = twoBodyInt([0 (t_a-t_d)*24*3600],[rr_d;v_merc],ksun);
+[~,r1] = twoBodyInt([0 88*24*3600],[rr_d;v_merc],ksun);
 
-[~,r2] = twoBodyInt([0 (t_a-t_d)*24*3600],[rr_f;v_mars],ksun);
+[~,r2] = twoBodyInt([0 690*24*3600],[rr_f;v_mars],ksun);
 
-[~,r3] = twoBodyInt([0 (t_a-t_d)*24*3600],[rr_a;v_harm],ksun);
+[~,r3] = twoBodyInt([0 1260*24*3600],[rr_a;v_harm],ksun);
 
 r1 = r1';
 r2 = r2';
@@ -62,34 +62,6 @@ Sun.name = 'Sun';
 %% Interplanetary transfers plot
 
 
-% figure
-% hold on
-% plot3(y1(:,1),y1(:,2),y1(:,3), 'LineWidth', 2, 'Color', '#0714fa')
-% plot3(y2(:,1),y2(:,2),y2(:,3), 'LineWidth', 2, 'Color', '#e607fa')
-% plot3(r1(1,:), r1(2, :), r1(3, :), 'LineStyle','- -', 'Color', '#8fe866')
-% plot3(r2(1,:), r2(2, :), r2(3, :), 'LineStyle','- -', 'Color', '#eb8552')
-% plot3(r3(1,:), r3(2, :), r3(3, :),'LineStyle','- -', 'Color', '#bfb588')
-% 
-% %Sun
-% plotObjects(10, Sun, [0, 0, 0])
-% % Mercury
-% plotObjects(1800, Mercury, r1(:,1))
-% % Mars 
-% plotObjects(2000, Mars, r2(:,1))
-% % Harmonia
-% plotObjects(50000, Harmonia, r3(:,1))
-% 
-% legend('arc 1', 'arc 2','Mercury Orbit', 'Mars Orbit', 'Harmonia Orbit')
-% 
-% 
-% title('Interplanetary Trajectory')
-% grid on
-% 
-% axis equal
-% hold off
-
-%%
-
 [kep_d,ksun] = uplanet(t_d, 1);
 [rr1_0,v_merc0] = kep2car(kep_d(1),kep_d(2),kep_d(3),kep_d(4),kep_d(5),kep_d(6),ksun);
 [kep_f,ksun] = uplanet(t_d, 4);
@@ -99,40 +71,65 @@ Sun.name = 'Sun';
 
 ToF1 = (t_f-t_d)*24*3600;
 ToF2 = (t_a-t_f)*24*3600;
-dt = 100000;
-tspan = [0:dt:ToF1, ToF1+1:dt:ToF2, ToF2];
+dt = 250000;
+tspan = 0:dt:ToF1+ToF2;
 
 figure
+
 hold on
+grid on
+view(45, 25) % azimuth and elevation
+axis equal
+xlim([-0.39e+9 +0.41e+9])
+ylim([-0.39e+9 +0.41e+9])
+
+% 3 orbits
 plot3(r1(1,:), r1(2, :), r1(3, :), 'LineStyle','- -', 'Color', '#8fe866')
 plot3(r2(1,:), r2(2, :), r2(3, :), 'LineStyle','- -', 'Color', '#eb8552')
 plot3(r3(1,:), r3(2, :), r3(3, :),'LineStyle','- -', 'Color', '#bfb588')
 
-%Sun
-plotObjects(10, Sun, [0, 0, 0])
+% Lambert arcs
+line_y1 = animatedline(rr_d(1), rr_d(2), rr_d(3),'color','#0714fa','LineWidth',2);
+line_y2 = animatedline(rr_f(1), rr_f(2), rr_f(3),'color', '#e607fa','LineWidth',2);
 
-[ObjMerc, Merc_X, Merc_Y, Merc_Z] = Plot_Animated_Objects(1800, Mercury, rr1_0);
+% 3 object's orbits
+line1 = animatedline(rr1_0(1), rr1_0(2), rr1_0(3),'color', '#8fe866','LineWidth', 1.5);
+line2 = animatedline(rr2_0(1), rr2_0(2), rr2_0(3),'color', '#eb8552','LineWidth', 1.5);
+line3 = animatedline(rr3_0(1), rr3_0(2), rr3_0(3),'color', '#bfb588' ,'LineWidth',1.5);
+
+% SpaceCraft
+SpaceCraft = scatter3(rr_d(1), rr_d(2), rr_d(3), 30, 'k', '<', 'filled');
+
+% Sun
+plotObjects(15, Sun, [0, 0, 0])
+% Mercury
+[ObjMerc, Merc_X, Merc_Y, Merc_Z] = Plot_Animated_Objects(2000, Mercury, rr1_0);
+% Mars
 [ObjMars, Mars_X, Mars_Y, Mars_Z] = Plot_Animated_Objects(2000, Mars, rr2_0);
+% Harmonia
 [ObjHarm, Harm_X, Harm_Y, Harm_Z] = Plot_Animated_Objects(50000, Harmonia, rr3_0);
 
+
+pause(3.5)
 
 r1 = [];
 r2 = [];
 r3 = [];
 y = [];
 
-line1=animatedline(rr1_0(1), rr1_0(2), rr1_0(3),'color', 'r','LineWidth',2);
-line2=animatedline(rr2_0(1), rr2_0(2), rr2_0(3),'color', 'r','LineWidth',2);
-line3=animatedline(rr3_0(1), rr3_0(2), rr3_0(3),'color', 'r','LineWidth',2);
-line_y=animatedline(rr_d(1), rr_d(2), rr_d(3),'color', 'r','LineWidth',2);
 
 for jj=1:length(tspan)-1
-        if tspan<= ToF1
+
+        if tspan(jj) <= ToF1
         [~,y_temp] = twoBodyInt([0    tspan(jj+1)],[rr_d;vt1_i'],ksun);
+        y = [y_temp(end, 1:3); y];
+        addpoints(line_y1, y(1,1), y(1,2), y(1, 3));
         else
         [~,y_temp] = twoBodyInt([ToF1 tspan(jj+1)],[rr_f;vt2_i'],ksun);
-        end
         y = [y_temp(end, 1:3); y];
+        addpoints(line_y2, y(1,1), y(1,2), y(1, 3));
+        end
+
         
         [~,rtemp1] = twoBodyInt([0 tspan(jj+1)],[rr1_0;v_merc0],ksun);
         r1 = [rtemp1(end, 1:3); r1];
@@ -140,54 +137,28 @@ for jj=1:length(tspan)-1
         r2 = [rtemp2(end, 1:3); r2];
         [~,rtemp3] = twoBodyInt([0 tspan(jj+1)],[rr3_0;v_harm0],ksun);
         r3 = [rtemp3(end, 1:3); r3];
+        
+
         set(ObjMerc, 'XData', r1(1,1) + Merc_X, 'YData', r1(1,2) + Merc_Y, 'ZData', r1(1,3) + Merc_Z);
         set(ObjMars, 'XData', r2(1,1) + Mars_X, 'YData', r2(1,2) + Mars_Y, 'ZData', r2(1,3) + Mars_Z);
         set(ObjHarm, 'XData', r3(1,1) + Harm_X, 'YData', r3(1,2) + Harm_Y, 'ZData', r3(1,3) + Harm_Z);
-
-        addpoints(line_y, y(1,1), y(1,2), y(1, 3));
+        
+        set(SpaceCraft, 'XData', y(1,1), 'YData', y(1,2), 'ZData', y(1, 3))
+        
         addpoints(line1, r1(1, 1), r1(1, 2), r1(1, 3));
         addpoints(line2, r2(1, 1), r2(1, 2), r2(1, 3));
         addpoints(line3, r3(1, 1), r3(1, 2), r3(1, 3));
         drawnow;
        
-        pause(0.00001)
+        pause(0.0000001)
 
 end
-axis equal
+legend('Mercury Orbit', 'Mars Orbit', 'Harmonia Orbit', 'Lambert arc (1)', 'Lambert arc (2)')
 
-% 
-%         BodyTexture = imread('EarthTexture.jpg');
-%         Body.CData = flipud(BodyTexture); % Flip to align texture correctly
-%         Body.FaceColor = 'texturemap';
-%         Body.FaceAlpha = 1; 
-% 
-%         hold on
-%         plot3(0, 0, 0)
-%         pause(0.01)
-% 
-%         [~,r1] = twoBodyInt([dt(jj), dt(jj+1)],[r1(e);v_merc],ksun);
-% 
-% 
-%             tVect=[t0:delta:t0+dt(jj), t0+dt(jj)];
-%                 for kk=1:length(tVect)-1
-%                     [t, y]=ode113(g, tVect(kk:kk+1), y0, opts);
-%                     addpoints(line, y(:,4), y(:,5), y(:,6));
-%                     drawnow;
-%                     pause(dtime);
-%                     y0=y(end,:);
-% 
-%                 end
-% 
-% 
-% for t = 1:1:size()
-% 
-%     % Update Earth Position
-% 
-% 
-%     % Plot Center Point (Optional)
-%     plot3(0, 0, 0, 'ro');
-% 
-%     pause(0.01)
+
+title('Interplanetary Trajectory')
+
+hold off
 
 end
 
