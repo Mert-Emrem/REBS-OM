@@ -167,8 +167,8 @@ M2 = Merc_Mars_3d;
 
 %%
 
-porkchopPlotter(deltaV_Merc_Mars, flyby_window, dep_window)
-porkchopPlotter(deltaV_Mars_Harm, arr_window, dep_window)
+porkchopPlotter1(deltaV_Merc_Mars, flyby_window, dep_window)
+porkchopPlotter2(deltaV_Mars_Harm, arr_window, dep_window)
 
 %%
 
