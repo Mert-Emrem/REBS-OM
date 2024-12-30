@@ -24,6 +24,15 @@ img = imread('MercuryTexture.jpg');
 % Ottieni le dimensioni dell'immagine
 %[rows, cols, ~] = size(img);
 
+for i = 2:length(lon)
+    if lon(i-1) > 0 && lon(i) < 0 && lon(i) < 175
+       lat(i) = NaN;
+       lon(i) = NaN;
+       i = i+1;
+    end
+end
+
+
 % Crea il plot
 figure;
 ax = axes;
@@ -44,8 +53,9 @@ ylim([-90 90]);
 plot([0 0], ylim, 'k', 'LineWidth', 1); % Meridiano di Greenwich
 plot(xlim, [0 0], 'k--', 'LineWidth', 1); % Equatore
 
-scatter(lon, lat, 5, t, 'filled');
-colorbar
+% scatter(lon, lat, 5, t, 'filled');
+% colorbar
+plot(lon, lat, 'Color', 'y', LineWidth=1.5);
 plot(lon(1), lat(1), 'or', LineWidth=2);
 plot(lon(end), lat(end), 'ob', LineWidth=2);
 
