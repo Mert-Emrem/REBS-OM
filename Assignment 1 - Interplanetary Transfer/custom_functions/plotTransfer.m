@@ -31,15 +31,15 @@ t_d = x(1); t_f = x(2); t_a = x(3); % Initialize times
 
 % Integration of transfer arcs:
 
-[~,y1] = twoBodyInt([0 (t_f-t_d)*24*3600],[rr_d;vt1_i'],ksun);
+[~,y1] = TwoBodyPb([0 (t_f-t_d)*24*3600],[rr_d;vt1_i'],ksun);
 
-[~,y2] = twoBodyInt([0 (t_a-t_f)*24*3600],[rr_f;vt2_i'],ksun);
+[~,y2] = TwoBodyPb([0 (t_a-t_f)*24*3600],[rr_f;vt2_i'],ksun);
 
-[~,r1] = twoBodyInt([0 88*24*3600],[rr_d;v_merc],ksun);
+[~,r1] = TwoBodyPb([0 88*24*3600],[rr_d;v_merc],ksun);
 
-[~,r2] = twoBodyInt([0 690*24*3600],[rr_f;v_mars],ksun);
+[~,r2] = TwoBodyPb([0 690*24*3600],[rr_f;v_mars],ksun);
 
-[~,r3] = twoBodyInt([0 1260*24*3600],[rr_a;v_harm],ksun);
+[~,r3] = TwoBodyPb([0 1260*24*3600],[rr_a;v_harm],ksun);
 
 r1 = r1';
 r2 = r2';
@@ -109,12 +109,12 @@ tspan = 0:dt:10000;
 rr_p = [rp 0 0]';
 vvpm = [0 vpm 0]';
 y0 = [rr_p; vvpm];
-[~,State] = twoBodyInt(-tspan,y0,ksun);
+[~,State] = TwoBodyPb(-tspan,y0,ksun);
 X1 = State(:,1); Y1 = State(:,2); Z1 = State(:,3);
 
 vvpp = [0 vpp 0]';
 y0 = [rr_p; vvpp];
-[~, State] = twoBodyInt(tspan,y0,ksun);
+[~, State] = TwoBodyPb(tspan,y0,ksun);
 X2 = State(:,1); Y2 = State(:,2); Z2 = State(:,3);
 
 

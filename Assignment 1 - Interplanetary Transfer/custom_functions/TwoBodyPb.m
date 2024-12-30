@@ -1,10 +1,10 @@
-function [t,y] = twoBodyInt(tspan,y0,mu)
-% twoBodyInt Two-body problem integration 
+function [t,y] = TwoBodyPb(tspan,y0,mu)
+% TwoBodyPb: Two-body problem integration 
 % 
-% Function to compute the satellite trajectory in the two-body problem.
+% Function to compute trajectory in the two-body problem.
 % 
 % PROTOTYPE:
-%  [t,y] = twoBodyInt(tspan,y0,mu)
+%  [t,y] = 2BodyPb(tspan,y0,mu)
 %  
 % INPUT:
 %  tspan        Vector of times in which the solution is calculated or 
@@ -17,6 +17,6 @@ function [t,y] = twoBodyInt(tspan,y0,mu)
 %  y  [x,6]     Solution matrix of the ode integration [km] and [km/s]
 
 options = odeset('RelTol',1e-13,'AbsTol',1e-14);
-[t,y] = ode113(@2BodyEquation,tspan,y0,options,mu);
+[t,y] = ode113(@TwoBodyEquation,tspan,y0,options,mu);
 
 end

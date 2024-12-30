@@ -1,10 +1,10 @@
-function [dy] = 2BodyEquation(~,y,mu)
+function [dy] = TwoBodyEquation(~,y,mu)
 % 2BodyEquation: Two-body problem ode function
 % 
 % Input function for the ode integration of the two-body problem.
 % 
 % PROTOTYPE:
-%  [dy] = twoBodyOde(t,y,mu)
+%  [dy] = 2BodyEquation(t,y,mu)
 %  
 % INPUT:
 %  y  [6,1]     Stete vector at a certain time [km] and [km/s]

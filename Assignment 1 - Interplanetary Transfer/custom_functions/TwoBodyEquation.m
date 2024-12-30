@@ -1,13 +1,13 @@
-function [dy] = 2BodyEquation(~,y,mu)
-% 2BodyEquation: Two-body problem ode function
+function [dy] = TwoBodyEquation(~,y,mu)
+% twoBodyEquation: Two-body problem ode function
 % 
 % Input function for the ode integration of the two-body problem.
 % 
 % PROTOTYPE:
-%  [dy] = twoBodyOde(t,y,mu)
+%  [dy] = 2BodyEquation(t,y,mu)
 %  
 % INPUT:
-%  y  [6,1]     Stete vector at a certain time [km] and [km/s]
+%  y  [6,1]     State vector at a certain time [km] and [km/s]
 %  mu  [1]      Gravitational parameter of the primary body [km^3/s^2]
 % 
 % OUTPUT:

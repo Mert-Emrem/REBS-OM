@@ -31,11 +31,11 @@ t_d = x(1); t_f = x(2); t_a = x(3); % Initialize times
 
 % Integration of transfer arcs:
 
-[~,r1] = twoBodyInt([0 88*24*3600],[rr_d;v_merc],ksun);
+[~,r1] = TwoBodyPb([0 88*24*3600],[rr_d;v_merc],ksun);
 
-[~,r2] = twoBodyInt([0 690*24*3600],[rr_f;v_mars],ksun);
+[~,r2] = TwoBodyPb([0 690*24*3600],[rr_f;v_mars],ksun);
 
-[~,r3] = twoBodyInt([0 1260*24*3600],[rr_a;v_harm],ksun);
+[~,r3] = TwoBodyPb([0 1260*24*3600],[rr_a;v_harm],ksun);
 
 r1 = r1';
 r2 = r2';
@@ -117,21 +117,21 @@ y = [];
 for jj=1:length(tspan)-1
 
         if tspan(jj) <= ToF1
-        [~,y_temp] = twoBodyInt([0    tspan(jj+1)],[rr_d;vt1_i'],ksun);
+        [~,y_temp] = TwoBodyPb([0    tspan(jj+1)],[rr_d;vt1_i'],ksun);
         y = [y_temp(end, 1:3); y];
         addpoints(line_y1, y(1,1), y(1,2), y(1, 3));
         else
-        [~,y_temp] = twoBodyInt([ToF1 tspan(jj+1)],[rr_f;vt2_i'],ksun);
+        [~,y_temp] = TwoBodyPb([ToF1 tspan(jj+1)],[rr_f;vt2_i'],ksun);
         y = [y_temp(end, 1:3); y];
         addpoints(line_y2, y(1,1), y(1,2), y(1, 3));
         end
 
         
-        [~,rtemp1] = twoBodyInt([0 tspan(jj+1)],[rr1_0;v_merc0],ksun);
+        [~,rtemp1] = TwoBodyPb([0 tspan(jj+1)],[rr1_0;v_merc0],ksun);
         r1 = [rtemp1(end, 1:3); r1];
-        [~,rtemp2] = twoBodyInt([0 tspan(jj+1)],[rr2_0;v_mars0],ksun);
+        [~,rtemp2] = TwoBodyPb([0 tspan(jj+1)],[rr2_0;v_mars0],ksun);
         r2 = [rtemp2(end, 1:3); r2];
-        [~,rtemp3] = twoBodyInt([0 tspan(jj+1)],[rr3_0;v_harm0],ksun);
+        [~,rtemp3] = TwoBodyPb([0 tspan(jj+1)],[rr3_0;v_harm0],ksun);
         r3 = [rtemp3(end, 1:3); r3];
         
 
