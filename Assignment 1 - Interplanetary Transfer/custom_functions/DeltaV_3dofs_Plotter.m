@@ -60,7 +60,7 @@ function total_delta_V_intersect = DeltaV_3dofs_Plotter(deltaV_totals_1, deltaV_
     colorbar;
     contour3(X, Y, baseZ * ones(size(deltaV_totals_1)), deltaV_totals_1, ...
         50, 'k');
-    clim([0 150]);
+    clim([0 50]);
     
     % Generate 2D grids for X (departure dates) and Z (arrival dates)
     [X_grid, Z_grid] = meshgrid(tspan_dep + t_offset, tspan_arr + t_offset);
@@ -93,7 +93,7 @@ function total_delta_V_intersect = DeltaV_3dofs_Plotter(deltaV_totals_1, deltaV_
     zlabel('Arrival date at A40');
     colormap(gca, parula); 
     colorbar; 
-    clim([0 150]);
+    clim([0 50]);
     view(3); % 3D view
     hold off;
 
