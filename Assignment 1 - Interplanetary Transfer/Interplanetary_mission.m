@@ -15,7 +15,7 @@ mu_mars = astroConstants(14);
 
 data.Mars.Radius = 3390; % mars radius [km]
 data.Mars.mu = mu_mars;
-data.Mars.h_atm = 200;
+data.Mars.h_atm = 0;
 
 %% Departure planet: Mercury
 

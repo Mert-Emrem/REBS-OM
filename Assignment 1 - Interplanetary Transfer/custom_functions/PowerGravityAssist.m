@@ -43,10 +43,13 @@ function [dvp, delta, rp, em, ep, am, ap, vpm, vpp, deltam, deltap] = PowerGravi
         vpm = sqrt(norm(vinfm)^2 + 2*k_f/rp);
         
         dvp = norm(vpp - vpm);
+        
     
     else
         dvp = NaN;
         rp = NaN;
+        vpp = NaN;
+        vpm = NaN;
         
     end
     

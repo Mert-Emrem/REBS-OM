@@ -102,10 +102,10 @@ mu_mars = astroConstants(14);
     PowerGravityAssist(vv_inf_minus, vv_inf_plus, Mars.Radius, 100, mu_mars);
 
 
-YesPlot = 1;
+NoPlot = 1;
 if isnan(rp) 
     disp('!!! Warning: hyperbloic transfer not feasible')
-    YesPlot = 0;
+    NoPlot = 0;
 end
 
 % time span
@@ -128,7 +128,7 @@ X2 = State(:,1); Y2 = State(:,2); Z2 = State(:,3);
 
 %% plot
 
-if YesPlot
+if NoPlot
 figure
 
 plotObjects(1, Mars, [0, 0, 0])
