@@ -191,7 +191,7 @@ for i=1:length(flyby_window)
              vinf_m = squeeze(Vinf_minus(k,i,:));
              vinf_p = squeeze(Vinf_plus(i,j,:));
              dvp  = PowerGravityAssist(vinf_m, vinf_p...
-             ,data.Mars.Radius, data.Mars.h_atm, data.Mars.mu);
+            ,data.Mars.Radius, data.Mars.h_atm, data.Mars.mu);
 
              Delta_GA(i, j, k) = dvp;
 
@@ -226,6 +226,7 @@ t_dep = dep_window(depth);
 
 plotTransfer([t_dep, t_flyby, t_arr])
 
+
 %% animated plot
 
 Animated_Transfers_Plot([t_dep, t_flyby, t_arr])
@@ -233,33 +234,30 @@ Animated_Transfers_Plot([t_dep, t_flyby, t_arr])
 
 %%
 
-N_runs = 5; % Number of runs
-% To check algorithm convergence set N_runs > 1.
+NNtrials = 5; % Number of trials
+% To check algorithm convergence set NNtrials > 1.
 
 
 % Save results for each run:
-x_runs = [];
-dv_runs = [];
+x_trials = zeros([NNtrials, 3]);
+dv_trials = zeros([NNtrials, 1]);
 
-disp(['fmincon search with ',num2str(N_runs),' runs running..']);
+disp(['fmincon search with ',num2str(NNtrials),' trials running..']);
 tic
 
-x0 = [t_dep, t_flyby-t_dep, t_arr-t_flyby];
+x0 = [t_dep, t_flyby, t_arr];
 
 
-data.h = 100;
-
-for i = 1:N_runs
+for i = 1:NNtrials
 
 options=optimoptions("fmincon");
-[x, dv] = fmincon(@(x) dvFun(x, data), x0, [], [], [], [],...
-            [dep_window(1), 10, 10],...
-            [dep_window(end), 1000,10000],...
+[x, dv] = fmincon(@(x) DeltaV_calculator(x, data, 0), x0, [], [], [], [],...
+            [dep_window(1), flyby_window(1), arr_window(1)],...
+            [dep_window(end), flyby_window(end), arr_window(end)],...
             @(x) nonlcon(x, data), options);
-x = cumsum(x);
 
-dv_runs = [dv; dv];
-x_runs = [x_runs; x];
+dv_trials(i, 1) = dv;
+x_trials(i, :) = x;
 
 end
 
@@ -277,32 +275,31 @@ toc
 
 % Select minimum deltaV solution:
 
-[~,index] = min(dv_runs);
-dv = dv_runs(index)
-x = x_runs(index,:);
+[~,index] = min(dv_trials);
+dv = dv_trials(index);
+disp(dv)
+x = x_trials(index,:);
 
 plotTransfer([x(1), x(2), x(3)])
 
 %%
 
-N_runs = 5; % Number of runs
-% To check algorithm convergence set N_runs > 1.
+NNtrials = 5; % Number of trials
+% To check algorithm convergence set NNtrials > 1.
 
-data.R_mars = R_mars;
-data.mu_mars = mu_mars;
 
 % Save results for each run:
-x_runs = [];
-dv_runs = [];
+x_trials = [];
+dv_trials = [];
 
-% disp(['ga search with ',num2str(N_runs),' runs running..']);
+% disp(['ga search with ',num2str(NNtrials),' trials running..']);
 % tic
 % 
 % data.h = 100;
 % A = [1 1 1];
 % b = arr_window(end);
 % 
-% for i = 1:N_runs
+% for i = 1:NNtrials
 % 
 % options=optimoptions("ga");
 % [x_ga, dv] = ga(@(x) dvFun(x, data), 3,...
@@ -317,8 +314,8 @@ dv_runs = [];
 % 
 % x_ga = cumsum(x_ga);
 % 
-% dv_runs = [dv; dv];
-% x_runs = [x_runs; x_ga];
+% dv_trials = [dv; dv];
+% x_trials = [x_trials; x_ga];
 % 
 % end
 % 
@@ -327,9 +324,9 @@ dv_runs = [];
 
 % Select minimum deltaV solution:
 
-[~,index] = min(dv_runs);
-dv = dv_runs(index)
-x = x_runs(index,:);
+[~,index] = min(dv_trials);
+dv = dv_trials(index)
+x = x_trials(index,:);
 
 
 

@@ -23,7 +23,7 @@ function [dv] = DeltaV_calculator(x, data, flag)
 %  dv [1]         Total deltaV of the mission [km/s]
 
 % Initialize times:
-t_d = x1(1); t_f = x1(2); t_a = x1(3); 
+t_d = x(1); t_f = x(2); t_a = x(3); 
 
 % Planets id numbers:
 id_d = 1;                              % Mercury
@@ -56,8 +56,9 @@ if (err1==0)&&(err2==0)
     elseif flag
     dvp  = PowerGravityAssist(vinf_m, vinf_p...
         ,data.Mars.Radius, data.Mars.h_atm, data.Mars.mu);
-    if isnan(dvp)
-        disp('!!! Warning: hyperbloic transfer not feasible')
+        if isnan(dvp)
+            disp('!!! Warning: hyperbloic transfer not feasible')
+        end
     end
     
     dv = norm(vv_d - vt1_i')+norm(vv_a - vt2_f') + dvp;

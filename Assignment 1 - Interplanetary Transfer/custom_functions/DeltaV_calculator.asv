@@ -23,7 +23,7 @@ function [dv] = DeltaV_calculator(x, data, flag)
 %  dv [1]         Total deltaV of the mission [km/s]
 
 % Initialize times:
-t_d = x1(1); t_f = x1(2); t_a = x1(3); 
+t_d = x(1); t_f = x1(2); t_a = x1(3); 
 
 % Planets id numbers:
 id_d = 1;                              % Mercury

@@ -4,12 +4,12 @@ function [c, ceq] = nonlcon(x, data)
 % 
 %
 % PROTOTYPE:
-%  dv = dvFun(x)
+% [c, ceq] = nonlcon(x, data)
 % 
 % INPUT:
 %  x [3,1]        Times array:         x(1) = departure time [MJD2000]
-%                                      x(2) = first transfer tof [days]
-%                                      x(3) = second transfer tof [days]
+%                                      x(2) = flyby time [MJD2000]
+%                                      x(3) = arrival time [MJD2000]
 % 
 % OUTPUT:
 %  c              Array of nonlinear inequality ( c < 0 )
@@ -18,8 +18,7 @@ function [c, ceq] = nonlcon(x, data)
 
 
 % Initialize times:
-x1 = cumsum(x);
-t_d = x1(1); t_f = x1(2); t_a = x1(3); 
+t_d = x(1); t_f = x(2); t_a = x(3); 
 
 % Planets id numbers:
 id_d = 1;                              % Mercury
