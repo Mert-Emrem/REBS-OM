@@ -13,6 +13,10 @@ function total_delta_V_intersect = DeltaV_3dofs_Plotter(deltaV_totals_1, deltaV_
     % OUTPUT:
     % 3D porkchop plot visualization
 
+    set(groot, 'defaultTextInterpreter', 'latex');
+    set(groot, 'defaultAxesTickLabelInterpreter', 'latex');
+    set(groot, 'defaultLegendInterpreter', 'latex');
+
     delta_limit_leg_1 = 20;
     delta_limit_leg_2 = 5;
 
@@ -69,7 +73,6 @@ function total_delta_V_intersect = DeltaV_3dofs_Plotter(deltaV_totals_1, deltaV_
     baseY = tspan_flyby(end) + t_offset; % Fix Y at its first value
     surf(X_grid, baseY * ones(size(deltaV_totals_2')), Z_grid, deltaV_totals_2', ...
         'EdgeColor', 'none', 'FaceAlpha', 0.9); % Project the viable data at constant Y
-    colormap(gca, gray); % Apply grayscale colormap to current axes
     colorbar; % Add colorbar for the base
     contour3(X_grid, baseY * ones(size(deltaV_totals_2)), Z_grid, deltaV_totals_2, ...
         50, 'k'); % Add contour lines for clarity
@@ -94,6 +97,8 @@ function total_delta_V_intersect = DeltaV_3dofs_Plotter(deltaV_totals_1, deltaV_
     colormap(gca, parula); 
     colorbar; 
     clim([0 50]);
+    c.Label.String = '$\Delta V$ [km/s]';
+    c.Label.Interpreter = 'latex';
     view(3); % 3D view
     hold off;
 
@@ -130,7 +135,7 @@ function total_delta_V_intersect = DeltaV_3dofs_Plotter(deltaV_totals_1, deltaV_
     set(gca, 'XTick', xticks); % Apply ticks to X-axis
     xticklabels = datestr(xticks, 'yyyy-mmm-dd'); % Generate readable date labels
     set(gca, 'XTickLabel', xticklabels); % Set the date labels explicitly
-    xtickangle(45); % Rotate labels for better readability
+    xtickangle(-45); % Rotate labels for better readability
     
     % Set Y-axis ticks and labels (Departure dates)
     yticks = linspace(min(tspan_dep + t_offset), max(tspan_dep + t_offset), 6); % Set tick positions
