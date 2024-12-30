@@ -55,7 +55,7 @@ function porkchopPlotter2(deltaV_totals, tspan_arr, tspan_dep)
     % 3D Surface Plot
     f2 = figure;
     hold on;
-    deltaV_totals(deltaV_totals > 10) = NaN;
+    deltaV_totals(deltaV_totals > 25) = NaN;
     surfc(X, Y, deltaV_totals', 'EdgeColor', 'none'); % 3D surface plot
     colormap('parula'); 
     zlim([0 20]);
