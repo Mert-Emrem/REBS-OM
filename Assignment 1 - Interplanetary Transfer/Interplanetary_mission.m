@@ -167,15 +167,13 @@ M2 = Merc_Mars_3d;
 
 %%
 
-porkchopPlotter1(deltaV_Merc_Mars, flyby_window, dep_window)
-porkchopPlotter2(deltaV_Mars_Harm, arr_window, dep_window)
+%porkchopPlotter1(deltaV_Merc_Mars, flyby_window, dep_window)
+%porkchopPlotter2(deltaV_Mars_Harm, arr_window, dep_window)
 
 %%
-
 % Generate 2D and 3D porkchop plots of both legs of the transfer
 
 DeltaV_3dofs_Plotter(deltaV_Merc_Mars, deltaV_Mars_Harm, dep_window, flyby_window, arr_window)
-
 
 %% Optimization
 
