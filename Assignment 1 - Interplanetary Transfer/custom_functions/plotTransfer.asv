@@ -27,7 +27,7 @@ t_d = x(1); t_f = x(2); t_a = x(3); % Initialize times
 
 [~,~,~,~,vt1_i,VV_minus,~,~] = lambertMR(rr_d,rr_f,(t_f-t_d)*24*3600,ksun,0,0,0,0);
 
-[~,~,~,~,vt2_i,~,~,~] = lambertMR(rr_f,rr_a,(t_a-t_f)*24*3600,ksun,0,0,0,0);
+[~,~,~,~,vt2_i,VV_plus,~,~] = lambertMR(rr_f,rr_a,(t_a-t_f)*24*3600,ksun,0,0,0,0);
 
 % Integration of transfer arcs:
 
@@ -94,30 +94,26 @@ title('Interplanetary Trajectory')
 %% Flyby plot
 
 
-vv_inf_minus = VV_minus -v_mars';
-vv_inf_plus =vt2_i -v_mars';
+vv_inf_minus = VV_minus -v_mars;
+vv_inf_plus =VV_plus -v_mars;
 
 mu_mars = astroConstants(14);
-[~, ~, rp, ~, ~, am, ap, vpm, vpp, deltam, deltap] = ...
-    PowerGravityAssist(vv_inf_minus, vv_inf_plus, Mars.Radius, 100, mu_mars);
+[dvp, delta, rp, em, ep, am, ap, vpm, vpp, deltam, deltap] = ...
+    PowerGravityAssist(vv_inf_minus,vv_inf_plus,Mars.Radius,100,mu_mars);
+
 
 
 % time span
 dt = 10; 
 tspan = 0:dt:10000;
 
-rr_p = [rp 0 0]';
-vvpm = [0 vpm 0]';
-y0 = [rr_p; vvpm];
-[~,State] = twoBodyInt(-tspan,y0,ksun);
-X1 = State(:,1); Y1 = State(:,2); Z1 = State(:,3);
+rr_p = [r_p 0 0]';
+vv_p_minus = [0 v_p_minus 0]';
+y0 = [rr_p;vv_p_minus];
 
-vvpp = [0 vpp 0]';
-y0 = [rr_p; vvpp];
-[~, State] = twoBodyInt(tspan,y0,ksun);
-X2 = State(:,1); Y2 = State(:,2); Z2 = State(:,3);
+[~,State] = twoBodyInt(tspan,y0,ksun);
 
-
+X = State(:,1); Y = State(:,2); Z = State(:,3);
 
 
 %% plot
@@ -127,33 +123,27 @@ figure
 
 plotObjects(1, Mars, [0, 0, 0])
 
-
+hold on
+axis equal
 grid on
 hold on
-
-view(45, 25) % azimuth and elevation
-axis equal
-xlim([-1e+4 +1e+4])
-ylim([-1e+4 +1e+4])
+plot3(X,Y,Z, 'LineWidth', 2)
+X_min_minus = min(X);
 
 
-plot3(X1,Y1,Z1, 'LineWidth', 2)
-X_min_minus = min(X1);
+plot3(X,Y,Z, 'LineWidth', 2)
+X_min_plus = min(X);
 
 
-plot3(X2,Y2,Z2, 'LineWidth', 2)
-X_min_plus = min(X2);
-
-
-x0_minus = rp + am;
-x0_plus =  rp  + ap;
+x0_minus = r_p+a_minus;
+x0_plus = r_p+a_plus;
 Y_minus = @(x)   tan(pi/2 - deltam /2) * (x-x0_minus);
 Y_plus =  @(x)  -tan(pi/2 - deltap /2)  * (x-x0_plus);
 
 X = X_min_minus:x0_minus ;
-plot3(X, Y_minus(X), zeros(length(X),1), 'LineWidth', 2, 'Color', '#0714fa')
+plot3(X, Y_minus(X), zeros(length(X),1), 'LineWidth', .5, 'Color', 'g')
 
 X =  X_min_plus:x0_plus ;
-plot3(X, Y_plus(X), zeros(length(X),1), 'LineWidth', 2, 'Color', '#e607fa')
+plot3(X, Y_plus(X), zeros(length(X),1), 'LineWidth', .7, 'Color', 'm')
 
 end

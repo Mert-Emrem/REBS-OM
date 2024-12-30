@@ -31,10 +31,6 @@ t_d = x(1); t_f = x(2); t_a = x(3); % Initialize times
 
 % Integration of transfer arcs:
 
-[~,y1] = twoBodyInt([0 (t_f-t_d-100)*24*3600],[rr_d;vt1_i'],ksun);
-
-[~,y2] = twoBodyInt([0 (t_a-t_f)*24*3600],[rr_f;vt2_i'],ksun);
-
 [~,r1] = twoBodyInt([0 88*24*3600],[rr_d;v_merc],ksun);
 
 [~,r2] = twoBodyInt([0 690*24*3600],[rr_f;v_mars],ksun);

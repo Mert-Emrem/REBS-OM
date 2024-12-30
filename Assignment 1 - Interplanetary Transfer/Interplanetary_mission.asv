@@ -191,7 +191,7 @@ for i=1:length(flyby_window)
              vinf_m = squeeze(Vinf_minus(k,i,:));
              vinf_p = squeeze(Vinf_plus(i,j,:));
              dvp  = PowerGravityAssist(vinf_m, vinf_p...
-            ,data.Mars.Radius, data.Mars.h_atm, data.Mars.mu);
+             ,data.Mars.Radius, data.Mars.h_atm, data.Mars.mu);
 
              Delta_GA(i, j, k) = dvp;
 
@@ -288,6 +288,8 @@ plotTransfer([x(1), x(2), x(3)])
 N_runs = 5; % Number of runs
 % To check algorithm convergence set N_runs > 1.
 
+data.R_mars = R_mars;
+data.mu_mars = mu_mars;
 
 % Save results for each run:
 x_runs = [];

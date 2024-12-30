@@ -49,7 +49,7 @@ if (err1==0)&&(err2==0)
     vinf_p = vt2_i' - vv_f;
     
     dvp  = PowerGravityAssist(vinf_m, vinf_p...
-                    ,data.R_mars, 0, data.mu_mars);
+                    ,data.Mars.Radius, 0, data.Mars.mu);
     
     dv = norm(vv_d - vt1_i')+norm(vv_a - vt2_f') + dvp;
     

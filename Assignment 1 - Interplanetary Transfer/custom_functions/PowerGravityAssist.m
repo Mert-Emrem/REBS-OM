@@ -56,7 +56,7 @@ function [dvp, delta, rp, em, ep, am, ap, vpm, vpp, deltam, deltap] = PowerGravi
     deltam = deltamp(rp,norm(vinfm));
     deltap = deltamp(rp,norm(vinfp));
     
-    am = rp/(1-em);
-    ap = rp/(1-ep);
+    am = abs(rp/(1-em));
+    ap = abs(rp/(1-ep));
 end
 
