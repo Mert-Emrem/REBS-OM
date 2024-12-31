@@ -6,7 +6,7 @@ addpath 'functions'\timeConversion\time\
 addpath 'functions'\
 addpath 'custom_functions'\
 
-%% Interplanetary Explorer Mission
+% Interplanetary Explorer Mission
 % Mercury (dep) -> Mars (flyby) -> Harmonia (arr)
 % This assignment involves the design of a mission that begins from Mercury, executes
 % a flyby at Marsand concludes in Asteroid No. 40 (henceforth referred to as A40). The
@@ -14,7 +14,7 @@ addpath 'custom_functions'\
 % of 2060. The mission is to begin and end at the same velocities as the departure and arrival
 % bodies, thus, orbit insertion and deorbit phases (and their respective ∆V s) are not considered
 
-%% Constant definitions
+% Constant definitions
 
 % Gravitational constants of related bodies
 mu_sun = astroConstants(4);
@@ -25,33 +25,35 @@ data.Mars.Radius = 3390; % Mars radius [km]
 data.Mars.mu = mu_mars;
 data.Mars.h_atm = 100;
 
-%% Set of time windows
+% Set of time windows
 % hint: comment the time section to see the different results
 
 %% Initial date range (coarse discretization)
 % See report for reasoning behind departure windows
 date_min = date2mjd2000([2030, 1, 1, 0, 0, 0]);
-date_max = date2mjd2000([2044, 1, 1, 0, 0, 0]);
-dt = 30;
+date_max = date2mjd2000([2060, 1, 1, 0, 0, 0]);
+dt = 50;
 
 %% Refined date range (finer discretization)
 % choice of dates due from the first attempt
 date_min = date2mjd2000([2040, 1, 1, 0, 0, 0]);
-date_max = date2mjd2000([2044, 4, 1, 0, 0, 0]);
-dt = 10;
+date_max = date2mjd2000([2044, 1, 1, 0, 0, 0]);
+dt = 1;
 
 %% 
 
 time_window = date_min: dt :date_max;
 
+resolution = 100; 
+
 % Departure window in mjd2000
-dep_window = time_window; % [1 x L]
+dep_window = linspace(date2mjd2000([2039, 1, 1, 0, 0, 0]),date2mjd2000([2042, 1, 1, 0, 0, 0]), resolution); % [1 x L]
 
 % Flyby window in mjd2000
-flyby_window = time_window; % [1 x M]
+flyby_window = linspace(date2mjd2000([2042, 1, 1, 0, 0, 0]), date2mjd2000([2043, 1, 1, 0, 0, 0]), resolution); % [1 x M]
 
 % Arrival window in mjd2000
-arr_window = time_window; % [1 x N]
+arr_window = linspace(date2mjd2000([2043, 1, 1, 0, 0, 0]),date2mjd2000([2045, 1, 1, 0, 0, 0]), resolution); % [1 x N]
 
 % Flyby window needs not be same as the departure window,
 % but it allows for an intuitive visualization
@@ -60,7 +62,7 @@ arr_window = time_window; % [1 x N]
 % Create the two matrices containing the DeltaV matrices ( N x M x L )
 
 [M1, M2, Vinf_minus, Vinf_plus] = LambertArcsDeltaV_calculator(dep_window, flyby_window, arr_window,data,...
-                                1,... Flag PorkchopPlot
+                                0,... Flag PorkchopPlot
                                 1);%  Flag 3Dofs Plot
 
 %% Optimizer: GridSearch + fmincon

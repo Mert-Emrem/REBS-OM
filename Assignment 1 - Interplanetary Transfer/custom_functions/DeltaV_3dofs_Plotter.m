@@ -17,7 +17,7 @@ function Total_DeltaV_intersections = DeltaV_3dofs_Plotter(deltaV_totals_1, delt
     set(groot, 'defaultAxesTickLabelInterpreter', 'latex');
     set(groot, 'defaultLegendInterpreter', 'latex');
 
-    delta_limit_leg_1 = 30;
+    delta_limit_leg_1 = 25;
     delta_limit_leg_2 = 10;
 
     t_offset = datenum('2000-01-01');
@@ -39,6 +39,9 @@ function Total_DeltaV_intersections = DeltaV_3dofs_Plotter(deltaV_totals_1, delt
     dep_window = length(tspan_dep); % Number of layers along the X-axis
     Z3D_2 = permute(repmat(deltaV_totals_viable_2, [1, 1, dep_window]), [3, 1, 2]); % Repeat and permute
 
+    [X3D_1, Y3D_1, Z3DDepth_1] = meshgrid(tspan_dep + t_offset, tspan_flyby + t_offset, tspan_arr + t_offset);
+    [X3D_2, Y3D_2, Z3DDepth_2] = meshgrid(tspan_dep + t_offset, tspan_flyby + t_offset, tspan_arr + t_offset);
+
     %% First leg
     % Visualization
     f0 = figure;
@@ -59,16 +62,15 @@ function Total_DeltaV_intersections = DeltaV_3dofs_Plotter(deltaV_totals_1, delt
         50, 'k');
     
     % Visualization of deltaV_totals_1 (X-Y slices)
-    [X3D_1, Y3D_1, Z3DDepth_1] = meshgrid(tspan_dep + t_offset, tspan_flyby + t_offset, tspan_arr + t_offset);
     hSlices1 = slice(X3D_1, Y3D_1, Z3DDepth_1, Z3D, [], [], tspan_arr + t_offset); % Slices along Z
     shading interp; % Smooth shading
     alpha(hSlices1, 0.6); % Transparency
     clim([0 100]);
 
-       % Set axis limits
-    xlim([min(tspan_flyby + t_offset), max(tspan_flyby + t_offset)]); % X-axis limits
-    ylim([min(tspan_dep + t_offset), max(tspan_dep + t_offset)]); % Y-axis limits
-    zlim([min(tspan_arr + t_offset), max(tspan_arr + t_offset)]); % Z-axis limits
+   % Set axis limits
+    xlim([min(tspan_dep + t_offset), max(tspan_dep + t_offset)]);
+    ylim([min(tspan_flyby + t_offset), max(tspan_flyby + t_offset)]);
+    zlim([min(tspan_arr + t_offset), max(tspan_arr + t_offset)]);
     
     % Set X-axis ticks and labels (Flyby dates)
     xticks = linspace(min(tspan_flyby + t_offset), max(tspan_flyby + t_offset), 6); % Set tick positions
@@ -91,6 +93,12 @@ function Total_DeltaV_intersections = DeltaV_3dofs_Plotter(deltaV_totals_1, delt
     set(gca, 'ZTickLabel', zticklabels); % Set the date labels explicitly
 
     grid on;
+    % Set Z-axis ticks and labels (Arrival dates)
+    zticks = linspace(min(tspan_arr + t_offset), max(tspan_arr + t_offset), 6); % Set tick positions
+    set(gca, 'ZTick', zticks); % Apply ticks to Z-axis
+    zticklabels = datestr(zticks, 'yyyy-mmm-dd'); % Generate readable date labels
+    set(gca, 'ZTickLabel', zticklabels); % Set the date labels explicitly
+    grid on;
 
     view(3); % Set 3D perspective
     saveas(gcf, 'deltaV_totals_1.png');
@@ -112,7 +120,6 @@ function Total_DeltaV_intersections = DeltaV_3dofs_Plotter(deltaV_totals_1, delt
         50, 'k'); % Add contour lines for clarity
 
     % Visualization of deltaV_totals_2 (Y-Z slices)
-    [X3D_2, Y3D_2, Z3DDepth_2] = meshgrid(tspan_dep + t_offset, tspan_flyby + t_offset, tspan_arr + t_offset);
     hSlices2 = slice(X3D_2, Y3D_2, Z3DDepth_2, Z3D_2, tspan_dep + t_offset, [], []); % Slices along X
     shading interp; % Smooth shading
     alpha(hSlices2, 0.25); % Transparency
@@ -132,9 +139,9 @@ function Total_DeltaV_intersections = DeltaV_3dofs_Plotter(deltaV_totals_1, delt
     view(3); % 3D view
     hold off;
     % Set axis limits
-    xlim([min(tspan_flyby + t_offset), max(tspan_flyby + t_offset)]); % X-axis limits
-    ylim([min(tspan_dep + t_offset), max(tspan_dep + t_offset)]); % Y-axis limits
-    zlim([min(tspan_arr + t_offset), max(tspan_arr + t_offset)]); % Z-axis limits
+    xlim([min(tspan_dep + t_offset), max(tspan_dep + t_offset)]);
+    ylim([min(tspan_flyby + t_offset), max(tspan_flyby + t_offset)]);
+    zlim([min(tspan_arr + t_offset), max(tspan_arr + t_offset)]);
     
     % Set X-axis ticks and labels (Flyby dates)
     xticks = linspace(min(tspan_flyby + t_offset), max(tspan_flyby + t_offset), 6); % Set tick positions
@@ -203,9 +210,10 @@ function Total_DeltaV_intersections = DeltaV_3dofs_Plotter(deltaV_totals_1, delt
     alpha(hSlices2, 0.25); % Transparency
 
     % Set axis limits
-    xlim([min(tspan_flyby + t_offset), max(tspan_flyby + t_offset)]); % X-axis limits
-    ylim([min(tspan_dep + t_offset), max(tspan_dep + t_offset)]); % Y-axis limits
-    zlim([min(tspan_arr + t_offset), max(tspan_arr + t_offset)]); % Z-axis limits
+    xlim([min(tspan_dep + t_offset), max(tspan_dep + t_offset)]);
+    ylim([min(tspan_flyby + t_offset), max(tspan_flyby + t_offset)]);
+    zlim([min(tspan_arr + t_offset), max(tspan_arr + t_offset)]);
+    
     
     % Set X-axis ticks and labels (Flyby dates)
     xticks = linspace(min(tspan_flyby + t_offset), max(tspan_flyby + t_offset), 6); % Set tick positions
@@ -280,37 +288,59 @@ function Total_DeltaV_intersections = DeltaV_3dofs_Plotter(deltaV_totals_1, delt
             Total_DeltaV_intersections(idx) = dvp + deltaV_intersect_1(idx) + deltaV_intersect_2(idx);
         end
     end
-        
+    
+    nnz(~isnan(Total_DeltaV_intersections))
 
+    %%
     % Plot intersection points in 3D
+
     f3 = figure;
     hold on;
     f3.Position = [300 100 800 600]; % Adjust window size
-    scatter3(X_intersect, Y_intersect, Z_intersect, 50, Total_DeltaV_intersections, 'filled'); 
+    scatter3(X_intersect, Y_intersect, Z_intersect, 50, Total_DeltaV_intersections_pruned, 'filled'); 
     % Find the index of the minimum Delta-V
-    [min_DeltaV, min_idx] = min(Total_DeltaV_intersections);
+    [min_DeltaV, min_idx] = min(Total_DeltaV_intersections_pruned);
     hold on;
     % Highlight the minimum point
     scatter3(X_intersect(min_idx), Y_intersect(min_idx), Z_intersect(min_idx), 100, 'r', 'filled', 'MarkerEdgeColor', 'k', 'LineWidth', 1.5);
+    % Extract the minimum point's coordinates
+    min_flyby_date = X_intersect(min_idx) - t_offset;
+    min_departure_date = Y_intersect(min_idx) - t_offset;
+    min_arrival_date = Z_intersect(min_idx) - t_offset;
     
-    %%
+    % Convert to readable calendar dates
+    min_flyby_date_str = datestr(min_flyby_date, 'yyyy-mmm-dd');
+    min_departure_date_str = datestr(min_departure_date, 'yyyy-mmm-dd');
+    min_arrival_date_str = datestr(min_arrival_date, 'yyyy-mmm-dd');
+    
+    % Print out the dates
+    fprintf('Minimum Delta-V occurs at:\n');
+    fprintf('Departure date from Mercury: %s\n', min_departure_date_str);
+    fprintf('Flyby date at Mars: %s\n', min_flyby_date_str);
+    fprintf('Arrival date at A40: %s\n', min_arrival_date_str);
+    fprintf('Minimum Delta-V: %.2f km/s\n', min_DeltaV);
     % Add lines connecting the minimum point to the axes
     line([X_intersect(min_idx), X_intersect(min_idx)], [Y_intersect(min_idx), Y_intersect(min_idx)], [0, Z_intersect(min_idx)], ...
         'Color', 'black', 'LineStyle', '--', 'LineWidth', 1.5); % Line to Z-axis
-    line([X_intersect(min_idx), X_intersect(min_idx)], [0, Y_intersect(min_idx)], [Z_intersect(min_idx), Z_intersect(min_idx)], ...
+    line([X_intersect(min_idx), X_intersect(min_idx)], [Y_intersect(min_idx), tspan_dep(end)-2*t_offset], [Z_intersect(min_idx), Z_intersect(min_idx)], ...
         'Color', 'black', 'LineStyle', '--', 'LineWidth', 1.5); % Line to Y-axis
-    line([0, X_intersect(min_idx)], [Y_intersect(min_idx), Y_intersect(min_idx)], [Z_intersect(min_idx), Z_intersect(min_idx)], ...
+    line([X_intersect(min_idx), tspan_arr(end)+t_offset], [Y_intersect(min_idx), Y_intersect(min_idx)], [Z_intersect(min_idx), Z_intersect(min_idx)], ...
         'Color', 'black', 'LineStyle', '--', 'LineWidth', 1.5); % Line to X-axis
     
-        % Calculate the range of X and Y coordinates
+    xlim([min(tspan_dep + t_offset), max(tspan_dep + t_offset)]);
+    ylim([min(tspan_flyby + t_offset), max(tspan_flyby + t_offset)]);
+    zlim([min(tspan_arr + t_offset), max(tspan_arr + t_offset)]);
+
+            % Calculate the range of X and Y coordinates
         x_range = max(tspan_flyby) - min(tspan_flyby);
         y_range = max(tspan_dep) - min(tspan_dep);
         z_range = max(tspan_arr) - min(tspan_arr);
         
+        
     % Define the percentage offsets (between 0 and 1)
     percent_offset_x = 0.05; % 5% of the X range (adjust as needed)
     percent_offset_y = 0.05; % 5% of the Y range (adjust as needed)
-    percent_offset_z = 0.05; % 5% of the Y range (adjust as needed)
+    percent_offset_z = 0.25; % 5% of the Y range (adjust as needed)
     
     % Calculate the offset values based on the range and percentage
     offset_x = percent_offset_x * x_range;
@@ -322,7 +352,6 @@ function Total_DeltaV_intersections = DeltaV_3dofs_Plotter(deltaV_totals_1, delt
     'Interpreter', 'latex', 'FontSize', 12, 'FontWeight', 'bold', 'Color', 'black', ...
     'HorizontalAlignment', 'left', 'VerticalAlignment', 'top');
 
-    %%
     colormap(gca, parula);
     c = colorbar; % Move to the right
     c.Label.String = '$\Delta V \, \mathrm{[km/s]}$';
@@ -330,29 +359,31 @@ function Total_DeltaV_intersections = DeltaV_3dofs_Plotter(deltaV_totals_1, delt
     c.Label.FontSize = 12;
     c.Label.FontWeight = 'bold';
     
-    xlabel('Flyby date at Mars');
-    ylabel('Departure date from Mercury');
+    ylabel('Flyby date at Mars');
+    xlabel('Departure date from Mercury');
     zlabel('Arrival date at A40');
     title('Intersection of Viable DeltaV Points');
     view(3); % 3D view
     % Set axis limits
-    xlim([min(tspan_flyby + t_offset), max(tspan_flyby + t_offset)]); % X-axis limits
-    ylim([min(tspan_dep + t_offset), max(tspan_dep + t_offset)]); % Y-axis limits
-    zlim([min(tspan_arr + t_offset), max(tspan_arr + t_offset)]); % Z-axis limits
+    plotmargin = 50;
+    xlim([min(tspan_dep + t_offset)-plotmargin, max(tspan_dep + t_offset)+plotmargin]);
+    ylim([min(tspan_flyby + t_offset)-plotmargin, max(tspan_flyby + t_offset)+plotmargin]);
+    zlim([min(tspan_arr + t_offset)-plotmargin, max(tspan_arr + t_offset)+plotmargin]);
+    grid on;
     
     % Set X-axis ticks and labels (Flyby dates)
-    xticks = linspace(min(tspan_flyby + t_offset), max(tspan_flyby + t_offset), 6); % Set tick positions
+    xticks = linspace(min(tspan_dep + t_offset), max(tspan_dep + t_offset), 6); % Set tick positions
     set(gca, 'XTick', xticks); % Apply ticks to X-axis
     xticklabels = datestr(xticks, 'yyyy-mmm-dd'); % Generate readable date labels
     set(gca, 'XTickLabel', xticklabels); % Set the date labels explicitly
     xtickangle(45); % Rotate labels for better readability
     
     % Set Y-axis ticks and labels (Departure dates)
-    yticks = linspace(min(tspan_dep + t_offset), max(tspan_dep + t_offset), 6); % Set tick positions
+    yticks = linspace(min(tspan_flyby + t_offset), max(tspan_flyby + t_offset), 6); % Set tick positions
     set(gca, 'YTick', yticks); % Apply ticks to Y-axis
     yticklabels = datestr(yticks, 'yyyy-mmm-dd'); % Generate readable date labels
     set(gca, 'YTickLabel', yticklabels); % Set the date labels explicitly
-    ytickangle(20); % Rotate labels for better readability
+    ytickangle(-20); % Rotate labels for better readability
     
     % Set Z-axis ticks and labels (Arrival dates)
     zticks = linspace(min(tspan_arr + t_offset), max(tspan_arr + t_offset), 6); % Set tick positions
@@ -361,5 +392,15 @@ function Total_DeltaV_intersections = DeltaV_3dofs_Plotter(deltaV_totals_1, delt
     set(gca, 'ZTickLabel', zticklabels); % Set the date labels explicitly
 
     grid on;
+
+    depdate = mjd20002date(X_intersect(min_idx));
+    fprintf( ['Refined grid departure date from Mercury: ', repmat('%d ', 1, numel(depdate)), '\n'], depdate);
+    
+    flybydate = mjd20002date(Y_intersect(min_idx));
+    fprintf( ['Refined grid flyby date via Mars: ', repmat('%d ', 1, numel(flybydate)), '\n'], flybydate);
+    
+    arrdate = mjd20002date(Z_intersect(min_idx));
+    fprintf( ['Refined grid arrival date to Harmonia: ', repmat('%d ', 1, numel(arrdate)), '\n'], arrdate);
+    
 
 end
