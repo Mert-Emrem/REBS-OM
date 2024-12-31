@@ -91,6 +91,12 @@ function Total_DeltaV_intersections = DeltaV_3dofs_Plotter(deltaV_totals_1, delt
     set(gca, 'ZTickLabel', zticklabels); % Set the date labels explicitly
 
     grid on;
+    % Set Z-axis ticks and labels (Arrival dates)
+    zticks = linspace(min(tspan_arr + t_offset), max(tspan_arr + t_offset), 6); % Set tick positions
+    set(gca, 'ZTick', zticks); % Apply ticks to Z-axis
+    zticklabels = datestr(zticks, 'yyyy-mmm-dd'); % Generate readable date labels
+    set(gca, 'ZTickLabel', zticklabels); % Set the date labels explicitly
+    grid on;
 
     view(3); % Set 3D perspective
     saveas(gcf, 'deltaV_totals_1.png');
@@ -280,8 +286,8 @@ function Total_DeltaV_intersections = DeltaV_3dofs_Plotter(deltaV_totals_1, delt
             Total_DeltaV_intersections(idx) = dvp + deltaV_intersect_1(idx) + deltaV_intersect_2(idx);
         end
     end
-        
-
+    
+    %%
     % Plot intersection points in 3D
     f3 = figure;
     hold on;
@@ -292,8 +298,7 @@ function Total_DeltaV_intersections = DeltaV_3dofs_Plotter(deltaV_totals_1, delt
     hold on;
     % Highlight the minimum point
     scatter3(X_intersect(min_idx), Y_intersect(min_idx), Z_intersect(min_idx), 100, 'r', 'filled', 'MarkerEdgeColor', 'k', 'LineWidth', 1.5);
-    
-    %%
+
     % Add lines connecting the minimum point to the axes
     line([X_intersect(min_idx), X_intersect(min_idx)], [Y_intersect(min_idx), Y_intersect(min_idx)], [0, Z_intersect(min_idx)], ...
         'Color', 'black', 'LineStyle', '--', 'LineWidth', 1.5); % Line to Z-axis
@@ -322,7 +327,87 @@ function Total_DeltaV_intersections = DeltaV_3dofs_Plotter(deltaV_totals_1, delt
     'Interpreter', 'latex', 'FontSize', 12, 'FontWeight', 'bold', 'Color', 'black', ...
     'HorizontalAlignment', 'left', 'VerticalAlignment', 'top');
 
+    colormap(gca, parula);
+    c = colorbar; % Move to the right
+    c.Label.String = '$\Delta V \, \mathrm{[km/s]}$';
+    c.Label.Interpreter = 'latex';
+    c.Label.FontSize = 12;
+    c.Label.FontWeight = 'bold';
+    
+    xlabel('Flyby date at Mars');
+    ylabel('Departure date from Mercury');
+    zlabel('Arrival date at A40');
+    title('Intersection of Viable DeltaV Points');
+    view(3); % 3D view
+    % Set axis limits
+    xlim([min(tspan_flyby + t_offset), max(tspan_flyby + t_offset)]); % X-axis limits
+    ylim([min(tspan_dep + t_offset), max(tspan_dep + t_offset)]); % Y-axis limits
+    zlim([min(tspan_arr + t_offset), max(tspan_arr + t_offset)]); % Z-axis limits
+    
+    % Set X-axis ticks and labels (Flyby dates)
+    xticks = linspace(min(tspan_flyby + t_offset), max(tspan_flyby + t_offset), 6); % Set tick positions
+    set(gca, 'XTick', xticks); % Apply ticks to X-axis
+    xticklabels = datestr(xticks, 'yyyy-mmm-dd'); % Generate readable date labels
+    set(gca, 'XTickLabel', xticklabels); % Set the date labels explicitly
+    xtickangle(45); % Rotate labels for better readability
+    
+    % Set Y-axis ticks and labels (Departure dates)
+    yticks = linspace(min(tspan_dep + t_offset), max(tspan_dep + t_offset), 6); % Set tick positions
+    set(gca, 'YTick', yticks); % Apply ticks to Y-axis
+    yticklabels = datestr(yticks, 'yyyy-mmm-dd'); % Generate readable date labels
+    set(gca, 'YTickLabel', yticklabels); % Set the date labels explicitly
+    ytickangle(20); % Rotate labels for better readability
+    
+    % Set Z-axis ticks and labels (Arrival dates)
+    zticks = linspace(min(tspan_arr + t_offset), max(tspan_arr + t_offset), 6); % Set tick positions
+    set(gca, 'ZTick', zticks); % Apply ticks to Z-axis
+    zticklabels = datestr(zticks, 'yyyy-mmm-dd'); % Generate readable date labels
+    set(gca, 'ZTickLabel', zticklabels); % Set the date labels explicitly
+
+    grid on;
+
     %%
+
+      %%
+    % Plot intersection points in 3D
+    f3 = figure;
+    hold on;
+    f3.Position = [300 100 800 600]; % Adjust window size
+    scatter3(X_intersect, Y_intersect, Z_intersect, 50, Total_DeltaV_intersections, 'filled'); 
+    % Find the index of the minimum Delta-V
+    [min_DeltaV, min_idx] = min(Total_DeltaV_intersections);
+    hold on;
+    % Highlight the minimum point
+    scatter3(X_intersect(min_idx), Y_intersect(min_idx), Z_intersect(min_idx), 100, 'r', 'filled', 'MarkerEdgeColor', 'k', 'LineWidth', 1.5);
+
+    % Add lines connecting the minimum point to the axes
+    line([X_intersect(min_idx), X_intersect(min_idx)], [Y_intersect(min_idx), Y_intersect(min_idx)], [0, Z_intersect(min_idx)], ...
+        'Color', 'black', 'LineStyle', '--', 'LineWidth', 1.5); % Line to Z-axis
+    line([X_intersect(min_idx), X_intersect(min_idx)], [0, Y_intersect(min_idx)], [Z_intersect(min_idx), Z_intersect(min_idx)], ...
+        'Color', 'black', 'LineStyle', '--', 'LineWidth', 1.5); % Line to Y-axis
+    line([0, X_intersect(min_idx)], [Y_intersect(min_idx), Y_intersect(min_idx)], [Z_intersect(min_idx), Z_intersect(min_idx)], ...
+        'Color', 'black', 'LineStyle', '--', 'LineWidth', 1.5); % Line to X-axis
+    
+        % Calculate the range of X and Y coordinates
+        x_range = max(tspan_flyby) - min(tspan_flyby);
+        y_range = max(tspan_dep) - min(tspan_dep);
+        z_range = max(tspan_arr) - min(tspan_arr);
+        
+    % Define the percentage offsets (between 0 and 1)
+    percent_offset_x = 0.05; % 5% of the X range (adjust as needed)
+    percent_offset_y = 0.05; % 5% of the Y range (adjust as needed)
+    percent_offset_z = 0.05; % 5% of the Y range (adjust as needed)
+    
+    % Calculate the offset values based on the range and percentage
+    offset_x = percent_offset_x * x_range;
+    offset_y = percent_offset_y * y_range;
+    offset_z = percent_offset_z * z_range;
+
+    text(X_intersect(min_idx)+offset_x, Y_intersect(min_idx)+offset_y, Z_intersect(min_idx)+offset_z, ...
+    sprintf('$$\\Delta V$$ = %.2f km/s', min_DeltaV), ...
+    'Interpreter', 'latex', 'FontSize', 12, 'FontWeight', 'bold', 'Color', 'black', ...
+    'HorizontalAlignment', 'left', 'VerticalAlignment', 'top');
+
     colormap(gca, parula);
     c = colorbar; % Move to the right
     c.Label.String = '$\Delta V \, \mathrm{[km/s]}$';

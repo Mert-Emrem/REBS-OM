@@ -6,10 +6,10 @@ function porkchopPlotter1(deltaV_totals, tspan_arr, tspan_dep)
     t_offset = datenum('2000-01-01');
     [X, Y] = meshgrid(tspan_dep + t_offset, tspan_arr + t_offset); 
     f1 = figure;
-
+    min_deltaV = min(deltaV_totals(:))
     % Subplot 1: 2D Contour Plot
     contourf(X, Y, deltaV_totals', 100, 'LineStyle', 'none'); % Smooth 2D contours
-    clim([0 120]);
+    clim([min_deltaV 50]);
     colormap('parula');
     c = colorbar;
     c.Label.String = '$\Delta V$ [km/s]';
@@ -55,11 +55,11 @@ function porkchopPlotter1(deltaV_totals, tspan_arr, tspan_dep)
     % 3D Surface Plot
     f2 = figure;
     hold on;
-    deltaV_totals(deltaV_totals > 50) = NaN;
+    deltaV_totals(deltaV_totals > 30) = NaN;
     surfc(X, Y, deltaV_totals', 'EdgeColor', 'none'); % 3D surface plot
     colormap('parula'); 
-    zlim([0 75]);
-    clim([0 75]);
+    zlim([min_deltaV 75]);
+    clim([min_deltaV 75]);
 
     xlabel('Departure Date from Mercury', 'fontsize', 14, 'interpreter', 'latex');
     ylabel('Flyby Date at Mars', 'fontsize', 14, 'interpreter', 'latex');

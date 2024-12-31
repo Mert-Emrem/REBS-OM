@@ -21,21 +21,20 @@ mu_sun = astroConstants(4);
 mu_merc = astroConstants(11);
 mu_mars = astroConstants(14);
 
-data.Mars.Radius = 3390; % mars radius [km]
+data.Mars.Radius = 3390; % Mars radius [km]
 data.Mars.mu = mu_mars;
 data.Mars.h_atm = 100;
 
 %% Set of time windows
 % hint: comment the time section to see the different results
 
-%% First research
-% choice of dates due to different parameters: maxToF, synodic period
-% more conservative 
+%% Initial date range (coarse discretization)
+% See report for reasoning behind departure windows
 date_min = date2mjd2000([2030, 1, 1, 0, 0, 0]);
 date_max = date2mjd2000([2044, 1, 1, 0, 0, 0]);
 dt = 30;
 
-%% Second research
+%% Refined date range (finer discretization)
 % choice of dates due from the first attempt
 date_min = date2mjd2000([2040, 1, 1, 0, 0, 0]);
 date_max = date2mjd2000([2044, 4, 1, 0, 0, 0]);
@@ -57,11 +56,10 @@ arr_window = time_window; % [1 x N]
 % Flyby window needs not be same as the departure window,
 % but it allows for an intuitive visualization
 
-
 %% Grid construction
 % Create the two matrices containing the DeltaV matrices ( N x M x L )
 
-[M1, M2, Vinf_minus, Vinf_plus] = LambertArcsDeltaV_calculator(dep_window, flyby_window, arr_window,...
+[M1, M2, Vinf_minus, Vinf_plus] = LambertArcsDeltaV_calculator(dep_window, flyby_window, arr_window,data,...
                                 1,... Flag PorkchopPlot
                                 1);%  Flag 3Dofs Plot
 
