@@ -1,4 +1,4 @@
-function [dvp, delta, rp, em, ep, am, ap, vpm, vpp, deltam, deltap] = PowerGravityAssist(vinfm,vinfp,Rpl,hatm_f,k_f)
+function [dvp, delta, rp, em, ep, am, ap, vpm, vpp, deltam, deltap] = PowerGravityAssist(vinfm,vinfp,Rpl,hatm, k_f, dynamic_ON)
 
     % Function to compute the Powered Gravity Assist.
     % 
@@ -25,41 +25,65 @@ function [dvp, delta, rp, em, ep, am, ap, vpm, vpp, deltam, deltap] = PowerGravi
     %  deltap [1]   Turn angle of the outgoing hyperbola [rad]
     
     
-    delta = acos(dot(vinfm,vinfp)/norm(vinfm)/norm(vinfp));
+    % Turn angle between incoming and outgoing hyperbolas
+    delta = acos(dot(vinfm, vinfp) / norm(vinfm) / norm(vinfp));
     
-    emp = @(rp,vinf) 1 + rp*vinf^2/k_f;
-    deltamp = @(rp,vinf) 2*asin(1/emp(rp,vinf));
+    % Eccentricity and turn angle as functions of rp
+    emp = @(rp, vinf) 1 + rp * vinf^2 / k_f;
+    deltamp = @(rp, vinf) 2 * asin(1 / emp(rp, vinf));
     
-    f = @(rp) delta - 0.5*deltamp(rp,norm(vinfm)) ...
-        -0.5*deltamp(rp,norm(vinfp));
+    % Minimum radius (planet radius + atmosphere height)
+    rp_min = Rpl + hatm;
+    upper_bound = 1e+9;
+
+    % Nonlinear equation to solve
+    f = @(rp) delta - 0.5 * deltamp(rp, norm(vinfm)) - 0.5 * deltamp(rp, norm(vinfp));
     
-    if (f(Rpl + hatm_f)<=0)&&(f(1e10)>0)
-        
-        options = optimset('TolX',1e-14);
-        
-        rp = fzero(f,[Rpl + hatm_f, 1e10],options);
-        
-        vpp = sqrt(norm(vinfp)^2 + 2*k_f/rp);
-        vpm = sqrt(norm(vinfm)^2 + 2*k_f/rp);
-        
-        dvp = norm(vpp - vpm);
-        
+    % Check initial values at the boundaries
+    f_min = f(rp_min);
+    f_max = f(upper_bound);
     
-    else
-        dvp = NaN;
-        rp = NaN;
-        vpp = NaN;
-        vpm = NaN;
-        
+    rp = rp_min; 
+
+    if dynamic_ON
+    % Dynamic interval adjustment
+    while isnan(f_max) || ~isreal(f_max) || (f_min * f_max > 0)
+        upper_bound = upper_bound / 10;
+        f_max = f(upper_bound);
+        if upper_bound < 10 * rp_min  % Stop if bounds shrink too much
+            break;
+        end
     end
     
-    em = emp(rp,norm(vinfm));
-    ep = emp(rp,norm(vinfp));
-    
-    deltam = deltamp(rp,norm(vinfm));
-    deltap = deltamp(rp,norm(vinfp));
-    
-    am = abs(rp/(1-em));
-    ap = abs(rp/(1-ep));
-end
+    % Try to find the solution using fzero
+    options = optimset('TolX', 1e-14, 'FunValCheck', 'on');
 
+    try
+        rp = fzero(f, [rp_min, upper_bound], options);
+    catch
+        rp = rp_min;  % Penalize by setting rp to minimum possible value
+    end
+
+    elseif (f_min * f_max < 0)
+    options = optimset('TolX', 1e-14);
+    rp = fzero(f, [rp_min, upper_bound], options);
+
+    end
+    
+    % Calculate velocities at pericenter
+    vpp = sqrt(norm(vinfp)^2 + 2 * k_f / rp);
+    vpm = sqrt(norm(vinfm)^2 + 2 * k_f / rp);
+    dvp = norm(vpp - vpm);
+    
+    % Eccentricities of the hyperbolas
+    em = emp(rp, norm(vinfm));
+    ep = emp(rp, norm(vinfp));
+    
+    % Turn angles
+    deltam = deltamp(rp, norm(vinfm));
+    deltap = deltamp(rp, norm(vinfp));
+    
+    % Semi-major axes of incoming/outgoing hyperbolas
+    am = abs(rp / (1 - em));
+    ap = abs(rp / (1 - ep));
+end

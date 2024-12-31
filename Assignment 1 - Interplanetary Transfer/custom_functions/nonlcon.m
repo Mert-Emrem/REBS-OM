@@ -36,7 +36,7 @@ kep_a = ephAsteroids(t_a, id_a);
 
 [~,~,~,err2,vt2_i,~,~,~] = lambertMR(rr_f,rr_a,(t_a-t_f)*24*3600,ksun,0,0,0,0);
 
-rp = NaN; % Initialize output
+rp = 0; % Initialize output
 
 % Check: there must be no errors in lambertMR
 if (err1==0)&&(err2==0)
@@ -45,11 +45,14 @@ if (err1==0)&&(err2==0)
     vinf_p = vt2_i' - vv_f;
     
     [~,~,rp]  = PowerGravityAssist(vinf_m, vinf_p...
-                    ,data.Mars.Radius, data.Mars.h_atm, data.Mars.mu);
+                    ,data.Mars.Radius, data.Mars.h_atm, data.Mars.mu, 1);
     
     
 end
 
+if isnan(rp) || not(isfinite(rp)) || not(isreal(rp))
+    rp = 0;
+end
+
 ceq = 0;
-tolerance = 1e-3;
-c = data.Mars.Radius + data.Mars.h_atm - rp + tolerance;
+c = data.Mars.Radius + data.Mars.h_atm - rp +1e-2;

@@ -1,4 +1,4 @@
-function [dv] = DeltaV_calculator(x, data, flag)
+function [dv] = DeltaV_calculator(x, data, flag_atm)
 %
 % DeltaV_calculator: Total deltaV of the mission
 % 
@@ -17,7 +17,7 @@ function [dv] = DeltaV_calculator(x, data, flag)
 %  data           Struct containing mission parameters for the flyby
 %                 trajectory
 %
-%  flag           if flag == 1 constraint on 
+%  flag_atm           if flag_atm == 1 constraint on 
 % 
 % OUTPUT:
 %  dv [1]         Total deltaV of the mission [km/s]
@@ -50,12 +50,12 @@ if (err1==0)&&(err2==0)
     vinf_m = vt1_f' - vv_f;
     vinf_p = vt2_i' - vv_f;
     
-    if ~flag 
+    if ~flag_atm 
     dvp  = PowerGravityAssist(vinf_m, vinf_p...
-                    ,data.Mars.Radius, 0, data.Mars.mu);
-    elseif flag
+                    ,data.Mars.Radius, 0, data.Mars.mu, 1);
+    elseif flag_atm
     dvp  = PowerGravityAssist(vinf_m, vinf_p...
-        ,data.Mars.Radius, data.Mars.h_atm, data.Mars.mu);
+        ,data.Mars.Radius, data.Mars.h_atm, data.Mars.mu, 1);
         if isnan(dvp)
             disp('!!! Warning: hyperbloic transfer not feasible')
         end

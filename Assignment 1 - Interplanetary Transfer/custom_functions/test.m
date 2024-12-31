@@ -15,7 +15,7 @@ mu_mars = astroConstants(14);
 
 data.Mars.Radius = 3390; % mars radius [km]
 data.Mars.mu = mu_mars;
-data.Mars.h_atm = 200;
+data.Mars.h_atm = 100;
 
 %% Departure planet: Mercury
 
@@ -23,12 +23,11 @@ data.Mars.h_atm = 200;
 T_syn_1 = 100.8882; % [days]
 
 % Departure window in mjd2000
-dep_date_min = date2mjd2000([2030, 1, 1, 0, 0, 0]);
-dep_date_max = date2mjd2000([2044, 4, 1, 0, 0, 0]);
-% dep_date_max = dep_date_min + 10*T_syn_1; % ToF_max
+dep_date_min = date2mjd2000([2040, 1, 1, 0, 0, 0]);
+dep_date_max = date2mjd2000([2044, 1, 1, 0, 0, 0]);
 
 % Time interval for departure window [days]
-dep_dt = 15; 
+dep_dt = 3; 
 
 % Create vector of L elements where 
 % L = (max. dep. date - min. dep. date)/dt
@@ -64,13 +63,8 @@ a_mars = kep(1,1);
 T_syn_2 = 4.1902; % [years]
 
 % Arrival window in mjd2000
-arr_time_min = date2mjd2000([2030, 1, 1, 0, 0, 0]);
-arr_time_max = date2mjd2000([2044, 4, 1, 0, 0, 0]);
+arr_window = dep_window;
 
-% Time interval for arrival window [days]
-arr_dt = 15;
-
-arr_window = arr_time_min: arr_dt: arr_time_max; % [1 x N]
 
 % Obtain keplerian ephemerides of Harmonia
 [kep, f, ~] = ephAsteroids_vec(arr_window, 40);
@@ -186,20 +180,20 @@ for i=1:length(flyby_window)
     for j=1:length(arr_window)
         for k=1:length(dep_window)
 
-             if dep_window(k)<flyby_window(i) && flyby_window(i)<arr_window(j)
+             if dep_window(k)<flyby_window(i) &&...
+                     flyby_window(i)<arr_window(j) &&...
+                     not(isnan(M1(i, j, k))) && ...
+                     not(isnan(M2(i, j, k)))
 
              vinf_m = squeeze(Vinf_minus(k,i,:));
              vinf_p = squeeze(Vinf_plus(i,j,:));
-             dvp  = PowerGravityAssist(vinf_m, vinf_p...
+             [dvp, ~, rp]  = PowerGravityAssist(vinf_m, vinf_p...
             ,data.Mars.Radius, data.Mars.h_atm, data.Mars.mu);
 
              Delta_GA(i, j, k) = dvp;
 
-                  if not(isnan(dvp)) &&...
-                     not(isnan(M1(i, j, k))) && ...
-                     not(isnan(M2(i, j, k)))
-    
-                     DeltaVtot(i,j,k) = dvp + M1(i, j, k) + M2(i, j, k);
+                  if not(isnan(dvp)) && rp>(data.Mars.h_atm+data.Mars.Radius)
+                        DeltaVtot(i,j,k) = dvp + M1(i, j, k) + M2(i, j, k);
     
                   end
 
@@ -250,7 +244,14 @@ x0 = [t_dep, t_flyby, t_arr];
 
 for i = 1:NNtrials
 
-options=optimoptions("fmincon");
+options = optimoptions('fmincon', ...
+    'Algorithm', 'sqp', ...
+    'Display', 'iter', ...
+    'MaxIterations', 500, ...
+    'OptimalityTolerance', 1e-8, ...
+    'ConstraintTolerance', 1e-6, ...
+    'PlotFcn', @optimplotfval);
+
 [x, dv] = fmincon(@(x) DeltaV_calculator(x, data, 0), x0, [], [], [], [],...
             [dep_window(1), flyby_window(1), arr_window(1)],...
             [dep_window(end), flyby_window(end), arr_window(end)],...
@@ -284,53 +285,79 @@ plotTransfer([x(1), x(2), x(3)])
 
 %%
 
-NNtrials = 5; % Number of trials
+NNtrials = 4; % Number of trials
 % To check algorithm convergence set NNtrials > 1.
 
-
 % Save results for each run:
-x_trials = [];
-dv_trials = [];
+x_trials = zeros([NNtrials, 3]);
+dv_trials = zeros([NNtrials, 1]);
 
-% disp(['ga search with ',num2str(NNtrials),' trials running..']);
-% tic
-% 
-% data.h = 100;
-% A = [1 1 1];
-% b = arr_window(end);
-% 
-% for i = 1:NNtrials
-% 
-% options=optimoptions("ga");
-% [x_ga, dv] = ga(@(x) dvFun(x, data), 3,...
-%                 A, b, [], [],...
-%                 [dep_window(1), 10, 10],...
-%                 [dep_window(end), 1000,10000],...
-%                 @(x) nonlcon(x, data), options);
-%                 x = cumsum(x);
-%             % [x(1)-500, x(2)-500-x(1), x(3)-1000-x(2)],...
-%             % [x(1)+500, x(2)+500-x(1), x(3)+1000-x(2)]);
-%             % % @(x) nonlcon(x, data), options);
-% 
-% x_ga = cumsum(x_ga);
-% 
-% dv_trials = [dv; dv];
-% x_trials = [x_trials; x_ga];
-% 
-% end
-% 
-% toc
+% Display message
+disp(['GA search with ',num2str(NNtrials),' trials running..']);
+tic
 
+nvars = 3; % Number of variables (departure, flyby, arrival times)
+lb = [dep_window(1), flyby_window(1), arr_window(1)];  % Lower bounds
+ub = [dep_window(end), flyby_window(end), arr_window(end)]; % Upper bounds
+
+for i = 1:NNtrials
+    
+    % GA options
+options = optimoptions('ga', ...
+    'PopulationSize', 300, ...               % Larger population for complex constraints
+    'MaxGenerations', 700, ...               % More generations to allow convergence
+    'EliteCount', ceil(0.05 * 300), ...      % 5% elite preservation
+    'CrossoverFraction', 0.85, ...           % High crossover to accelerate convergence
+    'MutationFcn', {@mutationadaptfeasible, 0.12}, ... % Adaptive feasible mutation
+    'FunctionTolerance', 1e-10, ...          % High precision
+    'ConstraintTolerance', 1e-6, ...         % Tight constraint handling
+    'NonlinConAlgorithm', 'auglag', ...      % Augmented Lagrangian for nonlinear constraints
+    'MaxStallGenerations', 40, ...           % Avoid premature convergence
+    'Display', 'iter');
+
+    % Run genetic algorithm
+    [x, dv] = ga(@(x) DeltaV_calculator(x, data, 0), nvars, [], [], [], [], ...
+                 lb, ub, @(x) nonlcon(x, data), options);
+
+    % Save results
+    dv_trials(i, 1) = dv;
+    x_trials(i, :) = x;
+
+end
+
+
+
+% Convert results to readable dates
+depdate = mjd20002date(x(1));
+fprintf(['Optimized departure date from Mercury: ', repmat('%d ', 1, numel(depdate)), '\n'], depdate);
+
+flybydate = mjd20002date(x(2));
+fprintf(['Optimized flyby date via Mars: ', repmat('%d ', 1, numel(flybydate)), '\n'], flybydate);
+
+arrdate = mjd20002date(x(3));
+fprintf(['Optimized arrival date to Harmonia: ', repmat('%d ', 1, numel(arrdate)), '\n'], arrdate);
+
+toc
 
 % Select minimum deltaV solution:
-
-[~,index] = min(dv_trials);
-dv = dv_trials(index)
+[~, index] = min(dv_trials);
+dv = dv_trials(index);
+disp(dv)
 x = x_trials(index,:);
 
+% Plot optimal transfer
+plotTransfer([x(1), x(2), x(3)])
 
 
 
 
 
+% Population Size (300): Larger populations are necessary for multi-leg transfers and nonlinear flyby constraints to ensure diversity.
+% Generations (700): Multi-phase Lambert problems require many generations to fine-tune trajectory dates and minimize deltaV.
+% Elite Count (5%): Prevents loss of good solutions while avoiding excessive convergence on local minima.
+% High Crossover (0.85): Promotes mixing of good traits (departure, flyby, and arrival windows).
+% Adaptive Mutation (0.12): Higher mutation ensures diversity, critical for nonlinear constraints involving flybys.
+% Augmented Lagrangian: Superior for handling non-linear flyby constraints by dynamically adapting penalty terms.
+% Function Tolerance (1e-10): High precision required for Lambert arc matching and deltaV minimization.
+% Stall Generations (40): Ensures the algorithm searches extensively before terminating.
 

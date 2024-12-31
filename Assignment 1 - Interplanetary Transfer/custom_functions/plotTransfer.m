@@ -99,7 +99,7 @@ vv_inf_plus =vt2_i -v_mars';
 
 mu_mars = astroConstants(14);
 [~, ~, rp, ~, ~, am, ap, vpm, vpp, deltam, deltap] = ...
-    PowerGravityAssist(vv_inf_minus, vv_inf_plus, Mars.Radius, 100, mu_mars);
+    PowerGravityAssist(vv_inf_minus, vv_inf_plus, Mars.Radius, 100, mu_mars, 1);
 
 
 YesPlot = 1;

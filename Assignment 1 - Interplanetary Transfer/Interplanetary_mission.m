@@ -15,7 +15,7 @@ mu_mars = astroConstants(14);
 
 data.Mars.Radius = 3390; % mars radius [km]
 data.Mars.mu = mu_mars;
-data.Mars.h_atm = 0;
+data.Mars.h_atm = 100;
 
 %% Departure planet: Mercury
 
@@ -25,7 +25,6 @@ T_syn_1 = 100.8882; % [days]
 % Departure window in mjd2000
 dep_date_min = date2mjd2000([2030, 1, 1, 0, 0, 0]);
 dep_date_max = date2mjd2000([2044, 4, 1, 0, 0, 0]);
-% dep_date_max = dep_date_min + 10*T_syn_1; % ToF_max
 
 % Time interval for departure window [days]
 dep_dt = 15; 
@@ -186,20 +185,20 @@ for i=1:length(flyby_window)
     for j=1:length(arr_window)
         for k=1:length(dep_window)
 
-             if dep_window(k)<flyby_window(i) && flyby_window(i)<arr_window(j)
+             if dep_window(k)<flyby_window(i) &&...
+                     flyby_window(i)<arr_window(j) &&...
+                     not(isnan(M1(i, j, k))) && ...
+                     not(isnan(M2(i, j, k)))
 
              vinf_m = squeeze(Vinf_minus(k,i,:));
              vinf_p = squeeze(Vinf_plus(i,j,:));
-             dvp  = PowerGravityAssist(vinf_m, vinf_p...
+             [dvp, ~, rp]  = PowerGravityAssist(vinf_m, vinf_p...
             ,data.Mars.Radius, data.Mars.h_atm, data.Mars.mu);
 
              Delta_GA(i, j, k) = dvp;
 
-                  if not(isnan(dvp)) &&...
-                     not(isnan(M1(i, j, k))) && ...
-                     not(isnan(M2(i, j, k)))
-    
-                     DeltaVtot(i,j,k) = dvp + M1(i, j, k) + M2(i, j, k);
+                  if not(isnan(dvp)) && rp>(data.Mars.h_atm+data.Mars.Radius)
+                        DeltaVtot(i,j,k) = dvp + M1(i, j, k) + M2(i, j, k);
     
                   end
 
@@ -221,15 +220,6 @@ t_flyby = flyby_window(row);
 t_arr = arr_window(col);
 t_dep = dep_window(depth);
 
-
-%% plot
-
-plotTransfer([t_dep, t_flyby, t_arr])
-
-
-%% animated plot
-
-Animated_Transfers_Plot([t_dep, t_flyby, t_arr])
 
 
 %%
@@ -280,53 +270,17 @@ dv = dv_trials(index);
 disp(dv)
 x = x_trials(index,:);
 
-plotTransfer([x(1), x(2), x(3)])
+%% plot
+
+plotTransfer(x)
+
+
+%% animated plot
+
+Animated_Transfers_Plot(x)
 
 %%
 
-NNtrials = 5; % Number of trials
-% To check algorithm convergence set NNtrials > 1.
-
-
-% Save results for each run:
-x_trials = [];
-dv_trials = [];
-
-% disp(['ga search with ',num2str(NNtrials),' trials running..']);
-% tic
-% 
-% data.h = 100;
-% A = [1 1 1];
-% b = arr_window(end);
-% 
-% for i = 1:NNtrials
-% 
-% options=optimoptions("ga");
-% [x_ga, dv] = ga(@(x) dvFun(x, data), 3,...
-%                 A, b, [], [],...
-%                 [dep_window(1), 10, 10],...
-%                 [dep_window(end), 1000,10000],...
-%                 @(x) nonlcon(x, data), options);
-%                 x = cumsum(x);
-%             % [x(1)-500, x(2)-500-x(1), x(3)-1000-x(2)],...
-%             % [x(1)+500, x(2)+500-x(1), x(3)+1000-x(2)]);
-%             % % @(x) nonlcon(x, data), options);
-% 
-% x_ga = cumsum(x_ga);
-% 
-% dv_trials = [dv; dv];
-% x_trials = [x_trials; x_ga];
-% 
-% end
-% 
-% toc
-
-
-% Select minimum deltaV solution:
-
-[~,index] = min(dv_trials);
-dv = dv_trials(index)
-x = x_trials(index,:);
 
 
 
