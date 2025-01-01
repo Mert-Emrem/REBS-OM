@@ -15,6 +15,8 @@ addpath 'custom_functions'\
 % of 2060. The mission is to begin and end at the same velocities as the departure and arrival
 % bodies, thus, orbit insertion and deorbit phases (and their respective ∆V s) are not considered
 %
+% N°GROUP: 2406 -REBS Project
+%
 % AUTHORS: Bernasconi Ludovico, Emrem Mert, Richero Giovanni, Serlini
 %          Mariagiulia
 %
