@@ -25,6 +25,7 @@ close all
 addpath 'Functions'\
 addpath 'Functions'\timeConversion\time\
 
+set(0,'defaultfigurecolor',[1 1 1])
 
 %% Inital data
 % Central body: Mercury
@@ -71,8 +72,8 @@ tspan = [0:10:n_orbits*T_orb];
 
 % Propagate orbit without perturbation acting on it
 [T_1,Y_1]            = Orbit_Analysis(rr_0, vv_0, mu_Me, tspan, 'non_perturbed');
-delta_lamba = rad2deg(T_orb * OMEGA_Me);
-fprintf('GT: Delta Lambda = %f \n', delta_lamda);
+delta_lambda = rad2deg(T_orb * OMEGA_Me);
+fprintf('GT: Delta Lambda = %f \n', delta_lambda);
 
 % Calculate latitude and longitude of the ground track
 [~, ~, lon, lat]    = groundTrack_2(T_1, OMEGA_Me, 0, 0, Y_1);

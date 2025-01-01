@@ -1,4 +1,3 @@
-
 function a = a_groundTrack(k, m, omega_Me)
 
 % k = satellite revolution
