@@ -12,7 +12,11 @@ function Animated_Transfers_Plot(x)
 %                                      x(3) = arrival
 % 
 % OUTPUT:
-% plot of three differents arcs
+% Plot of three differents arcs
+%
+% AUTHORS: Richero Giovanni, Emrem Mert
+%
+% -------------------------------------------------------------------------
 
 t_d = x(1); t_f = x(2); t_a = x(3); % Initialize times
 

@@ -1,12 +1,31 @@
 function [x, dv] = Hybrid_GridSearch_Fmincon(dep_window, flyby_window, arr_window, ...
                     M1, M2, Vinf_minus, Vinf_plus, data, NNtrials, FlagPlot, FlagAnimatedPlot)
 
+% Function to optimize interplanetary transfer trajectories using a hybrid 
+% approach combining Grid Search and fmincon optimization.
+%
+% INPUT:
+%  dep_window        [1xL]    Departure date vector in mjd2000
+%  flyby_window      [1xM]    Flyby date vector in mjd2000
+%  arr_window        [1xN]    Arrival date vector in mjd2000
+%  M1                [MxNxL]  Delta-V matrix for the Mars-Harmonia leg of the transfer
+%  M2                [LxMxN]  Delta-V matrix for the Mercury-Mars leg of the transfer
+%  Vinf_minus        [LxMx3]  Inbound excess velocity vectors at the flyby [km/s]
+%  Vinf_plus         [MxNx3]  Outbound excess velocity vectors at the flyby [km/s]
+%  data              [1x1]    Struct including planetary/asteroid parameters 
+%                              (radius, atmosphere height, gravitational constant)
+%  NNtrials          [int]    Number of initial trials for fmincon optimization
+%  FlagPlot          [bool]   Flag to enable plotting of the optimized transfer
+%  FlagAnimatedPlot  [bool]   Flag to enable animated visualization of the transfer
+%
+% OUTPUT:
+%  x                 [1x3]    Optimized transfer dates: [departure, flyby, arrival] (mjd2000)
+%  dv                [1x1]    Total Delta-V for the optimized trajectory [km/s]
+%
+% AUTHORS: Richero Giovanni
+%
+% -------------------------------------------------------------------------
 
-
-%% GridSearch Algorithm
-% optimizer that combine two deltaV matrices and check if the two lambert
-% deltaV values could match together considering the constraint on
-% hyperbola physical feasibiliy
 
 
 Delta_GA = ones(length(flyby_window), length(arr_window), length(dep_window))*NaN;

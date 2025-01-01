@@ -1,5 +1,29 @@
 function [M1, M2, Vinf_minus, Vinf_plus] = LambertArcsDeltaV_calculator(dep_window, flyby_window, arr_window, data, FlagPorkchopPlot, FlagDeltaV_3dofs_Plot)
 
+% Function to compute the Delta-V requirements and transfer trajectories 
+% for the single flyby interplanetary mission using Lambert's problem.
+%
+% INPUT:
+%  dep_window        [1xL]   Departure date vector in mjd2000
+%  flyby_window      [1xM]   Flyby date vector in mjd2000
+%  arr_window        [1xN]   Arrival date vector in mjd2000
+%  data              [1x1]   Struct including planetary/asteroid parameters
+%                            (radius, atmosphere height, gravitational constant)
+%  FlagPorkchopPlot  [bool]  Flag to enable plotting of porkchop plots for the transfers
+%  FlagDeltaV_3dofs_Plot [bool] Flag to enable 3D visualization of the viable Delta-V values
+%
+% OUTPUT:
+%  M1                [MxNxL] Delta-V matrix for the Mars-Harmonia leg of the transfer
+%  M2                [LxMxN] Delta-V matrix for the Mercury-Mars leg of the transfer
+%  Vinf_minus        [LxMx3] Inbound excess velocity vectors at the flyby [km/s]
+%  Vinf_plus         [MxNx3] Outbound excess velocity vectors at the flyby [km/s]
+%
+%
+% AUTHORS: Bernasconi Ludovico, Emrem Mert, Richero Giovanni, Serlini
+%          Mariagiulia
+%
+% -------------------------------------------------------------------------
+
 mu_sun = astroConstants(4);
 
 %% Departure planet: Mercury
@@ -83,7 +107,6 @@ deltaV_Mars_Harm = ones(length(flyby_window), length(arr_window))*NaN;
 Vinf_plus = ones(length(flyby_window), length(arr_window),3)*NaN;
 
 for i = 1:length(flyby_window)
-
     for j = 1:length(arr_window)
 
         % Compute the time of flight

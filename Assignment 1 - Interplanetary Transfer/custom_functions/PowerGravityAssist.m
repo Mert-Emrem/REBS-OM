@@ -23,6 +23,10 @@ function [dvp, delta, rp, em, ep, am, ap, vpm, vpp, deltam, deltap] = PowerGravi
     %  vpp [1]      Velocity at pericenter of the outgoing hyperbola [km/s]
     %  deltam [1]   Turn angle of the incoming hyperbola [rad]
     %  deltap [1]   Turn angle of the outgoing hyperbola [rad]
+    %
+    % AUTHORS: Richero Giovanni
+    %
+    % -------------------------------------------------------------------------
     
     
     % Turn angle between incoming and outgoing hyperbolas

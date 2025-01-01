@@ -13,6 +13,9 @@ function plotTransfer(x)
 % 
 % OUTPUT:
 % plot of three differents arcs
+% AUTHORS: Richero Giovanni, Emrem Mert
+%
+% -------------------------------------------------------------------------
 
 t_d = x(1); t_f = x(2); t_a = x(3); % Initialize times
 
