@@ -16,8 +16,8 @@
 %  - T: Time of flight for Hohmann transfer [s]
 %  - T_max: Maximum allowable transfer time [s]
 %
-% AUTHORS: Giovanni Richero, Emrem Mert
-%
+% AUTHORS: Richero Giovanni, Emrem Mert, Bernarsconi Ludovico, Serlini
+% Mariagiulia
 % -------------------------------------------------------------------------
 
 %% Constants

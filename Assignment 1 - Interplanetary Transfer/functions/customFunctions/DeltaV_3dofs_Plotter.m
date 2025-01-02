@@ -17,8 +17,7 @@ function Total_DeltaV_intersections = DeltaV_3dofs_Plotter(deltaV_totals_1, delt
     % OUTPUT:
     % 3D visualization of the viable trajectories (date and deltaV)
     %
-    % AUTHORS: Emrem Mert
-    %
+    % AUTHORS: Richero Giovanni, Emrem Mert, Bernarsconi Ludovico, Serlini Mariagiulia
     % -------------------------------------------------------------------------
 
     set(groot, 'defaultTextInterpreter', 'latex');

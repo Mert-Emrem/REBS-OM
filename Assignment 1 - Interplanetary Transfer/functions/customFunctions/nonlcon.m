@@ -14,6 +14,11 @@ function [c, ceq] = nonlcon(x, data)
 %  c              Array of nonlinear inequalities (c < 0)
 %  ceq            Array of nonlinear equalities (ceq = 0)
 %
+% AUTHORS: Bernasconi Ludovico, Emrem Mert, Richero Giovanni, Serlini
+%          Mariagiulia
+%
+% -------------------------------------------------------------------------
+
 
 % Initialize times:
 t_d = x(1); t_f = x(2); t_a = x(3); 

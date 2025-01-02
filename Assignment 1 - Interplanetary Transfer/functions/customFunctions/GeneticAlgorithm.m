@@ -1,40 +1,66 @@
-function [x, dv] = GeneticAlgorithm(dep_window, flyby_window, arr_window, data, NNtrials,  FlagPlot, FlagAnimatedPlot)
+function [x, dv] = GeneticAlgorithm(dep_window, flyby_window, arr_window, data, NNtrials, FlagPlot, FlagAnimatedPlot)
+%
+% GeneticAlgorithm: Optimize mission trajectory using genetic algorithms
+%
+% This function uses a genetic algorithm (GA) to optimize the trajectory
+% of a space mission by minimizing the total deltaV. Multiple trials are
+% executed to ensure convergence and avoid local minima.
+%
+% PROTOTYPE:
+%   [x, dv] = GeneticAlgorithm(dep_window, flyby_window, arr_window, data, NNtrials, FlagPlot, FlagAnimatedPlot)
+%
+% INPUT:
+%   dep_window       [2,1] Departure time window [MJD2000]
+%   flyby_window     [2,1] Flyby time window [MJD2000]
+%   arr_window       [2,1] Arrival time window [MJD2000]
+%   data             Struct containing mission parameters
+%   NNtrials         [1]   Number of optimization trials
+%   FlagPlot         [1]   Flag to enable transfer plot (1 = plot, 0 = no plot)
+%   FlagAnimatedPlot [1]   Flag to enable animated transfer plot (1 = animate, 0 = no animation)
+%
+% OUTPUT:
+%   x                [3,1] Optimized times (departure, flyby, arrival) [MJD2000]
+%   dv               [1]   Minimum deltaV of the mission [km/s]
+%
+% AUTHORS: Richero Giovanni, Emrem Mert, Bernarsconi Ludovico, Serlini
+% Mariagiulia
+%
+% -------------------------------------------------------------------------
 
-% To check algorithm convergence set NNtrials > 1.
+% Initialize arrays to store results from multiple trials
+x_trials = zeros([NNtrials, 3]); % Optimized times for each trial
+dv_trials = zeros([NNtrials, 1]); % DeltaV for each trial
 
-% Save results for each run:
-x_trials = zeros([NNtrials, 3]);
-dv_trials = zeros([NNtrials, 1]);
-
-% Display message
-disp(['ga search with ',num2str(NNtrials),' trials running...']);
+% Display optimization initialization
+disp(['GA search with ', num2str(NNtrials), ' trials running...']);
 tic
 
-nvars = 3; % Number of variables (departure, flyby, arrival times)
-lb = [dep_window(1), flyby_window(1), arr_window(1)];  % Lower bounds
-ub = [dep_window(end), flyby_window(end), arr_window(end)]; % Upper bounds
+% Number of variables (departure, flyby, arrival times)
+nvars = 3; 
+% Lower and upper bounds for the variables
+lb = [dep_window(1), flyby_window(1), arr_window(1)];  
+ub = [dep_window(end), flyby_window(end), arr_window(end)]; 
 
+% GA options
 options = optimoptions('ga', ...
-    'PopulationSize', 200, ...  % Larger population for better exploration
-    'MaxGenerations', 500, ...  % Increase generations for improved convergence
-     'Display', 'iter');
+    'PopulationSize', 800, ...   % Larger population for better exploration
+    'MaxGenerations', 400, ...   % Increase generations for better convergence
+    'Display', 'iter');          % Display iteration progress
 
+% Perform multiple GA trials to ensure robust results
 for i = 1:NNtrials
+    disp(['RUN number: ', num2str(i)]);
     
-     disp(['RUN number:',num2str(i)]);
-    % Run genetic algorithm
+    % Execute the genetic algorithm
     [x, dv] = ga(@(x) DeltaV_calculator(x, data, 1), nvars, [], [], [], [], ...
                  lb, ub, @(x) nonlcon(x, data), options);
 
-    % Save results
+    % Save results for each trial
     dv_trials(i, 1) = dv;
     x_trials(i, :) = x;
-
 end
 
-
-
-% Convert results to readable dates
+% Convert optimized times to readable dates and display results
 depdate = mjd20002date(x(1));
 fprintf(['Optimized departure date from Mercury: ', repmat('%d ', 1, numel(depdate)), '\n'], depdate);
 
@@ -46,48 +72,20 @@ fprintf(['Optimized arrival date to Harmonia: ', repmat('%d ', 1, numel(arrdate)
 
 toc
 
-% Select minimum deltaV solution:
+% Select the solution with the minimum deltaV across all trials
 [~, index] = min(dv_trials);
 dv = dv_trials(index);
-disp(dv)
-x = x_trials(index,:);
+disp(['Minimum deltaV: ', num2str(dv)]);
+x = x_trials(index, :);
 
-%% plot
+%% Plot the optimized transfer trajectory if requested
 if FlagPlot
-% Plot optimal transfer
-plotTransfer([x(1), x(2), x(3)])
+    plotTransfer(x);
 end
 
-%% animated plot
+%% Plot an animated trajectory if requested
 if FlagAnimatedPlot
-Animated_Transfers_Plot(x)
+    Animated_Transfers_Plot(x);
 end
 
 end
-
-
-% options = optimoptions('ga', ...
-%     'PopulationSize', 200, ...  % Larger population for better exploration
-%     'MaxGenerations', 500, ...  % Increase generations for improved convergence
-%     'Display', 'iter', ...
-%     'EliteCount', ceil(0.05 * 200), ... % 5% of population as elite
-%     'CrossoverFraction', 0.85, ... % Higher crossover to encourage exploitation
-%     'MutationFcn', {@mutationadaptfeasible, 0.1}, ... % Higher mutation rate for diversity
-%     'PlotFcn', @gaplotbestf, ...
-%     'NonlinConAlgorithm','penalty',...
-%     'ConstraintTolerance',1e-6,...
-%     'FunctionTolerance',1e-8,...
-%     'MaxStallGenerations', 30)  % Allow more stalls before termination
-
-    % GA options
-% options = optimoptions('ga', ...
-%     'PopulationSize', 300, ...               % Larger population for complex constraints
-%     'MaxGenerations', 700, ...               % More generations to allow convergence
-%     'EliteCount', ceil(0.05 * 300), ...      % 5% elite preservation
-%     'CrossoverFraction', 0.85, ...           % High crossover to accelerate convergence
-%     'MutationFcn', {@mutationadaptfeasible, 0.12}, ... % Adaptive feasible mutation
-%     'FunctionTolerance', 1e-10, ...          % High precision
-%     'ConstraintTolerance', 1e-6, ...         % Tight constraint handling
-%     'NonlinConAlgorithm', 'auglag', ...      % Augmented Lagrangian for nonlinear constraints
-%     'MaxStallGenerations', 40, ...           % Avoid premature convergence
-%     'Display', 'iter');
