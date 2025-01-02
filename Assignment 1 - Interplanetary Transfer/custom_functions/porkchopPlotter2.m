@@ -1,4 +1,26 @@
 function porkchopPlotter2(deltaV_totals, tspan_arr, tspan_dep)
+
+    % Function to visualize Delta-V requirements for interplanetary transfers 
+    % using 2D and 3D porkchop plots for the second leg of a transfer.
+    %
+    % INPUT:
+    %  deltaV_totals  [LxM]   Matrix of Delta-V values for the second leg, where
+    %                         L corresponds to flyby dates, and M corresponds 
+    %                         to arrival dates [km/s].
+    %  tspan_arr      [1xM]   Vector of arrival dates (mjd2000).
+    %  tspan_dep      [1xL]   Vector of departure dates (mjd2000).
+    %
+    % OUTPUT:
+    %  Generates:
+    %  - A 2D contour plot showing Delta-V values and time-of-flight lines.
+    %  - A 3D surface plot illustrating Delta-V values as a function of departure 
+    %    and arrival dates.
+    % 
+    %
+    % AUTHORS: Richero Giovanni, Emrem Mert
+    %
+    % -------------------------------------------------------------------------
+
     set(groot, 'defaultTextInterpreter', 'latex');
     set(groot, 'defaultAxesTickLabelInterpreter', 'latex');
     set(groot, 'defaultLegendInterpreter', 'latex');
