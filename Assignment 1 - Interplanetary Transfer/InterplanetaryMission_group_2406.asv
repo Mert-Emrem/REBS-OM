@@ -1,14 +1,12 @@
-%% INTERPLANETARY EXPLORER MISSION
-%--------------------------------------------------------------------------
-%--------------------------------------------------------------------------
+
+% INTERPLANETARY EXPLORER MISSION
+%
 % This script designs an interplanetary mission that begins from Mercury, 
 % executes a flyby at Mars, and concludes at Asteroid 40 Harmonia. The mission 
 % avoids orbit insertion/deorbit phases by assuming departure and arrival 
 % velocities match those of the respective celestial bodies.
 %
-%--------------------------------------------------------------------------
-%
-% OBJECTIVES:
+% Objectives:
 % - Optimize the mission trajectory to minimize delta-V
 % - Explore multiple time windows using Grid Search and Genetic Algorithms
 % - Visualize the optimized trajectories
@@ -34,7 +32,7 @@ addpath 'custom_functions'\
 mu_sun = astroConstants(4);
 mu_merc = astroConstants(11);
 mu_mars = astroConstants(14);
-% Struct containing data of Mars
+
 data.Mars.Radius = 3390; % Mars radius [km]
 data.Mars.mu = mu_mars;
 data.Mars.h_atm = 100;
@@ -70,6 +68,11 @@ resolution_dep   = 500;
 resolution_flyby = 500; 
 resolution_arr   = 500; 
 
+% Use this instead to set resolution to 1 day
+% resolution_dep   = dep_window_end   - dep_window_start
+% resolution_flyby = flyby_window_end - flyby_window_start
+% resolution_arr   = arr_window_end   - arr_window_start
+
 dep_window   = linspace(dep_window_start,   dep_window_end,   resolution_dep);   % [1 x L]
 flyby_window = linspace(flyby_window_start, flyby_window_end, resolution_flyby); % [1 x M]
 arr_window   = linspace(arr_window_start,   arr_window_end,   resolution_arr);   % [1 x N]
@@ -97,9 +100,7 @@ arr_window   = linspace(arr_window_start,   arr_window_end,   resolution_arr);  
 
 
 %% Optimizer: ga
-% The optimization minimizes delta-V using ga starting from a refined
-% choice of time windows due to the previous results
-
+% 
 dep_window_start   = date2mjd2000([2041, 0, 0, 0, 0, 0]);
 dep_window_end     = date2mjd2000([2043, 0, 0, 0, 0, 0]);
 
