@@ -128,7 +128,9 @@ arr_window   = linspace(arr_window_start,   arr_window_end,   resolution_arr);  
                         4,... N. trials to run the ga
                         1,... Flag Plot
                         0);%  Flag Animated Plot
-
+%% Optimal Values
+% load the optimal values obtained before without running the code
+load('Optimal_Values_Struct.mat')
 
 %% Plot for optimal DeltaV: GridSearch + fmincon
 % Results with 1000X1000X1000 points (first time windows)
@@ -146,13 +148,11 @@ arr_window   = linspace(arr_window_start,   arr_window_end,   resolution_arr);  
 % flyby_GS = date2mjd2000([2042 6 8 7 47 2.151245e+00]);
 % arr_GS = date2mjd2000([2043 8 5 12 19 2.450843e+01]);
 
-load('x_GSf.mat')
-load('dv_GSf.mat')
 
 
-DeltaV_calculator(x_GSf, data, 1)
-plotTransfer(x_GSf)
-Animated_Transfers_Plot(x_GSf)
+DeltaV_calculator(DataOpt.GSf.x, data, 1)
+plotTransfer(DataOpt.GSf.x)
+Animated_Transfers_Plot(DataOpt.GSf.x)
 
 
 %% Plot for optimal DeltaV: ga
@@ -167,12 +167,9 @@ Animated_Transfers_Plot(x_GSf)
 % Elapsed time is 1092.091359 seconds.
 %    23.8173
 
-load("x_ga.mat")
-load("dv_ga.mat")
-
-DeltaV_calculator(x_ga, data, 1)
-plotTransfer(x_ga)
-Animated_Transfers_Plot(x_ga)
+DeltaV_calculator(DataOpt.ga.x, data, 1)
+plotTransfer(DataOpt.ga.x)
+Animated_Transfers_Plot(DataOpt.ga.x)
 
 
 
