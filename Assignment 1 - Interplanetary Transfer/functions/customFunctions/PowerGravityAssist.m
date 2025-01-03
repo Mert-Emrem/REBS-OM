@@ -33,9 +33,6 @@ function [dvp, delta, rp, em, ep, am, ap, vpm, vpp, deltam, deltap] = PowerGravi
 % 
 % AUTHORS: Richero Giovanni, Emrem Mert, Bernarsconi Ludovico, Serlini Mariagiulia
 % -------------------------------------------------------------------------
-
-function
-
     % Turn angle between incoming and outgoing hyperbolas
     delta = acos(dot(vinfm, vinfp) / norm(vinfm) / norm(vinfp));
     

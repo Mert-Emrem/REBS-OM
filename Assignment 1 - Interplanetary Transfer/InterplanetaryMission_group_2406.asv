@@ -26,7 +26,7 @@ clear; close all; clc;
 % Add required paths for auxiliary functions
 addpath 'functions'\timeConversion\time\
 addpath 'functions'\
-addpath 'custom_functions'\
+addpath 'functions'\'customFunctions'\
 
 % Constant definitions
 
@@ -37,7 +37,7 @@ mu_mars = astroConstants(14);
 % Struct containing data of Mars
 data.Mars.Radius = 3390; % Mars radius [km]
 data.Mars.mu = mu_mars;
-data.Mars.h_atm = 100;
+data.Mars.h_atm = 220;
 
 %% %% Define Mission Time Windows
 % Starts and ends of time windows, defined in calendar dates
@@ -129,7 +129,7 @@ arr_window   = linspace(arr_window_start,   arr_window_end,   resolution_arr);  
                         1,... Flag Plot
                         0);%  Flag Animated Plot
 %% Optimal Values
-% 
+% load the optimal values obtained before without running the code
 load('Optimal_Values_Struct.mat')
 
 %% Plot for optimal DeltaV: GridSearch + fmincon
@@ -148,13 +148,11 @@ load('Optimal_Values_Struct.mat')
 % flyby_GS = date2mjd2000([2042 6 8 7 47 2.151245e+00]);
 % arr_GS = date2mjd2000([2043 8 5 12 19 2.450843e+01]);
 
-load('x_GSf.mat')
-load('dv_GSf.mat')
+x = DataOpt.GSf.x;
 
-
-DeltaV_calculator(x_GSf, data, 1)
-plotTransfer(x_GSf)
-Animated_Transfers_Plot(x_GSf)
+DeltaV_calculator(x, data, 1);
+plotTransfer(x);
+Animated_Transfers_Plot(x);
 
 
 %% Plot for optimal DeltaV: ga
@@ -169,12 +167,11 @@ Animated_Transfers_Plot(x_GSf)
 % Elapsed time is 1092.091359 seconds.
 %    23.8173
 
-load("x_ga.mat")
-load("dv_ga.mat")
+x = DataOpt.ga.x;
 
-DeltaV_calculator(x_ga, data, 1)
-plotTransfer(x_ga)
-Animated_Transfers_Plot(x_ga)
+DeltaV_calculator(x, data, 1)
+plotTransfer(x)
+Animated_Transfers_Plot(x)
 
 
 

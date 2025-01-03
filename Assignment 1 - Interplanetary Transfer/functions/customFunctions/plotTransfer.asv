@@ -112,9 +112,12 @@ if YesPlot
     hold on
     view(0, 90) % azimuth and elevation
     axis equal
-    xlim([-2e+4 +2e+4]); ylim([-0.41e+5 +0.41e+5]);
+    xlim([-0.41e+5 +0.41e+5]); ylim([-0.41e+5 +0.41e+5]);
     
+    plot3(X1,Y1,Z1, 'LineWidth', 2)
     X_min_minus = min(X1);
+    
+    plot3(X2,Y2,Z2, 'LineWidth', 2)
     X_min_plus = min(X2);
     
     
@@ -127,11 +130,10 @@ if YesPlot
     plot3(X, Y_minus(X), zeros(length(X),1), 'LineWidth', 2, 'Color', '#0714fa')
 
     X =  X_min_plus:x0_plus ;
-    plot3(X, Y_plus(X), zeros(length(X),1), 'LineWidth', 2, 'Color', '#e607fa')
+    plot3(X, Y_plus(X), zeros(length(X),1), 'LineWidth', 2, 'Color', '#e607fa')% Outbound arc
 
     plot3(X1, Y1, Z1, 'k', 'LineWidth', 2);% Inbound arc 
-    plot3(X2, Y2, Z2, 'k', 'LineWidth', 2);% Outbound arc
-
+    plot3(X2, Y2, Z2, 'k', 'LineWidth', 2);
     plotObjects(1, Mars, [0, 0, 0]); % Mars
     xlabel('X [Km]', 'fontsize', 14, 'interpreter', 'latex');
     ylabel('Y [Km]', 'fontsize', 14, 'interpreter', 'latex');
