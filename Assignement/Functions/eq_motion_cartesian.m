@@ -10,18 +10,18 @@ function dy = eq_motion_cartesian(t, cart_coord, acc_pert_function_cartesian,  m
 %
 % INPUTS
 % - ODE variables
-%   t                               [1x1]    time variable of the ODE system 
-%   cart_coord                      [6x1]    column vector of radius and velocity vectors variables of the
-%                                            ODE system: [rx [km]; ry [km]; rz [km]; vx [km/s]; vy [km/s]; vz[km/s]]
+%   t                               [1x1]    [s]            time variable of the ODE system 
+%   cart_coord                      [6x1]    [...]          column vector of radius and velocity vectors variables of the
+%                                                           ODE system: [rx [km]; ry [km]; rz [km]; vx [km/s]; vy [km/s]; vz[km/s]]
 % - function for acceleration
-%   acc_pert_function_cartesian              @(t, cart_coord) acc_pert_function_cartesiam(t, cart_coord, J2, mu, R_planet, date_mjd2000, tilt)
-%   mu                              [1x1]    Primary planet gravitational parameter
+%   acc_pert_function_cartesian                             @(t, cart_coord) acc_pert_function_cartesiam(t, cart_coord, J2, mu, R_planet, date_mjd2000, tilt)
+%   mu                              [1x1]    [km^3/s^2]     Primary planet gravitational parameter
 %
 % OUTPUT
-%   dy                              [6x1]    system of 6 ODE in the
-%                                            unknown: rx, ry, rz, vx, vy, vz, following the cartesian formulation of
-%                                            the problem
-%
+%   dy                              [6x1]                   system of 6 ODE in the
+%                                                           unknown: rx, ry, rz, vx, vy, vz, following the cartesian formulation of
+%                                                           the problem
+%                
 % Author: Serlini Mariagiulia
 % Last update: 23/12/2024
 %

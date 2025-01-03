@@ -1,22 +1,28 @@
 function [a, e, i, OM, om, th] = car2par(rr, vv, mu)
+% ----------------------------------------------------------------
+%
+% function [a, e, i, OM, om, th] = car2par(rr, vv, mu)
+%
 % Transformation from cartesian coordinates to Keplerian parameters
 %
 % STRUCTURE:
 % [a, e, i, OM, om, th] = car2par(rr, vv, mu)
 %
-% INPUT:
-%  - rr         [3x1] position vector                [km]
-%  - vv         [3x1] velocity vector                [km/s]
-%  - mu         [1x1] gravitational parameter        [km^3/s^2]   per i progetti mu = 398600 km^3/s^2
+% INPUTS:
+% rr         [3x1]     [km]          position vector                
+% vv         [3x1]     [km/s]        velocity vector                
+% mu         [1x1]     [km^3/s^2]    gravitational parameter          
+%            
+% OUTPUTS:            
+% a          [1x1]     [km]          semi-major axis                
+% e          [1x1]     [-]           eccentircity                   
+% i          [1x1]     [rad]         inclination                    
+% OM         [1x1]     [rad]         RAAN                           
+% om         [1x1]     [rad]         pericenter argument            
+% th         [1x1]     [rad]         true argument                  
 %
-% OUTPUT:
-%  - a          [1x1] semi-major axis                [km]
-%  - e          [1x1] eccentircity                   [-]
-%  - i          [1x1] inclination                    [rad]
-%  - OM         [1x1] RAAN                           [rad]
-%  - om         [1x1] pericenter argument            [rad]
-%  - th         [1x1] true argument                  [rad]
-%
+% Author: Serlini Mariagiulia
+% Last Update: 30/12/2024
 % --------------------------------------------------------------------
 
 
@@ -64,9 +70,15 @@ v_r = dot(vv, rr)/rr_norm;
 
 if v_r >= 0
     th = acos(dot(rr,e_vect)/(rr_norm*e));
+    if abs(th - 2*pi) < 1e-6
+        th = 0;
+    end
 end
 if v_r < 0
     th = 2*pi - acos(dot(rr,e_vect)/(rr_norm*e));
+    if abs(th - 2*pi) < 1e-6
+        th = 0;
+    end
 end
 
 

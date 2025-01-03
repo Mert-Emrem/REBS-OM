@@ -10,21 +10,21 @@ function acc_pert_vect = acc_pert_function(t, kep_el, J2, mu, R_planet, date_mjd
 %
 % INPUTS
 % - ODE variables
-%   t               [1x1]    time variable of the ODE system 
-%   kep_el          [6x1]    column vector of the 6 keplerian elements variables of the
-%                            ODE system: [a [km]; e [-]; i [rad]; OMEGA [rad]; omega [rad]; theta[rad]]
-% - parameters
-%   J2              [1x1]    Gravitational Harmonic coefficent of the primary planet
-%   mu              [1x1]    Primary planet gravitational parameter
-%   R_planet        [1x1]    primary planet radius
-%   date_mjd200     [1x1]    starting date of the orbit evaluated in mjd2000
-%   tilt            [1x1]    tilt angle of the primary planet with respect to the ecliptic plane
-%  n_planet         [1x1]    number of the primary planet compatible with uplanet function
-%
-% OUTPUT
-%   acc_pert_vect   [3x1]    vector of the perturbing acceleration, sum of the contribution given 
-%                            by J2 and the 3BP perturbation of the Sun in
-%                            the cartesian reference frame 
+%   t               [1x1]   [s]     time variable of the ODE system 
+%   kep_el          [6x1]   [...]    column vector of the 6 keplerian elements variables of the
+%                                     ODE system: [a [km]; e [-]; i [rad]; OMEGA [rad]; omega [rad]; theta[rad]]
+% - parameters    
+%   J2              [1x1]   [-]             Gravitational Harmonic coefficent of the primary planet
+%   mu              [1x1]   [km^3/s^2]    Primary planet gravitational parameter
+%   R_planet        [1x1]   [km]    primary planet radius
+%   date_mjd200     [1x1]   [day in mjd200]   starting date of the orbit evaluated in mjd2000
+%   tilt            [1x1]   [rad]   tilt angle of the primary planet with respect to the ecliptic plane
+%   n_planet        [1x1]       number of the primary planet compatible with uplanet function
+%    
+% OUTPUT    
+%   acc_pert_vect   [3x1]       vector of the perturbing acceleration, sum of the contribution given 
+%                               by J2 and the 3BP perturbation of the Sun in
+%                               the cartesian reference frame 
 %
 % Author: Serlini Mariagiulia
 % Last update: 27/12/2024

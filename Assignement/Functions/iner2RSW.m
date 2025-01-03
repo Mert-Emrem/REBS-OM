@@ -7,13 +7,13 @@ function R = iner2RSW(om, th, i, OM)
 % out-of-plane) of the S/C
 %
 % INPUTS
-% om [1x1] [rad] pericenter anomaly
-% th [1x1] [rad] true anomaly
-% i  [1x1] [rad] inclination
-% OM [1x1] [rad] Right Ascension of the Ascending Node
+% om     [1x1]     [rad]     pericenter anomaly
+% th     [1x1]     [rad]     true anomaly
+% i      [1x1]     [rad]     inclination
+% OM     [1x1]     [rad]     Right Ascension of the Ascending Node
 %
 % OUTPUT
-% R  [3x3] [-]   Rotational matrix from cartesian to RSW reference frame
+% R      [3x3]      [-]      Rotational matrix from cartesian to RSW reference frame
 %
 % Author: Serlini Mariagiulia
 % Last Update: 23/12/2024

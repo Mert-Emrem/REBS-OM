@@ -7,22 +7,24 @@ function [T_ode, Y] = Orbit_Analysis(r0, v0, mu, tspan, type_pb, varargin)
 % and using ode113 to solve it
 %
 % INPUTS
-% r0        [3x1]       initial position vector as column vector
-% v0        [3x1]       initial velocity vector as column vector
-% mu        [1x1]       gravitational constant of the primary planet
-% tsapn     [nx1]       time window in which to solve the problem
-% type_pb   [chart]     specify the unperturbed or pertubed problem
-%                       - 'non_perturbed'
-%                       - 'perturbed'
-%
-% ADDITIONAL INPUTS if 'perturbed'
-% J2        [1x1]       Gravitational Harmonic coefficent of the primary planet
-% R         [1x1]       radius of the primary planet
-%
-% OUTPUTS
-% T_ode     [nx1]       vector of time in which the ODE system have been solved
-% Y         [nx1]       Solution f the ode problem
-%
+% r0        [3x1]         [km]             initial position vector as column vector
+% v0        [3x1]         [km/s]           initial velocity vector as column vector
+% mu        [1x1]         [km^3/s^2]       gravitational constant of the primary planet
+% tsapn     [nx1]         [s]              time window in which to solve the problem
+% type_pb   [chart]       [-]              specify the unperturbed or pertubed problem
+%                                          - 'non_perturbed'
+%                                          - 'perturbed'
+%     
+% ADDITIONAL INPUTS if 'perturbed'     
+% J2        [1x1]         [-]              Gravitational Harmonic coefficent of the primary planet
+% R         [1x1]         [km]             radius of the primary planet
+%       
+% OUTPUTS       
+% T_ode     [nx1]         [s]              vector of time in which the ODE system have been solved
+% Y         [nx1]         [km, km/s]       Solution f the ode problem
+%                                          col 1-3: rx, ry, rz
+%                                          col 4-6: vx, vy, vz
+%     
 % Author: Serlini Mariagiulia
 % Last update: 23/12/2024
 %

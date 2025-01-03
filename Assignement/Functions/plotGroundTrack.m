@@ -1,21 +1,22 @@
-function [] = plotGroundTrack(lon, lat, t)
+function [] = plotGroundTrack(axes, lon, lat, t)
+% -------------------------------------------------------------------------
+% [] = plotGroundTrack(lon, lat, t)
+%
 % Function plotGroundTrack plots the groundtrack of a given orbit. It
 % should be used after function groundTrack, wich give as output the input
 % of this function. 
 % Notice: upload the image of the planet in the same folder of this
 % function.
 %
-% STRUCTURE:
-%   [] = plotGroundTrack(lon, lat, t)
-%
 % INPUT:
-% - lon       [nx1] longitude
-% - lat       [nx1] latitude
-% - t         [nx1]   column vector of time in witch to compute the solution
-%
+% - lon       [nx1]     [deg]        longitude
+% - lat       [nx1]     [deg]        latitude
+% - t         [nx1]     [deg]        column vector of time in witch to compute the solution
+%        
 % AUTHORS: Bernasconi Ludovico, Emrem Mert, Richero Giovanni, Serlini
 %          Mariagiulia
 %
+% Last update: 30/12/2024
 % -------------------------------------------------------------------------
 
 % Carica l'immagine
@@ -24,17 +25,17 @@ img = imread('MercuryTexture.jpg');
 % Ottieni le dimensioni dell'immagine
 %[rows, cols, ~] = size(img);
 
-for i = 2:length(lon)
-    if lon(i-1) > 0 && lon(i) < 0 && lon(i) < 175
-       lat(i) = NaN;
-       lon(i) = NaN;
-       i = i+1;
-    end
-end
+% for i = 2:length(lon)
+%     if lon(i-1) > 0 && lon(i) < 0 && lon(i) < 175
+%        lat(i) = NaN;
+%        lon(i) = NaN;
+%        i = i+1;
+%     end
+% end
 
 
 % Crea il plot
-figure;
+%figure;
 ax = axes;
 
 % Mostra l'immagine come sfondo, ridimensionata per coprire l'intero range degli assi
@@ -45,6 +46,7 @@ axis on;
 xlabel('Longitude [deg]');
 ylabel('Latitude [deg]');
 
+
 % Imposta i limiti degli assi per coprire l'immagine
 xlim([-180 180]);
 ylim([-90 90]);
@@ -53,12 +55,13 @@ ylim([-90 90]);
 plot([0 0], ylim, 'k', 'LineWidth', 1); % Meridiano di Greenwich
 plot(xlim, [0 0], 'k--', 'LineWidth', 1); % Equatore
 
-% scatter(lon, lat, 5, t, 'filled');
-% colorbar
-plot(lon, lat, 'Color', 'y', LineWidth=1.5);
+scatter(lon, lat, 3, t, 'filled');
+colorbar
+%plot(lon, lat, 'Color', 'y', LineWidth=1);
 plot(lon(1), lat(1), 'or', LineWidth=2);
 plot(lon(end), lat(end), 'ob', LineWidth=2);
+ylabel(colorbar,'Time [s]');
 
-legend('Meridian at longitute = 0 deg', 'Equator', 'GT' , 'first point', 'last point');
+legend('Meridian lon = 0°', 'Equator', 'GT' , 'first point', 'last point');
 
 end

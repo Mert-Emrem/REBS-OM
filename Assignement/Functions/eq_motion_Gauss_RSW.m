@@ -11,17 +11,17 @@ function ds = eq_motion_Gauss_RSW(t, kep_el, acc_pert_function,  mu) %, J2, Re, 
 %
 % INPUTS
 % - ODE variables
-%   t               [1x1]    time variable of the ODE system 
-%   kep_el          [6x1]    column vector of the 6 keplerian elements variables of the
-%                            ODE system: [a [km]; e [-]; i [rad]; OMEGA [rad]; omega [rad]; theta[rad]]
+%   t                   [1x1]    [s]             time variable of the ODE system 
+%   kep_el              [6x1]    [...]           column vector of the 6 keplerian elements variables of the
+%                                                ODE system: [a [km]; e [-]; i [rad]; OMEGA [rad]; omega [rad]; theta[rad]]
 % - function for acceleration
-%   acc_pert_function        @(t, k_el) acc_pert_function(t, kep_el, J2, mu, R_planet, date_mjd2000, tilt)
-%   mu              [1x1]    Primary planet gravitational parameter
+%   acc_pert_function                            @(t, k_el) acc_pert_function(t, kep_el, J2, mu, R_planet, date_mjd2000, tilt)
+%   mu                  [1x1]    [km^3/s^2]      Primary planet gravitational parameter
 %
 % OUTPUT
-%   ds              [6x1]    system of 6 ODE in the unknown: a, e, i, OM,
-%                            om, th following the resolution method of Gauss in the
-%                            RSW (radial - transversal - out-of-plane) reference frame
+%   ds                  [6x1]                    system of 6 ODE in the unknown: a, e, i, OM,
+%                                                om, th following the resolution method of Gauss in the
+%                                                RSW (radial - transversal - out-of-plane) reference frame
 %
 % Author: Serlini Mariagiulia
 % Last update: 23/12/2024

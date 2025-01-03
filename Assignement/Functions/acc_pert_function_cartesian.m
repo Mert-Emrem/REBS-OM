@@ -65,7 +65,7 @@ d_vect = dot(c, c-2*r_SC_3B)/dot(r_SC_3B, r_SC_3B);
 d = norm(d_vect);
 diff = 1/norm(r_CB_3B)^3 *(d*(3+3*d+d^2)/(1+(1+d)^1.5)*r_SC_3B + c);
 
-a_3B = mu_3B *diff;
+a_3B = mu_3B * diff;
 
 acc_pert_vect = a_J2_vect + a_3B;
 end
