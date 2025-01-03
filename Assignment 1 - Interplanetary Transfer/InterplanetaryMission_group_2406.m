@@ -136,20 +136,6 @@ load('Optimal_Values_Struct.mat')
 %% Plot for optimal DeltaV: GridSearch + fmincon
 % Results with 1000X1000X1000 points (first time windows)
 % Same result obtain with 200X200X200 points (second time windows)
-% fmincon search with 5 trials running...
-%------------------------------------------------------------------
-% Optimized departure date from Mercury: 2041 3 29 17 8 2.632399e+00 
-% Optimized flyby date via Mars: 2042 6 8 7 47 2.151245e+00 
-% Optimized arrival date to Harmonia: 2043 8 5 12 19 2.450843e+01
-%-------------------------------------------------------------
-% OPTIMAL DELTA v
-% Elapsed time is 18.635472 seconds.
-%    23.8371
-% dep_GS = date2mjd2000([2041 3 29 17 8 2.632399e+00]);
-% flyby_GS = date2mjd2000([2042 6 8 7 47 2.151245e+00]);
-% arr_GS = date2mjd2000([2043 8 5 12 19 2.450843e+01]);
-
-x = DataOpt.GSf.x;
 
 DeltaV_calculator(x, data, 1);
 plotTransfer(x);
@@ -157,18 +143,7 @@ Animated_Transfers_Plot(x);
 
 
 %% Plot for optimal DeltaV: ga
-% Optimization finished: average change in the fitness value less than
-% options.FunctionTolerance and constraint violation is less than options.ConstraintTolerance.
-%---------------------------------------------------------------------
-% Optimized departure date from Mercury: 2041 3 30 4 20 3.504044e+01 
-% Optimized flyby date via Mars: 2042 6 13 13 43 1.008608e+01 
-% Optimized arrival date to Harmonia: 2043 8 21 14 15 3.604346e+01 
-%-------------------------------------------------------------
-% OPTIMAL DELTA v
-% Elapsed time is 1092.091359 seconds.
-%    23.8173
 
-x = DataOpt.ga.x;
 
 DeltaV_calculator(x, data, 1)
 plotTransfer(x)
