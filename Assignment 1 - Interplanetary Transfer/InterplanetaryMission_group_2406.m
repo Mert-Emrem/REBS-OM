@@ -131,7 +131,6 @@ arr_window   = linspace(arr_window_start,   arr_window_end,   resolution_arr);  
 
 %% Optimal Values
 % load the optimal values obtained before without running the code
-load('Optimal_Values_Struct.mat')
 
 %% Plot for optimal DeltaV: GridSearch + fmincon
 % Results with 1000X1000X1000 points (first time windows)
