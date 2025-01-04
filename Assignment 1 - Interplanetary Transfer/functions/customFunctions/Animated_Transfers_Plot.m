@@ -89,6 +89,8 @@ background = imread('MilkyWay.jpg');
 
 figure
 
+% set(gcf,'Position', get(0,'Screensize'));
+
 ax1 = axes('Position', [0 0 1 1], 'Visible', 'off');
 imshow(background, 'Parent', ax1)
 
@@ -96,7 +98,7 @@ ax2 = axes('Position', [0 0 1 1]);
 set(ax2, 'Color', 'none'); % Sfondo trasparente
 hold(ax2, 'on');
 
-view(ax2, 45, 25); % Set the viewing angle
+view(ax2, 45, 22); % Set the viewing angle
 axis(ax2, 'equal');
 xlim(ax2,[-0.39e+9 +0.41e+9]);
 ylim(ax2,[-0.39e+9 +0.41e+9]);
@@ -109,7 +111,7 @@ ylabel(ax2,'Y [Km]', 'fontsize', 14, 'interpreter', 'latex', 'Color', 'white');
 zlabel(ax2,'Z [Km]', 'fontsize', 14, 'interpreter', 'latex', 'Color', 'white');
 
 % title
-title(ax2,'Interplanetary Trajectory', 'fontsize', 20, 'interpreter', 'latex', 'Color', 'w');
+title(ax2,'Interplanetary Trajectory','FontWeight', 'bold', 'fontsize', 30, 'interpreter', 'latex', 'Color', 'w');
 
 % Plot the orbits of Mercury, Mars, and the asteroid
 plot3(ax2,r1(1,:), r1(2, :), r1(3, :), 'LineStyle', '- -', 'Color', '#8fe866'); % Mercury
@@ -136,20 +138,20 @@ line5 = animatedline(ax2,rr_d_ven(1), rr_d_ven(2), rr_d_ven(3), 'color', '#f7bb7
 
 % Plot the Sun and initialize planet and Spacecraft animations
 plotObjects(14, Sun, [0, 0, 0]);
-[ObjVen, Ven_X, Ven_Y, Ven_Z] = Plot_Animated_Objects(1000, Venus, rr_d_ven);
+[ObjVen, Ven_X, Ven_Y, Ven_Z] = Plot_Animated_Objects(950, Venus, rr_d_ven);
 [ObjMerc, Merc_X, Merc_Y, Merc_Z] = Plot_Animated_Objects(2000, Mercury, rr_d);
-[ObjEarth, Ear_X, Ear_Y, Ear_Z] = Plot_Animated_Objects(1000, Earth, rr_d_earth);
+[ObjEarth, Ear_X, Ear_Y, Ear_Z] = Plot_Animated_Objects(950, Earth, rr_d_earth);
 [ObjMars, Mars_X, Mars_Y, Mars_Z] = Plot_Animated_Objects(1500, Mars, rr_d_mars);
 [ObjHarm, Harm_X, Harm_Y, Harm_Z] = Plot_Animated_Objects(43000, Harmonia, rr_d_harm);
 SpaceCraft = scatter3(ax2,rr_d(1), rr_d(2), rr_d(3), 30, 'r', '<', 'filled');
 
 % Set real-time scaling factor
-real_time_factor = 1e+10; % Adjust this to control animation speed
+real_time_factor = 1e+15; % Adjust this to control animation speed
 
 % Animate the transfer trajectory over time
 ToF1 = (t_f - t_d) * 24 * 3600;
 ToF2 = (t_a - t_f) * 24 * 3600;
-dt = 86400/2; % 1/2 day in seconds
+dt = 111111; % 1 day in seconds
 tspan = 0:dt:(ToF1 + ToF2);
 
 % Initialize storage variables for trajectory points
@@ -166,12 +168,18 @@ textdep =sprintf('Time: $%02d:%02d:%02d$ $[h:m:s]$ \nDate: $%02d/%02d/%04d$ $[d/
                         depdate(4), depdate(5), ceil(depdate(6)), depdate(3), depdate(2), depdate(1));
 
 % Update the date and time text color to light blue
-time_text = text(-0.4e+9, 0.35e+9, textdep, 'FontSize', 16, 'Interpreter', 'latex', 'Color', 'w');
+time_text = text(-0.1e+9, 0.5e+9,2e+1, textdep, 'FontSize', 22, 'Interpreter', 'latex', 'Color', 'w', ...
+                    'BackgroundColor', 'k', 'EdgeColor', 'k');
+
+statetext = sprintf('Departure');
+state_display = text(0.1e+9, 0.4e+9, 0, statetext, 'FontSize', 20, ...
+                    'Interpreter', 'latex', 'Color', 'k', 'BackgroundColor', 'white', 'EdgeColor', 'black');
 
 % Add legend to the plot
-legend('Mercury Orbit', 'Mars Orbit', 'Harmonia Orbit', 'Earth Orbit', 'Venus Orbit',...
+leg = legend( 'Mercury Orbit', 'Mars Orbit', 'Harmonia Orbit', 'Earth Orbit', 'Venus Orbit',...
        'Departure', 'Flyby', 'Arrival','Lambert Arc (1)', 'Lambert Arc (2)', ...
-       'fontsize', 15, 'interpreter', 'latex', 'TextColor', 'k');
+       'fontsize', 15, 'interpreter', 'latex', 'TextColor', 'k', 'Location', 'northwest');
+set(leg, 'Color', [1 1 1]);
 
 % Pause for a moment before starting the animation
 pause(3.5);
@@ -223,6 +231,23 @@ for jj = 1:length(tspan) - 1
     % Format the time string with leading zeros
     time_str =sprintf('Time: $%02d:%02d:%02d$ $[h:m:s]$ \nDate:  $%02d/%02d/%04d$ $[d/m/y]$', ...
                         time(4), time(5), ceil(time(6)), time(3), time(2), time(1));
+
+    if tspan(jj)/24/3600 >= 10 && (tspan(jj)/24/3600 < ToF1/24/3600-5)
+       set(state_display, 'Color', '#0714fa')
+       set(state_display, 'String', 'Lambert Arc (1)')
+    elseif (tspan(jj)/24/3600 >= ToF1/24/3600-5) && (tspan(jj)/24/3600 <= ToF1/24/3600+5)
+       set(state_display, 'Color', 'b')
+       set(state_display, 'String', 'Flyby')
+    elseif (tspan(jj)/24/3600 > ToF1/24/3600+5) && (tspan(jj)/24/3600 < (ToF1+ToF2)/24/3600-10)
+       set(state_display, 'Color', '#e607fa')
+       set(state_display, 'String', 'Lambert Arc (2)')
+    elseif tspan(jj)/24/3600 >= (ToF1+ToF2)/24/3600-10
+       set(state_display, 'Color', 'm')
+       set(state_display, 'String', 'Arrival')
+    end
+             
+             
+         
 
     % Update time text
     set(time_text, 'String', time_str);
