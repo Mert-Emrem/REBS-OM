@@ -291,7 +291,7 @@ function Total_DeltaV_intersections = DeltaV_3dofs_Plotter(deltaV_totals_1, delt
         if rp > (data.Mars.Radius + data.Mars.h_atm)
             Delta_GA_intersections(idx) = dvp;
             Total_DeltaV_intersections(idx) = dvp + deltaV_intersect_1(idx) + deltaV_intersect_2(idx);
-            t_SOI_array(idx) = t_SOI;
+            t_SOI_array(idx) = t_SOI_array;
         end
     end
 
