@@ -65,19 +65,31 @@ kep2_f = zeros(1, 6); % Final orbit elements for second transfer
 % Solve Lambert's problem for the first transfer leg
 [~, ~, ~, err1, vt1_i, vt1_f, ~, ~] = lambertMR(rr_d, rr_f, (t_f - t_d) * 24 * 3600, ksun, 0, 0, 0, 0);
 if err1 == 0
-    [kep1_i(1:6)] = car2kep(rr_d, vt1_i);
-    [kep1_f(1:6)] = car2kep(rr_f, vt1_f);
+    [kep1_i(1), kep1_i(2), kep1_i(3), kep1_i(4), kep1_i(5), kep1_i(6)]...
+        = car2kep(rr_d, vt1_i', ksun);
+    [kep1_f(1), kep1_f(2), kep1_f(3), kep1_f(4), kep1_f(5), kep1_f(6)]...
+        = car2kep(rr_f, vt1_f', ksun);
 end
 
 % Solve Lambert's problem for the second transfer leg
 [~, ~, ~, err2, vt2_i, vt2_f, ~, ~] = lambertMR(rr_f, rr_a, (t_a - t_f) * 24 * 3600, ksun, 0, 0, 0, 0);
 if err2 == 0
-    [kep2_i(1:6)] = car2kep(rr_f, vt2_i);
-    [kep2_f(1:6)] = car2kep(rr_a, vt2_f);
+    [kep2_i(1), kep2_i(2), kep2_i(3), kep2_i(4), kep2_i(5), kep2_i(6)]...
+        = car2kep(rr_f, vt2_i', ksun);
+    [kep2_f(1), kep2_f(2), kep2_f(3), kep2_f(4), kep2_f(5), kep2_f(6)]...
+        = car2kep(rr_a, vt2_f', ksun);
 end
 
 % Assemble orbital elements matrix
 kep_M = [kep1_i; kep1_f; kep2_i; kep2_f];
+
+theta = kep_M(:,6);
+while any(theta>2*pi)
+    theta(theta>2*pi) = theta(theta>2*pi)-2*pi;
+end
+kep_M(:,6) = theta;
+
+kep_M(:, 3:6) = rad2deg(kep_M(:, 3:6));
 
 % Ensure Lambert problem solutions are valid
 if (err1 == 0) && (err2 == 0)

@@ -142,11 +142,25 @@ Animated_Transfers_Plot(x);
 
 
 %% Plot for optimal DeltaV: ga
+td = [2041 3 29 13 50 26];
+tf = [2042 6 7   4 31 23];
+ta = [2043 8 1  14 24 41];
+td = date2mjd2000(td);
+tf = date2mjd2000(tf);
+ta = date2mjd2000(ta);
 
+x = [td, tf, ta];
 
 DeltaV_calculator(x, data, 1)
+M = Orbits_calculator(x, data, 1);
+
+
+%%
 plotTransfer(x)
 Animated_Transfers_Plot(x)
+
+
+
 
 
 

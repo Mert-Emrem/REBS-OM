@@ -184,6 +184,8 @@ set(leg, 'Color', [1 1 1]);
 % Pause for a moment before starting the animation
 pause(3.5);
 
+gif_filename = 'Interplanetary_Trajectory.gif'; % filename
+
 % Loop through time steps to animate the transfers and object orbits
 for jj = 1:length(tspan) - 1
     % Determine the transfer arc (first or second)
@@ -256,7 +258,29 @@ for jj = 1:length(tspan) - 1
     pause(dt / real_time_factor);
 
     drawnow;
+
+
+
+        % Capture the current frame
+    frame = getframe(gcf);
+    im = frame2im(frame);
+    [imind, cm] = rgb2ind(im, 256);
+
+    % Write to GIF file
+    if jj == 1
+        imwrite(imind, cm, gif_filename, 'gif', 'Loopcount', inf, 'DelayTime', dt / real_time_factor);
+    else
+        imwrite(imind, cm, gif_filename, 'gif', 'WriteMode', 'append', 'DelayTime', dt / real_time_factor);
+    end
 end
+
+disp(['Animation saved as ', gif_filename]);
+
+
+
+
+
+
 
 
 hold off;
