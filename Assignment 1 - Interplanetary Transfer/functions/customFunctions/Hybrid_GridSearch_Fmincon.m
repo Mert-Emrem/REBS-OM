@@ -47,7 +47,7 @@ for i = 1:length(flyby_window)
                 % Compute Delta-V for the gravity assist at Mars
                 vinf_m = squeeze(Vinf_minus(k, i, :));
                 vinf_p = squeeze(Vinf_plus(i, j, :));
-                [dvp, ~, rp] = PowerGravityAssist(vinf_m, vinf_p, ...
+                [dvp, t_SOI, rp] = PowerGravityAssist(vinf_m, vinf_p, ...
                     data.Mars.Radius, data.Mars.h_atm, data.Mars.mu, 0);
 
                 % Store Delta-V and total Delta-V if constraints are met

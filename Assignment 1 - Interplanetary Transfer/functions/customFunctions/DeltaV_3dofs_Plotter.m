@@ -313,6 +313,7 @@ function Total_DeltaV_intersections = DeltaV_3dofs_Plotter(deltaV_totals_1, delt
     scatter3(X_intersect, Y_intersect, Z_intersect, 50, Total_DeltaV_intersections_pruned, 'filled'); 
     % Find the index of the minimum Delta-V
     [min_DeltaV, min_idx] = min(Total_DeltaV_intersections_pruned);
+    disp(t_SOI_array(min_idx));
     hold on;
     % Highlight the minimum point
     scatter3(X_intersect(min_idx), Y_intersect(min_idx), Z_intersect(min_idx), 100, 'r', 'filled', 'MarkerEdgeColor', 'k', 'LineWidth', 1.5);
