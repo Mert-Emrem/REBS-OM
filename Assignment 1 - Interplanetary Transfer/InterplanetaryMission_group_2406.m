@@ -66,9 +66,9 @@ flyby_window_end   = date2mjd2000([2044, 4, 1, 0, 0, 0]);
 arr_window_start   = date2mjd2000([2040, 1, 1, 0, 0, 0]);
 arr_window_end     = date2mjd2000([2044, 4, 1, 0, 0, 0]);
 
-resolution_dep   = 100; 
-resolution_flyby = 100; 
-resolution_arr   = 100; 
+resolution_dep   = 150; 
+resolution_flyby = 150; 
+resolution_arr   = 150; 
 
 dep_window   = linspace(dep_window_start,   dep_window_end,   resolution_dep);   % [1 x L]
 flyby_window = linspace(flyby_window_start, flyby_window_end, resolution_flyby); % [1 x M]
@@ -80,7 +80,7 @@ arr_window   = linspace(arr_window_start,   arr_window_end,   resolution_arr);  
 
 [M1, M2, Vinf_minus, Vinf_plus] = LambertArcsDeltaV_calculator(dep_window, flyby_window, arr_window,data,...
                                 0,... Flag PorkchopPlot
-                                0);%  Flag 3Dofs Plot
+                                1);%  Flag 3Dofs Plot
 
 
 %% Optimization Using Grid Search + fmincon
