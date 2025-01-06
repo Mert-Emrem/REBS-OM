@@ -89,7 +89,7 @@ background = imread('MilkyWay.jpg');
 
 figure
 
-% set(gcf,'Position', get(0,'Screensize'));
+set(gcf,'Position', get(0,'Screensize'));
 
 ax1 = axes('Position', [0 0 1 1], 'Visible', 'off');
 imshow(background, 'Parent', ax1)
@@ -111,7 +111,7 @@ ylabel(ax2,'Y [Km]', 'fontsize', 14, 'interpreter', 'latex', 'Color', 'white');
 zlabel(ax2,'Z [Km]', 'fontsize', 14, 'interpreter', 'latex', 'Color', 'white');
 
 % title
-title(ax2,'Interplanetary Trajectory','FontWeight', 'bold', 'fontsize', 30, 'interpreter', 'latex', 'Color', 'w');
+title(ax2,'Interplanetary Trajectory', 'fontsize', 30, 'interpreter', 'latex', 'Color', 'w');
 
 % Plot the orbits of Mercury, Mars, and the asteroid
 plot3(ax2,r1(1,:), r1(2, :), r1(3, :), 'LineStyle', '- -', 'Color', '#8fe866'); % Mercury
@@ -146,12 +146,12 @@ plotObjects(14, Sun, [0, 0, 0]);
 SpaceCraft = scatter3(ax2,rr_d(1), rr_d(2), rr_d(3), 30, 'r', '<', 'filled');
 
 % Set real-time scaling factor
-real_time_factor = 1e+15; % Adjust this to control animation speed
+real_time_factor = 1e+10; % Adjust this to control animation speed
 
 % Animate the transfer trajectory over time
 ToF1 = (t_f - t_d) * 24 * 3600;
 ToF2 = (t_a - t_f) * 24 * 3600;
-dt = 111111; % 1 day in seconds
+dt = 8400/3; % 1 day in seconds
 tspan = 0:dt:(ToF1 + ToF2);
 
 % Initialize storage variables for trajectory points
@@ -183,8 +183,6 @@ set(leg, 'Color', [1 1 1]);
 
 % Pause for a moment before starting the animation
 pause(3.5);
-
-gif_filename = 'Interplanetary_Trajectory.gif'; % filename
 
 % Loop through time steps to animate the transfers and object orbits
 for jj = 1:length(tspan) - 1
@@ -258,29 +256,7 @@ for jj = 1:length(tspan) - 1
     pause(dt / real_time_factor);
 
     drawnow;
-
-
-
-        % Capture the current frame
-    frame = getframe(gcf);
-    im = frame2im(frame);
-    [imind, cm] = rgb2ind(im, 256);
-
-    % Write to GIF file
-    if jj == 1
-        imwrite(imind, cm, gif_filename, 'gif', 'Loopcount', inf, 'DelayTime', dt / real_time_factor);
-    else
-        imwrite(imind, cm, gif_filename, 'gif', 'WriteMode', 'append', 'DelayTime', dt / real_time_factor);
-    end
 end
-
-disp(['Animation saved as ', gif_filename]);
-
-
-
-
-
-
 
 
 hold off;

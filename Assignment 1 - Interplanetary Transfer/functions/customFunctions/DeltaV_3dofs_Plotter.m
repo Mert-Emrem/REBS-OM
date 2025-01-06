@@ -272,7 +272,8 @@ function Total_DeltaV_intersections = DeltaV_3dofs_Plotter(deltaV_totals_1, delt
     % Initialize arrays
     Delta_GA_intersections = NaN(size(X_intersect));
     Total_DeltaV_intersections = NaN(size(X_intersect));
-    
+    t_SOI_array = NaN(size(X_intersect));
+
     % Loop over intersection points
     for idx = 1:numel(X_intersect)
         fprintf('Current index: %d\n',idx);
@@ -284,12 +285,13 @@ function Total_DeltaV_intersections = DeltaV_3dofs_Plotter(deltaV_totals_1, delt
         vinf_p = squeeze(Vinf_plus(flyby_idx(idx), arr_idx(idx), :)); % Second leg incoming
 
         % Perform gravity assist calculation
-        [dvp, ~, rp] = PowerGravityAssist(vinf_m, vinf_p, data.Mars.Radius, data.Mars.h_atm, data.Mars.mu, 0);
+        [dvp, t_SOI, rp] = PowerGravityAssist(vinf_m, vinf_p, data.Mars.Radius, data.Mars.h_atm, data.Mars.mu, 0);
 
         % Store gravity assist Delta-V if valid
         if rp > (data.Mars.Radius + data.Mars.h_atm)
             Delta_GA_intersections(idx) = dvp;
             Total_DeltaV_intersections(idx) = dvp + deltaV_intersect_1(idx) + deltaV_intersect_2(idx);
+            t_SOI_array(idx) = t_SOI;
         end
     end
 
@@ -311,6 +313,8 @@ function Total_DeltaV_intersections = DeltaV_3dofs_Plotter(deltaV_totals_1, delt
     scatter3(X_intersect, Y_intersect, Z_intersect, 50, Total_DeltaV_intersections_pruned, 'filled'); 
     % Find the index of the minimum Delta-V
     [min_DeltaV, min_idx] = min(Total_DeltaV_intersections_pruned);
+    t_SOI_array = t_SOI_array(valid_indices);
+    disp(t_SOI_array(min_idx));
     hold on;
     % Highlight the minimum point
     scatter3(X_intersect(min_idx), Y_intersect(min_idx), Z_intersect(min_idx), 100, 'r', 'filled', 'MarkerEdgeColor', 'k', 'LineWidth', 1.5);

@@ -86,27 +86,52 @@ vv_inf_minus = VV_minus - v_mars';
 vv_inf_plus = vt2_i - v_mars';
 
 mu_mars = astroConstants(14); % Mars gravitational parameter
-[~, ~, rp, ~, ~, ~, ~, vpm, vpp, ~, ~] = PowerGravityAssist(vv_inf_minus, vv_inf_plus, Mars.Radius, 100, mu_mars, 1);
+[~, ~, rp, em, ep, am, ap, vpm, vpp, deltam, deltap] = PowerGravityAssist(vv_inf_minus, vv_inf_plus, Mars.Radius, 220, mu_mars, 1);
 
 YesPlot = ~isnan(rp); % Check for feasible flyby
 
 if YesPlot
+    figure
+    % time span
     dt = 10; 
     tspan = 0:dt:10000;
-
-    % Integrate inbound and outbound flyby arcs
-    [~, State] = TwoBodyPb(-tspan, [rp, 0, 0, 0, vpm, 0]', ksun);
+    
+    rr_p = [rp 0 0]';
+    vvpm = [0 vpm 0]';
+    y0 = [rr_p; vvpm];
+    [~,State] = TwoBodyPb(-tspan,y0,ksun);
     X1 = State(:,1); Y1 = State(:,2); Z1 = State(:,3);
-
-    [~, State] = TwoBodyPb(tspan, [rp, 0, 0, 0, vpp, 0]', ksun);
+    
+    vvpp = [0 vpp 0]';
+    y0 = [rr_p; vvpp];
+    [~, State] = TwoBodyPb(tspan,y0,ksun);
     X2 = State(:,1); Y2 = State(:,2); Z2 = State(:,3);
-
-    figure
-    hold on
+    
+    
     grid on
-    view(0, 90); axis equal;
-    plot3(X1, Y1, Z1, 'k', 'LineWidth', 2); % Inbound arc
-    plot3(X2, Y2, Z2, 'k', 'LineWidth', 2); % Outbound arc
+    hold on
+    view(0, 90) % azimuth and elevation
+    axis equal
+    xlim([-2e+4 +2e+4]); ylim([-0.41e+5 +0.41e+5]);
+    
+    X_min_minus = min(X1);
+    X_min_plus = min(X2);
+    
+    
+    x0_minus = rp + am;
+    x0_plus =  rp  + ap;
+    Y_minus = @(x)   tan(pi/2 - deltam /2) * (x-x0_minus);
+    Y_plus =  @(x)  -tan(pi/2 - deltap /2)  * (x-x0_plus);
+
+    X = X_min_minus:x0_minus ;
+    plot3(X, Y_minus(X), zeros(length(X),1), 'LineWidth', 2, 'Color', '#0714fa')
+
+    X =  X_min_plus:x0_plus ;
+    plot3(X, Y_plus(X), zeros(length(X),1), 'LineWidth', 2, 'Color', '#e607fa')
+
+    plot3(X1, Y1, Z1, 'k', 'LineWidth', 2);% Inbound arc 
+    plot3(X2, Y2, Z2, 'k', 'LineWidth', 2);% Outbound arc
+
     plotObjects(1, Mars, [0, 0, 0]); % Mars
     xlabel('X [Km]', 'fontsize', 14, 'interpreter', 'latex');
     ylabel('Y [Km]', 'fontsize', 14, 'interpreter', 'latex');
