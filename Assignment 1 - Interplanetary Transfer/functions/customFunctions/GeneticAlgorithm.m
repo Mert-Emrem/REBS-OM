@@ -43,8 +43,8 @@ ub = [dep_window(end), flyby_window(end), arr_window(end)];
 
 % GA options
 options = optimoptions('ga', ...
-    'PopulationSize', 800, ...   % Larger population for better exploration
-    'MaxGenerations', 400, ...   % Increase generations for better convergence
+    'PopulationSize', 900, ...   % Larger population for better exploration
+    'MaxGenerations', 500, ...   % Increase generations for better convergence
     'Display', 'iter');          % Display iteration progress
 
 % Perform multiple GA trials to ensure robust results

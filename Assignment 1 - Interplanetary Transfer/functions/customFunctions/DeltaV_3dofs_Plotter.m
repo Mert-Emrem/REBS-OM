@@ -63,7 +63,7 @@ function Total_DeltaV_intersections = DeltaV_3dofs_Plotter(deltaV_totals_1, delt
     c = colorbar; 
     c.Label.String = '$\Delta V \, \mathrm{[km/s]}$';
     c.Label.Interpreter = 'latex';
-    c.Label.FontSize = 12;
+    c.Label.FontSize = 22;
     c.Label.FontWeight = 'bold';
     contour3(X, Y, baseZ * ones(size(deltaV_totals_1)), deltaV_totals_1, ...
         50, 'k');
@@ -108,8 +108,7 @@ function Total_DeltaV_intersections = DeltaV_3dofs_Plotter(deltaV_totals_1, delt
     grid on;
 
     view(3); % Set 3D perspective
-    saveas(gcf, 'deltaV_totals_1.png');
-    saveas(gcf, 'deltaV_totals_1', 'epsc');
+
 
     %% Second leg
         
@@ -139,7 +138,7 @@ function Total_DeltaV_intersections = DeltaV_3dofs_Plotter(deltaV_totals_1, delt
     c = colorbar; % Move to the right
     c.Label.String = '$\Delta V \, \mathrm{[km/s]}$';
     c.Label.Interpreter = 'latex';
-    c.Label.FontSize = 12;
+    c.Label.FontSize = 22;
     c.Label.FontWeight = 'bold';
 
     clim([0 50]);
@@ -171,9 +170,7 @@ function Total_DeltaV_intersections = DeltaV_3dofs_Plotter(deltaV_totals_1, delt
     set(gca, 'ZTickLabel', zticklabels); % Set the date labels explicitly
     grid on;
     view(3); % Set 3D perspective
-    saveas(gcf, 'deltaV_totals_2.png');
-    saveas(gcf, 'deltaV_totals_2', 'epsc');
-    
+
     %% Combined
 
     f2 = figure;
@@ -188,7 +185,7 @@ function Total_DeltaV_intersections = DeltaV_3dofs_Plotter(deltaV_totals_1, delt
     c = colorbar; % Move to the right
     c.Label.String = '$\Delta V \, \mathrm{[km/s]}$';
     c.Label.Interpreter = 'latex';
-    c.Label.FontSize = 12;
+    c.Label.FontSize = 22;
     c.Label.FontWeight = 'bold';
 
     contour3(X, Y, baseZ * ones(size(deltaV_totals_1)), deltaV_totals_1, ...
@@ -252,8 +249,6 @@ function Total_DeltaV_intersections = DeltaV_3dofs_Plotter(deltaV_totals_1, delt
     view(3); % 3D view
     hold off;
 
-    saveas(gcf, 'deltaV_totals_combined.png');
-    saveas(gcf, 'deltaV_totals_combined', 'epsc');
 
 
     %% Intersection
@@ -364,20 +359,20 @@ function Total_DeltaV_intersections = DeltaV_3dofs_Plotter(deltaV_totals_1, delt
 
     text(X_intersect(min_idx)+offset_x, Y_intersect(min_idx)+offset_y, Z_intersect(min_idx)+offset_z, ...
     sprintf('$$\\Delta V$$ = %.2f km/s', min_DeltaV), ...
-    'Interpreter', 'latex', 'FontSize', 12, 'FontWeight', 'bold', 'Color', 'black', ...
+    'Interpreter', 'latex', 'FontSize', 22, 'FontWeight', 'bold', 'Color', 'black', ...
     'HorizontalAlignment', 'left', 'VerticalAlignment', 'top');
 
     colormap(gca, parula);
     c = colorbar; % Move to the right
     c.Label.String = '$\Delta V \, \mathrm{[km/s]}$';
     c.Label.Interpreter = 'latex';
-    c.Label.FontSize = 12;
+    c.Label.FontSize = 22;
     c.Label.FontWeight = 'bold';
     
     ylabel('Flyby date at Mars');
     xlabel('Departure date from Mercury');
     zlabel('Arrival date at A40');
-    title('Intersection of Viable DeltaV Points');
+    % %title('Intersection of Viable DeltaV Points');
     view(3); % 3D view
 
     % Set axis limits

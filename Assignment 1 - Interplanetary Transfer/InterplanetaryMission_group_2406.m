@@ -44,7 +44,7 @@ data.Mars.h_atm = 220;
 % (YYYY, M, D, h, m, s)
 
 %% 1 attempt (used but commented)
-% First time windows
+% % First time windows
 % dep_window_start   = date2mjd2000([2030, 1, 1, 0, 0, 0]);
 % dep_window_end     = date2mjd2000([2044, 4, 1, 0, 0, 0]);
 % 
@@ -56,7 +56,6 @@ data.Mars.h_atm = 220;
 
 %% 2 attempt
 % Second time windows
-
 dep_window_start   = date2mjd2000([2040, 1, 1, 0, 0, 0]);
 dep_window_end     = date2mjd2000([2044, 4, 1, 0, 0, 0]);
 
@@ -66,6 +65,18 @@ flyby_window_end   = date2mjd2000([2044, 4, 1, 0, 0, 0]);
 arr_window_start   = date2mjd2000([2040, 1, 1, 0, 0, 0]);
 arr_window_end     = date2mjd2000([2044, 4, 1, 0, 0, 0]);
 
+%% 3 attempt
+% Third time windows
+% dep_window_start   = date2mjd2000([2040, 1, 1, 0, 0, 0]);
+% dep_window_end     = date2mjd2000([2042, 1, 1, 0, 0, 0]);
+% 
+% flyby_window_start = date2mjd2000([2042, 1, 1, 0, 0, 0]);
+% flyby_window_end   = date2mjd2000([2043, 1, 1, 0, 0, 0]);
+% 
+% arr_window_start   = date2mjd2000([2043, 1, 1, 0, 0, 0]);
+% arr_window_end     = date2mjd2000([2044, 4, 1, 0, 0, 0]);
+
+%% Time windows
 resolution_dep   = 150; 
 resolution_flyby = 150; 
 resolution_arr   = 150; 
@@ -110,16 +121,12 @@ arr_window_start   = date2mjd2000([2043, 0, 0, 0, 0, 0]);
 arr_window_end     = date2mjd2000([2044, 4, 1, 0, 0, 0]);
 
 
-resolution_dep   = 700; 
-resolution_flyby = 600; 
-resolution_arr   = 500;
-
-dep_window   = linspace(dep_window_start,   dep_window_end,   resolution_dep);   % [1 x L]
-flyby_window = linspace(flyby_window_start, flyby_window_end, resolution_flyby); % [1 x M]
-arr_window   = linspace(arr_window_start,   arr_window_end,   resolution_arr);   % [1 x N]
+dep_window   = [dep_window_start,   dep_window_end];
+flyby_window = [flyby_window_start, flyby_window_end];
+arr_window   = [arr_window_start,   arr_window_end];   % [1 x N]
 
 [x_ga, dv_ga] = GeneticAlgorithm(dep_window, flyby_window, arr_window, data,...
-                        20,... N. trials to run the ga
+                        10,... N. trials to run the ga
                         1,... Flag Plot
                         0);%  Flag Animated Plot
 
@@ -129,6 +136,21 @@ arr_window   = linspace(arr_window_start,   arr_window_end,   resolution_arr);  
                         1,... Flag Plot
                         0);%  Flag Animated Plot
 
+x_min = x_fm;
+dv_min = dv_fm;
+
+fprintf('Minimum total DeltaV considering all optimization methodologies')
+depdate = mjd20002date(x_min(1));
+fprintf(['Optimized departure date from Mercury: ', repmat('%d ', 1, numel(depdate)), '\n'], depdate);
+
+flybydate = mjd20002date(x_min(2));
+fprintf(['Optimized flyby date via Mars: ', repmat('%d ', 1, numel(depdate)), '\n'], flybydate);
+
+arrdate = mjd20002date(x_min(3));
+fprintf(['Optimized arrival date to Harmonia: ', repmat('%d ', 1, numel(arrdate)), '\n'], arrdate);
+
+
+
 %% Optimal Values
 % load the optimal values obtained before without running the code
 
@@ -137,14 +159,16 @@ arr_window   = linspace(arr_window_start,   arr_window_end,   resolution_arr);  
 % Same result obtain with 200X200X200 points (second time windows)
 
 DeltaV_calculator(x, data, 1);
-plotTransfer(x);
-Animated_Transfers_Plot(x);
+plotTransfer(x_min);
+Animated_Transfers_Plot(x_min);
 
 
-%% Plot for optimal DeltaV: ga
-td = [2041 3 29 13 50 26];
-tf = [2042 6 7   4 31 23];
-ta = [2043 8 1  14 24 41];
+%% Optimal DeltaV: ga + fmincon
+% Outcome and results:
+
+td = [2041 3 29 11 27 1.429861e+01];
+tf = [2042 6 7   0 32 6.662251e+00 ];
+ta = [2043 7 31 22 44 5.719183e+01];
 td = date2mjd2000(td);
 tf = date2mjd2000(tf);
 ta = date2mjd2000(ta);
@@ -152,11 +176,9 @@ ta = date2mjd2000(ta);
 x = [td, tf, ta];
 
 DeltaV_calculator(x, data, 1)
-M = Orbits_calculator(x, data, 1);
-
-
-%%
 plotTransfer(x)
+M = Orbits_calculator(x, data, 1);
+%%
 Animated_Transfers_Plot(x)
 
 
