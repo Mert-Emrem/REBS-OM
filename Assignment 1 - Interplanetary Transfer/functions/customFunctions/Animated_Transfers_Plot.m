@@ -146,12 +146,12 @@ plotObjects(14, Sun, [0, 0, 0]);
 SpaceCraft = scatter3(ax2,rr_d(1), rr_d(2), rr_d(3), 30, 'r', '<', 'filled');
 
 % Set real-time scaling factor
-real_time_factor = 1e+12; % Adjust this to control animation speed
+real_time_factor = 1e+13; % Adjust this to control animation speed
 
 % Animate the transfer trajectory over time
 ToF1 = (t_f - t_d) * 24 * 3600;
 ToF2 = (t_a - t_f) * 24 * 3600;
-dt = 111111; % 1 day in seconds
+dt = 211111; % 1 day in seconds
 tspan = 0:dt:(ToF1 + ToF2);
 
 % Initialize storage variables for trajectory points

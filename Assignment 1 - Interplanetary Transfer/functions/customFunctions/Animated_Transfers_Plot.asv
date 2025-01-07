@@ -98,7 +98,7 @@ ax2 = axes('Position', [0 0 1 1]);
 set(ax2, 'Color', 'none'); % Sfondo trasparente
 hold(ax2, 'on');
 
-view(ax2, 45, 22); % Set the viewing angle
+view(ax2, 45, 30); % Set the viewing angle
 axis(ax2, 'equal');
 xlim(ax2,[-0.39e+9 +0.41e+9]);
 ylim(ax2,[-0.39e+9 +0.41e+9]);
@@ -151,7 +151,7 @@ real_time_factor = 1e+12; % Adjust this to control animation speed
 % Animate the transfer trajectory over time
 ToF1 = (t_f - t_d) * 24 * 3600;
 ToF2 = (t_a - t_f) * 24 * 3600;
-dt = 111111; % 1 day in seconds
+dt = 311111; % 1 day in seconds
 tspan = 0:dt:(ToF1 + ToF2);
 
 % Initialize storage variables for trajectory points
@@ -164,7 +164,7 @@ y = [];
 
 % Add text for displaying the current time
 depdate = mjd20002date(t_d);
-textdep =sprintf('Time: $%02d:%02d:%02d$ $[h:m:s]$ \nDate: $%02d/%02d/%04d$ $[d/m/y]$', ...
+textdep =sprintf('Time: $%02d:%02d:%02d$ [h:m:s] \nDate: $%02d/%02d/%04d$ $[d/m/y]$', ...
                         depdate(4), depdate(5), ceil(depdate(6)), depdate(3), depdate(2), depdate(1));
 
 % Update the date and time text color to light blue

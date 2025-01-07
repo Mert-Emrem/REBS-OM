@@ -23,6 +23,17 @@
 %% Initialization
 clear; close all; clc;
 
+% Graphical Orbital Validation 
+% All the calculations described were thoroughly checked using Animated_Transfers_Plot.m,
+% that takes the 3 DoFs as input’s values and produces an animated
+% visualization of the orbits and planet positions with the transfer trajectory, 
+% facilitating the identification of optimal maneuver windows. Additionally, the function 
+% synchronizes the mission timeline with the time steps used by Matlab’s ode solvers. Since only the
+% integration time boundaries, not the individual time steps, can be specified, the function uses a loop
+% to compute position and velocity iteratively. This approach guarantees that the transfer trajectory
+%is displayed accurately and consistently throughout the simulation.
+
+
 % Add required paths for auxiliary functions
 addpath 'functions'\timeConversion\time\
 addpath 'functions'\
@@ -44,7 +55,7 @@ data.Mars.h_atm = 220;
 % (YYYY, M, D, h, m, s)
 
 %% 1 attempt (used but commented)
-% % First time windows
+% % First time windows chosing resolution time window = 100
 % dep_window_start   = date2mjd2000([2030, 1, 1, 0, 0, 0]);
 % dep_window_end     = date2mjd2000([2044, 4, 1, 0, 0, 0]);
 % 
@@ -53,6 +64,7 @@ data.Mars.h_atm = 220;
 % 
 % arr_window_start   = date2mjd2000([2030, 1, 1, 0, 0, 0]);
 % arr_window_end     = date2mjd2000([2044, 4, 1, 0, 0, 0]);
+%
 
 %% 2 attempt
 % Second time windows
@@ -90,7 +102,7 @@ arr_window   = linspace(arr_window_start,   arr_window_end,   resolution_arr);  
 % Create the two matrices containing the DeltaV matrices ( N x M x L )
 
 [M1, M2, Vinf_minus, Vinf_plus] = LambertArcsDeltaV_calculator(dep_window, flyby_window, arr_window,data,...
-                                0,... Flag PorkchopPlot
+                                1,... Flag PorkchopPlot
                                 1);%  Flag 3Dofs Plot
 
 
@@ -103,7 +115,7 @@ arr_window   = linspace(arr_window_start,   arr_window_end,   resolution_arr);  
 [x_GSf, dv_GSf] = Hybrid_GridSearch_Fmincon(dep_window, flyby_window, arr_window,...
                         M1, M2, Vinf_minus, Vinf_plus, data,...
                         5,... N. trials to run the fmincon
-                        0,... Flag Plot
+                        1,... Flag Plot
                         1);%  Flag Animated Plot
 
 
@@ -127,13 +139,13 @@ arr_window   = [arr_window_start,   arr_window_end];   % [1 x N]
 
 [x_ga, dv_ga] = GeneticAlgorithm(dep_window, flyby_window, arr_window, data,...
                         10,... N. trials to run the ga
-                        1,... Flag Plot
+                        0,... Flag Plot
                         0);%  Flag Animated Plot
 
 % fmincon for fine-tuning the minimum
 [x_fm, dv_fm] = FminCon(dep_window, flyby_window, arr_window, x_ga, data,...
                         4,... N. trials to run the ga
-                        1,... Flag Plot
+                        0,... Flag Plot
                         0);%  Flag Animated Plot
 
 
@@ -182,7 +194,9 @@ ta = date2mjd2000(ta);
 
 x = [td, tf, ta];
 
+%%
 DeltaV_calculator(x, data, 1)
+%%
 plotTransfer(x)
 %%
 M = Orbits_calculator(x, data, 1);
