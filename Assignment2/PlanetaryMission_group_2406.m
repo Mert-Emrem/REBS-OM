@@ -577,13 +577,13 @@ xlabel('Time [T]', Interpreter='latex', FontSize=12)
 
 % inclination  
 subplot(3,2,3)
-error_i = abs(I(:)-Y_pert_gauss(:,3));
+error_i = abs(I(:)-Y_pert_gauss(:,3))/(2*pi);
 i_e_max = max(error_i);
 semilogy(tspan/T_orb, error_i, 'b');
 grid on
 xlim([0 1000])
 title('i', Interpreter='latex', FontSize=14, FontWeight='bold')
-ylabel('$|i_{cart}$ - $i_{gauss}|$', Interpreter='latex', FontSize=12)
+ylabel('$|i_{cart}$ - $i_{gauss}|$/2$\pi$', Interpreter='latex', FontSize=12)
 xlabel('Time [T]', Interpreter='latex', FontSize=12)
 
 % RAAN  
