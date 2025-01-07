@@ -124,18 +124,18 @@ if YesPlot
     Y_plus =  @(x)  -tan(pi/2 - deltap /2)  * (x-x0_plus);
 
     X = X_min_minus:x0_minus ;
-    plot3(X, Y_minus(X), zeros(length(X),1), 'LineWidth', 2, 'Color', '#f79502')
+    plot3(X, Y_minus(X), zeros(length(X),1), 'LineWidth', 2, 'Color', '#17bf52')
 
     X =  X_min_plus:x0_plus ;
-    plot3(X, Y_plus(X), zeros(length(X),1), 'LineWidth', 2, 'Color', '#17bf52')
+    plot3(X, Y_plus(X), zeros(length(X),1), 'LineWidth', 2, 'Color', '#e607fa')
 
-    plot3(X1, Y1, Z1, 'k', 'LineWidth', 2);
-    plot3(X2, Y2, Z2, 'k', 'LineWidth', 2);
+    plot3(X1, Y1, Z1, 'k', 'LineWidth', 2);% Inbound arc 
+    plot3(X2, Y2, Z2, 'k', 'LineWidth', 2);% Outbound arc
 
     plotObjects(1, Mars, [0, 0, 0]); % Mars
     xlabel('X [Km]', 'fontsize', 14, 'interpreter', 'latex');
     ylabel('Y [Km]', 'fontsize', 14, 'interpreter', 'latex');
     % title('Flyby at Mars', 'fontsize', 22, 'interpreter', 'latex');
-    legend('\textit{Inbound hyp}', '\textit{Outbound hyp}', 'fontsize', 14, 'interpreter', 'latex');
+    legend('\text{Inbound hyp}', '\text{Outcome hyp}', 'fontsize', 14, 'interpreter', 'latex');
 end
 end

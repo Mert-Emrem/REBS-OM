@@ -47,11 +47,11 @@ function porkchopPlotter1(deltaV_totals, tspan_arr, tspan_dep)
     c = colorbar;
     c.Label.String = '$\Delta V$ [km/s]';
     c.Label.Interpreter = 'latex';
-    c.Label.FontSize = 14;
+    c.Label.FontSize = 22;
 
-    xlabel('Departure Date from Mercury', 'fontsize', 14, 'interpreter', 'latex');
-    ylabel('Flyby Date at Mars', 'fontsize', 14, 'interpreter', 'latex');
-    title('$\Delta V$ of the First Leg of the Transfer', 'fontsize', 14, 'interpreter', 'latex');
+    xlabel('Departure Date from Mercury', 'fontsize', 22, 'interpreter', 'latex');
+    ylabel('Flyby Date at Mars', 'fontsize', 22, 'interpreter', 'latex');
+    %title('$\Delta V$ of the First Leg of the Transfer', 'fontsize', 22, 'interpreter', 'latex');
     hold on;
 
     % Add Time-of-Flight (ToF) lines
@@ -77,23 +77,23 @@ function porkchopPlotter1(deltaV_totals, tspan_arr, tspan_dep)
 
     % Save 2D plot
     f1.Position = [100 100 800 800];
-    saveas(gcf, 'porkchop1.png');
-    saveas(gcf, 'porkchop1', 'epsc');
+
     hold off;
 
     % Create 3D surface plot
     f2 = figure;
     hold on;
-    deltaV_totals(deltaV_totals > 30) = NaN;
+    grid on
+    deltaV_totals(deltaV_totals > 60) = NaN;
     surfc(X, Y, deltaV_totals', 'EdgeColor', 'none');
     colormap('parula');
-    zlim([min_deltaV 75]);
-    clim([min_deltaV 75]);
+    zlim([min_deltaV 50]);
+    clim([min_deltaV 50]);
 
-    xlabel('Departure Date from Mercury', 'fontsize', 14, 'interpreter', 'latex');
-    ylabel('Flyby Date at Mars', 'fontsize', 14, 'interpreter', 'latex');
-    zlabel('$\Delta V$ [km/s]', 'fontsize', 14, 'interpreter', 'latex');
-    title('$\Delta V$ of the First Leg of the Transfer', 'fontsize', 14, 'interpreter', 'latex');
+    xlabel('Departure Date from Mercury', 'fontsize', 22, 'interpreter', 'latex');
+    ylabel('Flyby Date at Mars', 'fontsize', 22, 'interpreter', 'latex');
+    zlabel('$\Delta V$ [km/s]', 'fontsize', 22, 'interpreter', 'latex');
+    %title('$\Delta V$ of the First Leg of the Transfer', 'fontsize', 28, 'interpreter', 'latex');
 
     % Format Y-axis tick labels
     yticks = linspace(min(tspan_arr + t_offset), max(tspan_arr + t_offset), 7); 

@@ -136,6 +136,8 @@ arr_window   = [arr_window_start,   arr_window_end];   % [1 x N]
                         1,... Flag Plot
                         0);%  Flag Animated Plot
 
+
+
 x_min = x_fm;
 dv_min = dv_fm;
 
@@ -153,6 +155,11 @@ fprintf(['Optimized arrival date to Harmonia: ', repmat('%d ', 1, numel(arrdate)
 
 %% Optimal Values
 % load the optimal values obtained before without running the code
+% Optimized departure date from Mercury: 2041 3 29 11 27 1.429861e+01 
+% Optimized flyby date via Mars: 2042 6 7 0 32 6.662251e+00 
+% Optimized arrival date to Harmonia: 2043 7 31 22 44 5.719183e+01 
+% Elapsed time is 0.467924 seconds.
+%    23.8269
 
 %% Plot for optimal DeltaV: GridSearch + fmincon
 % Results with 1000X1000X1000 points (first time windows)
@@ -177,6 +184,7 @@ x = [td, tf, ta];
 
 DeltaV_calculator(x, data, 1)
 plotTransfer(x)
+%%
 M = Orbits_calculator(x, data, 1);
 %%
 Animated_Transfers_Plot(x)
