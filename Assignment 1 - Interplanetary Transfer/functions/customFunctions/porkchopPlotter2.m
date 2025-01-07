@@ -39,11 +39,11 @@ function porkchopPlotter2(deltaV_totals, tspan_arr, tspan_dep)
     c = colorbar;
     c.Label.String = '$\Delta V$ [km/s]';
     c.Label.Interpreter = 'latex';
-    c.Label.FontSize = 14; % Set font size
+    c.Label.FontSize = 22; % Set font size
 
-    xlabel('Flyby Date at Mars', 'fontsize', 14, 'interpreter', 'latex');
-    ylabel('Arrival Date at Harmonia', 'fontsize', 14, 'interpreter', 'latex');
-    title('$\Delta V$ of the Second Leg of the Transfer', 'fontsize', 14, 'interpreter', 'latex');
+    xlabel('Flyby Date at Mars', 'fontsize', 22, 'interpreter', 'latex');
+    ylabel('Arrival Date at Harmonia', 'fontsize', 22, 'interpreter', 'latex');
+    %title('$\Delta V$ of the Second Leg of the Transfer', 'fontsize', 22, 'interpreter', 'latex');
     hold on;
 
     % Time-of-Flight lines
@@ -73,23 +73,22 @@ function porkchopPlotter2(deltaV_totals, tspan_arr, tspan_dep)
     xtickangle(45);
 
     f1.Position = [100 100 800 800]; % Adjust figure window size
-    saveas(gcf, 'porkchop2.png');
-    saveas(gcf, 'porkchop2', 'epsc');
-    hold off;
+
 
     % 3D Surface Plot
     f2 = figure;
     hold on;
+    grid on
     deltaV_totals(deltaV_totals > 15) = NaN;
     surfc(X, Y, deltaV_totals', 'EdgeColor', 'none'); % 3D surface plot
     colormap('parula'); 
     zlim([0 20]);
     clim([0 20]);
 
-    xlabel('Flyby Date at Mars', 'fontsize', 14, 'interpreter', 'latex');
-    ylabel('Arrival Date at Harmonia', 'fontsize', 14, 'interpreter', 'latex');
-    zlabel('$\Delta V$ [km/s]', 'fontsize', 14, 'interpreter', 'latex');
-    title('$\Delta V$ of the Second Leg of the Transfer', 'fontsize', 14, 'interpreter', 'latex');
+    xlabel('Flyby Date at Mars', 'fontsize', 22, 'interpreter', 'latex');
+    ylabel('Arrival Date at Harmonia', 'fontsize', 22, 'interpreter', 'latex');
+    zlabel('$\Delta V$ [km/s]', 'fontsize', 22, 'interpreter', 'latex');
+    %title('$\Delta V$ of the Second Leg of the Transfer', 'fontsize', 28, 'interpreter', 'latex');
 
     % Format Y-axis tick labels with LaTeX-compatible date strings
     yticks = linspace(min(tspan_arr + t_offset), max(tspan_arr + t_offset), 7); 
@@ -105,8 +104,7 @@ function porkchopPlotter2(deltaV_totals, tspan_arr, tspan_dep)
 
     view(3); % Adjust to a 3D perspective
     f2.Position = [100 100 800 800]; % Adjust figure window size
-    saveas(gcf, 'porkchop2_3d.png');
-    saveas(gcf, 'porkchop2_3d', 'epsc');
+
 end
 
 % Helper function to convert dates to LaTeX-compatible strings

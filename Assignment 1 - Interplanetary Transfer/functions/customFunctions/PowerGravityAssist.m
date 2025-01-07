@@ -5,7 +5,7 @@ function [dvp, t_SOI, rp, delta, e_m, e_p, am, ap, vpm, vpp, deltam, deltap] = P
 % including the turn angles, eccentricities, and velocities for the incoming 
 % and outgoing hyperbolic trajectories. The method uses an iterative approach 
 % to determine the pericenter radius that satisfies the required turn angle.
-
+%
 % 
 % PROTOTYPE:
 %  [dvp, delta, rp, em, ep, am, ap, vpm, vpp, deltam, deltap] = PowerGravityAssist(vinfm, vinfp, Rpl, hatm, k_f, dynamic_ON)
@@ -22,8 +22,8 @@ function [dvp, t_SOI, rp, delta, e_m, e_p, am, ap, vpm, vpp, deltam, deltap] = P
 %  dvp [1]         Delta-V required at pericenter [km/s] 
 %  delta [1]       Turn angle [rad]
 %  rp [1]          Radius of pericenter [km]
-%  em [1]          Eccentricity of the incoming hyperbola 
-%  ep [1]          Eccentricity of the outgoing hyperbola
+%  e_m [1]          Eccentricity of the incoming hyperbola 
+%  e_p [1]          Eccentricity of the outgoing hyperbola
 %  am [1]          Semi-major axis of the incoming hyperbola [km]
 %  ap [1]          Semi-major axis of the outgoing hyperbola [km]
 %  vpm [1]         Velocity at pericenter of the incoming hyperbola [km/s]
@@ -34,6 +34,7 @@ function [dvp, t_SOI, rp, delta, e_m, e_p, am, ap, vpm, vpp, deltam, deltap] = P
 % 
 % AUTHORS: Richero Giovanni, Emrem Mert, Bernarsconi Ludovico, Serlini Mariagiulia
 % -------------------------------------------------------------------------
+
     % Turn angle between incoming and outgoing hyperbolas
     delta = acos(dot(vinfm, vinfp) / norm(vinfm) / norm(vinfp));
     
