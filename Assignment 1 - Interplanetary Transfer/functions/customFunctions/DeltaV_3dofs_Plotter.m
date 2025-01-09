@@ -61,7 +61,7 @@ function Total_DeltaV_intersections = DeltaV_3dofs_Plotter(deltaV_totals_1, delt
     surf(X, Y, baseZ * ones(size(deltaV_totals_1)), deltaV_totals_1, ...
         'EdgeColor', 'none', 'FaceAlpha', 0.9); % Project deltaV_totals_1
     c = colorbar; 
-    c.Label.String = '$\Delta V \, \mathrm{[km/s]}$';
+    c.Label.String = 'Delta V [km/s]';
     c.Label.Interpreter = 'latex';
     c.Label.FontSize = 22;
     c.Label.FontWeight = 'bold';
@@ -136,7 +136,7 @@ function Total_DeltaV_intersections = DeltaV_3dofs_Plotter(deltaV_totals_1, delt
     zlabel('Arrival date at A40');
     colormap(gca, parula); 
     c = colorbar; % Move to the right
-    c.Label.String = '$\Delta V \, \mathrm{[km/s]}$';
+    c.Label.String = 'Delta V [km/s]';
     c.Label.Interpreter = 'latex';
     c.Label.FontSize = 22;
     c.Label.FontWeight = 'bold';
@@ -183,7 +183,7 @@ function Total_DeltaV_intersections = DeltaV_3dofs_Plotter(deltaV_totals_1, delt
         'EdgeColor', 'none', 'FaceAlpha', 1); % Project deltaV_totals_1
     colormap(gca, parula);
     c = colorbar; % Move to the right
-    c.Label.String = '$\Delta V \, \mathrm{[km/s]}$';
+    c.Label.String = 'Delta V [km/s]';
     c.Label.Interpreter = 'latex';
     c.Label.FontSize = 22;
     c.Label.FontWeight = 'bold';
@@ -271,17 +271,21 @@ function Total_DeltaV_intersections = DeltaV_3dofs_Plotter(deltaV_totals_1, delt
 
     % Loop over intersection points
     for idx = 1:numel(X_intersect)
-        fprintf('Current index: %d\n',idx);
-        % Find the associated indices in the grid
+        % Calculate percentage completion
+        percentComplete = (idx / numel(X_intersect)) * 100;
+        
+        fprintf(repmat('\b', 1, 50)); % Adjust the number to match the line length
+        fprintf('grid progress: %6.2f%%\n', percentComplete);
+
         [dep_idx, flyby_idx, arr_idx] = ind2sub(size(Z3D), find(intersection_mask));
-
+    
         % Extract velocity vectors
-        vinf_m = squeeze(Vinf_minus(dep_idx(idx), flyby_idx(idx), :)); % First leg outgoing
-        vinf_p = squeeze(Vinf_plus(flyby_idx(idx), arr_idx(idx), :)); % Second leg incoming
-
+        vinf_m = squeeze(Vinf_minus(dep_idx(idx), flyby_idx(idx), :)); % First leg inbound
+        vinf_p = squeeze(Vinf_plus(flyby_idx(idx), arr_idx(idx), :)); % Second leg outbound
+    
         % Perform gravity assist calculation
         [dvp, t_SOI, rp] = PowerGravityAssist(vinf_m, vinf_p, data.Mars.Radius, data.Mars.h_atm, data.Mars.mu, 0);
-
+    
         % Store gravity assist Delta-V if valid
         if rp > (data.Mars.Radius + data.Mars.h_atm)
             Delta_GA_intersections(idx) = dvp;
@@ -345,8 +349,7 @@ function Total_DeltaV_intersections = DeltaV_3dofs_Plotter(deltaV_totals_1, delt
     x_range = max(tspan_flyby) - min(tspan_flyby);
     y_range = max(tspan_dep)   - min(tspan_dep);
     z_range = max(tspan_arr)   - min(tspan_arr);
-        
-        
+               
     % Define the percentage offsets (between 0 and 1)
     percent_offset_x = 0.05; % 5% of the X range (adjust as needed)
     percent_offset_y = 0.05; % 5% of the Y range (adjust as needed)
@@ -364,7 +367,7 @@ function Total_DeltaV_intersections = DeltaV_3dofs_Plotter(deltaV_totals_1, delt
 
     colormap(gca, parula);
     c = colorbar; % Move to the right
-    c.Label.String = '$\Delta V \, \mathrm{[km/s]}$';
+    c.Label.String = 'Delta V [km/s]';
     c.Label.Interpreter = 'latex';
     c.Label.FontSize = 22;
     c.Label.FontWeight = 'bold';
@@ -414,6 +417,5 @@ function Total_DeltaV_intersections = DeltaV_3dofs_Plotter(deltaV_totals_1, delt
     
     arrdate = mjd20002date(Z_intersect(min_idx));
     fprintf( ['Refined grid arrival date to Harmonia: ', repmat('%d ', 1, numel(arrdate)), '\n'], arrdate);
-    
-
+   
 end
